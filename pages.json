@@ -5,70 +5,56 @@
 			"style": {
 				"navigationBarTitleText": "moredoc"
 			}
+		}, {
+			"path": "pages/me/me",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/search/search",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/category/category",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/upload/upload",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/register/register",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/findpassword/findpassword",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
 		}
-        ,{
-            "path" : "pages/me/me",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/search/search",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/category/category",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/upload/upload",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/login/login",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/register/register",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/findpassword/findpassword",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "moredoc",
@@ -78,17 +64,32 @@
 	"uniIdRouter": {},
 	"tabBar": {
 		// "backgroundColor": ""
+		"height": "60px",
+		
+		"selectedColor": "#07C160",
 		"list": [
 			{
 				"text": "首页",
-				"iconPath": "static/logo.png",
-				"selectedIconPath": "static/logo.png",
+				"iconPath": "static/images/icon/home.png",
+				"selectedIconPath": "static/images/icon/home-selected.png",
 				"pagePath": "pages/index/index"
 			},
 			{
+				"text": "分类",
+				"iconPath": "static/images/icon/category.png",
+				"selectedIconPath": "static/images/icon/category-selected.png",
+				"pagePath": "pages/category/category"
+			},
+			{
+				"text": "搜索",
+				"iconPath": "static/images/icon/search.png",
+				"selectedIconPath": "static/images/icon/search-selected.png",
+				"pagePath": "pages/search/search"
+			},
+			{
 				"text": "我的",
-				"iconPath": "static/logo.png",
-				"selectedIconPath": "static/logo.png",
+				"iconPath": "static/images/icon/me.png",
+				"selectedIconPath": "static/images/icon/me-selected.png",
 				"pagePath": "pages/me/me"
 			}
 		]
