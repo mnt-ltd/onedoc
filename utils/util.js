@@ -1,11 +1,11 @@
-const keyUser = 'user'
-const keyWeChatUser = 'wechat-user'
-const keyMenu = 'menu'
-const keyReaderSetting = 'reader-setting'
-const keySysInfo = 'sys-info'
-const keySign = 'sign'
+export const keyUser = 'user'
+export const keyWeChatUser = 'wechat-user'
+export const keyMenu = 'menu'
+export const keyReaderSetting = 'reader-setting'
+export const keySysInfo = 'sys-info'
+export const keySign = 'sign'
 
-const formatTime = date => {
+export const formatTime = date => {
 	const year = date.getFullYear()
 	const month = date.getMonth() + 1
 	const day = date.getDate()
@@ -16,7 +16,7 @@ const formatTime = date => {
 	return [year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
 }
 
-const timestampToDate = (timestamp) => {
+export const timestampToDate = (timestamp) => {
 	let date = new Date(timestamp * 1000)
 	const year = date.getFullYear()
 	const month = date.getMonth() + 1
@@ -24,20 +24,20 @@ const timestampToDate = (timestamp) => {
 	return [year, month, day].map(formatNumber).join('/')
 }
 
-const formatNumber = n => {
+export const formatNumber = n => {
 	n = n.toString()
 	return n[1] ? n : '0' + n
 }
 
-const now = () => {
+export const now = () => {
 	return parseInt(new Date().getTime() / 1000)
 }
 
-const toTimestamp = t => {
+export const toTimestamp = t => {
 	return parseInt(new Date(t).getTime() / 1000)
 }
 
-const relativeTime = t => {
+export const relativeTime = t => {
 
 	let timestamp = toTimestamp(t)
 	let n = now()
@@ -66,15 +66,15 @@ const relativeTime = t => {
 	return '刚刚';
 }
 
-const clearUser = () => {
+export const clearUser = () => {
 	uni.setStorageSync(keyUser, '{}')
 }
 
-const setUser = (user) => {
+export const setUser = (user) => {
 	uni.setStorageSync(keyUser, JSON.stringify(user))
 }
 
-const getUser = () => {
+export const getUser = () => {
 	try {
 		var value = uni.getStorageSync(keyUser)
 		if (value) {
@@ -87,11 +87,11 @@ const getUser = () => {
 	}
 }
 
-const setWeChatUser = (user) => {
+export const setWeChatUser = (user) => {
 	uni.setStorageSync(keyWeChatUser, JSON.stringify(user))
 }
 
-const getWeChatUser = () => {
+export const getWeChatUser = () => {
 	try {
 		var value = uni.getStorageSync(keyWeChatUser)
 		if (value) {
@@ -104,7 +104,7 @@ const getWeChatUser = () => {
 	}
 }
 
-const getToken = () => {
+export const getToken = () => {
 	let user = getUser()
 	if (user && user.token != undefined) {
 		return user.token
@@ -112,17 +112,17 @@ const getToken = () => {
 	return ""
 }
 
-const redirect = (uriWithDecode) => {
-  // 带问号的，用 redirectTo，不带问号的，用switchTab
-  if (uriWithDecode.indexOf("?") > -1) {
-    uni.redirectTo({
-      url: uriWithDecode,
-    })
-  } else {
-    uni.switchTab({
-      url: uriWithDecode,
-    })
-  }
+export const redirect = (uriWithDecode) => {
+	// 带问号的，用 redirectTo，不带问号的，用switchTab
+	if (uriWithDecode.indexOf("?") > -1) {
+		uni.redirectTo({
+			url: uriWithDecode,
+		})
+	} else {
+		uni.switchTab({
+			url: uriWithDecode,
+		})
+	}
 }
 
 //添加事件结束
@@ -146,14 +146,14 @@ Promise.prototype.finally = function(callback) {
 	);
 }
 
-const _getVersion = () => {
+export const _getVersion = () => {
 	let version = getSysInfo().appVersion
 	if (version != undefined && version != "") return version
 	return ''
 }
 
 // 只有请求结果返回 200 的时候，才会resolve，否则reject
-const request = (api, params = {}, method = "GET", header = {}) => {
+export const request = (api, params = {}, method = "GET", header = {}) => {
 	return new Promise(function(resolve, reject) {
 		if (!header["content-type"]) {
 			header["content-type"] = "application/json"
@@ -163,7 +163,7 @@ const request = (api, params = {}, method = "GET", header = {}) => {
 
 		let token = getToken()
 		if (token) header['authorization'] = token
-		
+
 		header['x-version'] = _getVersion()
 
 		uni.request({
@@ -186,7 +186,7 @@ const request = (api, params = {}, method = "GET", header = {}) => {
 	});
 }
 
-const loading = (title) => {
+export const loading = (title) => {
 	title = title ? title : '玩命加载中...'
 	uni.showLoading({
 		title: title,
@@ -194,7 +194,7 @@ const loading = (title) => {
 	})
 }
 
-const toastError = (content) => {
+export const toastError = (content) => {
 	uni.showToast({
 		title: content,
 		icon: 'none',
@@ -202,13 +202,13 @@ const toastError = (content) => {
 	})
 }
 
-const toastSuccess = (content) => {
+export const toastSuccess = (content) => {
 	uni.showToast({
 		title: content,
 	})
 }
 
-const fixView = (view) => {
+export const fixView = (view) => {
 	if (view > 10000) {
 		view = (view / 10000).toFixed(1) + "w"
 	} else if (view > 1000) {
@@ -223,7 +223,7 @@ function isEmail(email) {
 	return pattern.test(email);
 }
 
-const _findChildren = (menu, pid) => {
+export const _findChildren = (menu, pid) => {
 	let children = []
 	let left = []
 	for (let i = 0; i < menu.length; i++) {
@@ -236,7 +236,7 @@ const _findChildren = (menu, pid) => {
 	return left, children
 }
 
-const menuToTree = (menu) => {
+export const menuToTree = (menu) => {
 	// 来自这篇博客，谢谢: https://blog.csdn.net/u013373006/article/details/82108873
 	menu.forEach(function(item) {
 		delete item.children;
@@ -257,7 +257,7 @@ const menuToTree = (menu) => {
 	return val;
 }
 
-const menuSortIds = (menuTree) => {
+export const menuSortIds = (menuTree) => {
 	let docs = []
 	for (let i in menuTree) {
 		docs.push(menuTree[i].id)
@@ -268,7 +268,7 @@ const menuSortIds = (menuTree) => {
 	return docs
 }
 
-const menuTreeReaded = (menuTree, docId) => {
+export const menuTreeReaded = (menuTree, docId) => {
 	for (let i in menuTree) {
 		if (menuTree[i].id == docId) {
 			menuTree[i].readed = true
@@ -281,11 +281,11 @@ const menuTreeReaded = (menuTree, docId) => {
 	return menuTree
 }
 
-const setReaderSetting = (obj) => {
+export const setReaderSetting = (obj) => {
 	uni.setStorageSync(keyReaderSetting, JSON.stringify(obj))
 }
 
-const getReaderSetting = () => {
+export const getReaderSetting = () => {
 	let val = uni.getStorageSync(keyReaderSetting)
 	if (!val) {
 		return {
@@ -299,11 +299,11 @@ const getReaderSetting = () => {
 	return val
 }
 
-const setSysInfo = (obj) => {
+export const setSysInfo = (obj) => {
 	uni.setStorageSync(keySysInfo, JSON.stringify(obj))
 }
 
-const formatReading = (seconds) => {
+export const formatReading = (seconds) => {
 	let reading = {
 		hour: 0,
 		min: 0,
@@ -317,7 +317,7 @@ const formatReading = (seconds) => {
 	return reading
 }
 
-const getSysInfo = () => {
+export const getSysInfo = () => {
 	let val = uni.getStorageSync(keySysInfo)
 	if (!val) {
 		return {
@@ -330,22 +330,22 @@ const getSysInfo = () => {
 	return JSON.parse(val)
 }
 
-const setSignedAt = (timestamp) => {
+export const setSignedAt = (timestamp) => {
 	// timestamp = 0 表示重置签到时间
 	if (timestamp == 0 || timestamp > getSignedAt()) uni.setStorageSync(keySign, timestamp)
 }
 
-const getSignedAt = () => {
+export const getSignedAt = () => {
 	let signedAt = uni.getStorageSync(keySign) || 0
 	return parseInt(signedAt)
 }
 
-const isSignedToday = () => {
+export const isSignedToday = () => {
 	return timestampToDate(now()) == timestampToDate(getSignedAt())
 }
 
 
-module.exports = {
+export default {
 	formatTime,
 	now,
 	toTimestamp,

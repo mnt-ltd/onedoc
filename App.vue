@@ -20,7 +20,6 @@
 		background-color: $uni-bg-color-grey;
 	}
 	.m-card{
-		padding: $uni-spacing-col-base;
 		background-color: #ffffff;
 		border-radius: $uni-border-radius-lg !important;
 		box-sizing: border-box;

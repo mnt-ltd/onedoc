@@ -30,6 +30,14 @@
 	padding-bottom: 15px;
 }
 
+.pdl-15{
+	padding-left: 15px;
+}
+
+.pdr-15{
+	padding-right: 15px;
+}
+
 .pdt-30 {
 	padding-top: 30px;
 }
@@ -145,15 +153,75 @@
 	overflow: hidden;
 }
 
-.pd-10{
+.pd-10 {
 	padding: 10px;
 }
-.pd-15{
+
+.pd-15 {
 	padding: 15px;
 }
-.pd-20{
+
+.pd-20 {
 	padding: 20px;
 }
-.pd-30{
+
+.pd-30 {
 	padding: 30px;
+}
+
+.icon-small {
+	width: 32px;
+	height: 32px;
+}
+
+.icon-medium {
+	width: 48px;
+	height: 48px;
+}
+
+.icon-large {
+	width: 64px;
+	height: 64px;
+}
+
+.icon-circle{
+	border-radius: 50%;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.text-right{
+	text-align: right;
+}
+
+.font-lv1 {
+	font-size: 18px !important;
+}
+
+.font-lv2 {
+	font-size: 16px !important;
+}
+
+.font-lv3 {
+	font-size: 14px !important;
+}
+
+.font-lv4 {
+	font-size: 12px !important;
+}
+
+.font-lv5 {
+	font-size: 10px !important;
+}
+
+.float-right{
+	float: right;
+}
+
+.text-grey{
+	color: #999;
 }
