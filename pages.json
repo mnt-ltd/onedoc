@@ -58,14 +58,13 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "moredoc",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#000000",
+		"navigationStyle": "custom"
 	},
 	"uniIdRouter": {},
 	"tabBar": {
-		// "backgroundColor": ""
 		"height": "60px",
-		
 		"selectedColor": "#07C160",
 		"list": [
 			{
@@ -75,17 +74,17 @@
 				"pagePath": "pages/index/index"
 			},
 			{
-				"text": "分类",
+				"text": "文库",
 				"iconPath": "static/images/icon/category.png",
 				"selectedIconPath": "static/images/icon/category-selected.png",
 				"pagePath": "pages/category/category"
 			},
-			{
-				"text": "搜索",
-				"iconPath": "static/images/icon/search.png",
-				"selectedIconPath": "static/images/icon/search-selected.png",
-				"pagePath": "pages/search/search"
-			},
+			// {
+			// 	"text": "搜索",
+			// 	"iconPath": "static/images/icon/search.png",
+			// 	"selectedIconPath": "static/images/icon/search-selected.png",
+			// 	"pagePath": "pages/search/search"
+			// },
 			{
 				"text": "我的",
 				"iconPath": "static/images/icon/me.png",

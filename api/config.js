@@ -1,16 +1,20 @@
-import {
-	service
-} from '../utils/request'
-
-console.log('service', service)
+import {service} from '@/utils/request'
 
 export const getSettings = () => {
-	return service({
-		api: '/api/v1/settings'
-	})
+  return service({
+    url: '/api/v1/settings',
+    method: 'get',
+  })
 }
 
+export const getStats = () => {
+  return service({
+    url: '/api/v1/stats',
+    method: 'get',
+  })
+}
 
 export default {
 	getSettings,
+	getStats,
 }

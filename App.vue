@@ -10,10 +10,29 @@
 		},
 		onHide: function() {
 			console.log('App Hide')
-		}
+		},
 	}
 </script>
 
-<style>
-	/*每个页面公共css */
+<style lang="scss">
+	@import url(static/css/moredoc.css);
+	page{
+		background-color: $uni-bg-color-grey;
+	}
+	.m-card{
+		padding: $uni-spacing-col-base;
+		background-color: #ffffff;
+		border-radius: $uni-border-radius-lg !important;
+		box-sizing: border-box;
+		overflow: hidden;
+		.m-card-header{
+			padding: $uni-spacing-col-base;
+			font-size: $uni-font-size-base;
+			border-bottom: 1px solid $uni-bg-color-hover;
+		}
+		.m-card-body{
+			padding: $uni-spacing-col-base;
+		}
+	}
 </style>
+

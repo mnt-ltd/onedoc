@@ -4,18 +4,18 @@ import {
 
 // 这里的params参数，主要是为了兼容axios中的params，将其合并到data中
 export const service = (option) => {
-	const {
-		api,
+	let {
 		header,
 		data,
 		method,
-		params
+		params,
+		url
 	} = {
-		api: '',
 		header: {},
 		data: {},
 		method: 'get',
 		params: null,
+		url: '',
 		...option
 	}
 	const token = uni.getStorageSync('token')
@@ -23,7 +23,9 @@ export const service = (option) => {
 		...data,
 		...params
 	}
-	const url = addr.trim() + api
+	
+	url = addr.trim() + url
+	
 	if (!header['authorization']) header['authorization'] = 'bearer ' + token
 	return new Promise((resolve, reject) => {
 		uni.request({
