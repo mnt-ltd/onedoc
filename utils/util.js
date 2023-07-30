@@ -1,3 +1,6 @@
+import {
+	addr
+} from '@/config.js'
 export const keyUser = 'user'
 export const keyWeChatUser = 'wechat-user'
 export const keyMenu = 'menu'
@@ -344,6 +347,18 @@ export const isSignedToday = () => {
 	return timestampToDate(now()) == timestampToDate(getSignedAt())
 }
 
+// 如果是绝对地址，直接返回
+// 如果是相对地址，拼接上图片服务器地址
+export const joinImage = (url) => {
+	// 地址中带有 // ，即表示绝对的链接地址
+	if (url.indexOf('//') >= 0) {
+		return url
+	}
+	if (url.indexOf('/') === 0) {
+		return addr + url
+	}
+	return addr + '/' + url
+}
 
 export default {
 	formatTime,
@@ -374,4 +389,5 @@ export default {
 	getSignedAt,
 	isSignedToday,
 	redirect,
+	joinImage,
 }

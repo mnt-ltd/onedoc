@@ -1,6 +1,23 @@
 import {
 	addr
 } from '../config.js'
+import qs from 'qs'
+
+// 序列化Get请求数据，以处理query中带数组的情况
+uni.addInterceptor('request', {
+	invoke(args) {
+		const {
+			data,
+			method
+		} = args
+		if (String(method) === 'get') {
+			args.url = args.url + "?" + qs.stringify(data, {
+				arrayFormat: 'repeat'
+			})
+			delete args.data
+		}
+	}
+})
 
 // 这里的params参数，主要是为了兼容axios中的params，将其合并到data中
 export const service = (option) => {
@@ -18,15 +35,16 @@ export const service = (option) => {
 		url: '',
 		...option
 	}
+
 	const token = uni.getStorageSync('token')
 	if (params) data = {
 		...data,
 		...params
 	}
-	
+
 	url = addr.trim() + url
-	
 	if (!header['authorization']) header['authorization'] = 'bearer ' + token
+
 	return new Promise((resolve, reject) => {
 		uni.request({
 			...option,

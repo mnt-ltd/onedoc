@@ -50,7 +50,7 @@
 			</swiper>
 		</view>
 		<view class="pdl-15 pdr-15">
-			<scroll-view class="hor font-lv3" scroll-x>
+			<scroll-view class="hor font-lv3" scroll-with-animation scroll-x>
 				<view v-for="(doc,idx) in documents" :key="'dc-'+doc.category_id"
 					:class="['scroll-item', idx == activeIndex ? 'active': '']" @click="activeIndex=idx">
 					{{doc.category_name}}
