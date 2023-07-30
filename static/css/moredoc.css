@@ -225,3 +225,17 @@
 .text-grey{
 	color: #999;
 }
+
+.font-w400{
+	font-weight: 400;
+}
+
+.doc-cover{
+	width: 70px;
+	height: 100px;
+	border-radius: 8px;
+	border: 1px solid #efefef;
+	max-width: 100%;
+	background-color: #fff;
+	box-sizing: border-box;
+}

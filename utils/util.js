@@ -350,6 +350,7 @@ export const isSignedToday = () => {
 // 如果是绝对地址，直接返回
 // 如果是相对地址，拼接上图片服务器地址
 export const joinImage = (url) => {
+	if (!url) return ''
 	// 地址中带有 // ，即表示绝对的链接地址
 	if (url.indexOf('//') >= 0) {
 		return url
@@ -358,6 +359,18 @@ export const joinImage = (url) => {
 		return addr + url
 	}
 	return addr + '/' + url
+}
+
+export const formatBytes = (bytes, decimals = 2) => {
+	if (!+bytes) return '0 Bytes'
+
+	const k = 1024
+	const dm = decimals < 0 ? 0 : decimals
+	const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+	const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+	return `${(bytes / Math.pow(k, i)).toFixed(dm)} ${sizes[i]}`
 }
 
 export default {
@@ -390,4 +403,5 @@ export default {
 	isSignedToday,
 	redirect,
 	joinImage,
+	formatBytes,
 }

@@ -61,11 +61,15 @@
 			<view>
 				<view class="row" v-for="doc in (documents[activeIndex].document || [])" :key="'dl-'+doc.id">
 					<view class="col-3">
-						<image src="/static/logo.png" style="width: 80%;" mode="widthFix"></image>
+						<image class="doc-cover" mode="widthFix" :src="doc.cover"></image>
 					</view>
 					<view class="col-9">
-						<view>{{doc.title}}</view>
-						<view>{{doc.created_at}}</view>
+						<view class="doc-title font-lv3 font-w400 ellipsis-1row">{{doc.title}}</view>
+						<view class="doc-desc font-lv5 ellipsis-1row text-grey">
+							<text>{{doc.created_at}}</text> &nbsp;&nbsp;
+							<text>{{doc.size}}</text>
+						</view>
+						<view class="doc-desc font-lv4 ellipsis-2row text-grey">{{doc.description}}</view>
 					</view>
 				</view>
 			</view>
@@ -87,7 +91,9 @@
 		listDocumentForHome
 	} from '@/api/document.js'
 	import {
-		relativeTime
+		relativeTime,
+		joinImage,
+		formatBytes
 	} from '@/utils/util.js'
 	export default {
 		data() {
@@ -135,9 +141,12 @@
 					enable: true
 				})
 				if (res.statusCode === 200) {
-					this.banners = res.data.banner || []
-				} else {
-					console.log('listBanner', res)
+					let banners = res.data.banner || []
+					banners = banners.map((item) => {
+						item.path = joinImage(item.path)
+						return item
+					})
+					this.banners = banners
 				}
 			},
 			async listCategory() {
@@ -145,7 +154,13 @@
 				if (res.statusCode === 200) {
 					let categories = res.data.category || []
 					this.categories = categories
-					this.parentCategories = categories.filter(item => !item.parent_id)
+					let parentCategories = categories.filter(item => !item.parent_id) || []
+					parentCategories = parentCategories.map((item) => {
+						item.icon =
+							joinImage(item.icon || '')
+						return item
+					})
+					this.parentCategories = parentCategories
 				}
 			},
 			async getRecommendDocments() {
@@ -164,10 +179,22 @@
 			},
 			async listDocumentForHome() {
 				const res = await listDocumentForHome({
-					limit: 10
+					limit: 10,
+					field: ['id', 'title', 'ext', 'description', 'created_at', 'size']
 				})
 				if (res.statusCode === 200) {
-					this.documents = res.data.document || []
+					let documents = res.data.document || []
+					documents = documents.map(item => {
+						item.document = (item.document || []).map(doc => {
+							doc.cover = joinImage(doc.cover)
+							doc.created_at = relativeTime(doc.created_at)
+							doc.size = formatBytes(doc.size)
+							return doc
+						})
+						return item
+					})
+					console.log(documents)
+					this.documents = documents
 				}
 			},
 			changeCate(cate) {
@@ -272,14 +299,28 @@
 			margin-bottom: 0;
 			padding: 15px;
 			background-color: #fff;
+			margin-bottom: 15px;
 			border-radius: 8px;
 			box-sizing: border-box;
 
 			.row {
 				margin-bottom: 15px;
+				border-bottom: 1px solid #efefef;
+				padding-bottom: 13px;
+
+				// .doc-title {
+				// 	margin-top: 5px;
+				// }
+
+				.doc-desc {
+					line-height: 180%;
+					margin-top: 5px;
+				}
 
 				&:last-of-type {
 					margin-bottom: 0;
+					padding-bottom: 0;
+					border-bottom: 0;
 				}
 			}
 		}
