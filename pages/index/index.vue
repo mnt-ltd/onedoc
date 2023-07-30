@@ -2,6 +2,7 @@
 	<view class="page page-index">
 		<view class="search" :style="background">
 			<m-search @focus="go2search"></m-search>
+			<view class="radius-block"></view>
 		</view>
 		<view class="category">
 			<view class="row">
@@ -49,14 +50,16 @@
 			</swiper>
 		</view>
 		<view class="pdl-15 pdr-15">
-			<scroll-view scroll-with-animation class="hor font-lv3" scroll-x>
+			<scroll-view class="hor font-lv3" scroll-x>
 				<view v-for="(doc,idx) in documents" :key="'dc-'+doc.category_id"
-					:class="['scroll-item', idx == activeIndex ? 'active': '']" @click="activeIndex=idx">{{doc.category_name}}</view>
+					:class="['scroll-item', idx == activeIndex ? 'active': '']" @click="activeIndex=idx">
+					{{doc.category_name}}
+				</view>
 			</scroll-view>
 		</view>
 		<view class="documents" v-if="documents.length>0">
 			<view>
-				<view class="row" v-for="doc in (documents[activeIndex].document || [])" :key="'dl-'+doc.id" >
+				<view class="row" v-for="doc in (documents[activeIndex].document || [])" :key="'dl-'+doc.id">
 					<view class="col-3">
 						<image src="/static/logo.png" style="width: 80%;" mode="widthFix"></image>
 					</view>
@@ -160,7 +163,9 @@
 				}
 			},
 			async listDocumentForHome() {
-				const res = await listDocumentForHome()
+				const res = await listDocumentForHome({
+					limit: 10
+				})
 				if (res.statusCode === 200) {
 					this.documents = res.data.document || []
 				}
@@ -179,17 +184,32 @@
 		background-size: auto 40px;
 		background-repeat: no-repeat;
 		background-position: 10px 40px;
-		padding: 100px 10px 50px;
+		padding: 100px 10px 0;
+		position: fixed;
+		top: 0;
+		z-index: 9999;
+		width: 100%;
+		box-sizing: border-box;
+
+		.radius-block {
+			margin-top: 20px;
+			margin-left: -10px;
+			margin-right: -10px;
+			height: 20px;
+			background-color: $uni-bg-color-grey;
+			border-top-left-radius: 20px;
+			border-top-right-radius: 20px;
+		}
 	}
 
 	.category {
+		margin-top: 180px;
 		text-align: center;
-		padding: 20px;
+		padding: 0 15px;
 		padding-bottom: 0;
-		border-top-left-radius: 20px;
-		border-top-right-radius: 20px;
-		z-index: 99;
-		margin-top: -30px;
+		// border-top-left-radius: 20px;
+		// border-top-right-radius: 20px;
+		// z-index: 99;
 		background-color: $uni-bg-color-grey;
 
 		.col-3 {
@@ -227,6 +247,7 @@
 		box-sizing: border-box;
 		/* 这行CSS样式很重要，不然里面的元素会出现换行，没法实现水平滚动 */
 		white-space: nowrap;
+		width: 100%;
 	}
 
 	.scroll-item {
@@ -234,24 +255,32 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
-		display: inline;
+		display: inline-block;
 		padding: 0 12px;
 		height: 45px;
 		line-height: 45px;
-		&.active{
+
+		&.active {
 			color: $uni-color-success;
 		}
 	}
-	.documents{
+
+	.documents {
 		padding: 0 15px;
-		&>view{
-			margin-bottom: 20px;
+
+		&>view {
+			margin-bottom: 0;
 			padding: 15px;
 			background-color: #fff;
 			border-radius: 8px;
 			box-sizing: border-box;
-			.row{
+
+			.row {
 				margin-bottom: 15px;
+
+				&:last-of-type {
+					margin-bottom: 0;
+				}
 			}
 		}
 	}

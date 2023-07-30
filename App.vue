@@ -33,5 +33,14 @@
 			padding: $uni-spacing-col-base;
 		}
 	}
+	
+	// 因此滚动条
+	::-webkit-scrollbar{
+		display: none !important;
+		width: 0 !important;
+		height: 0 !important;
+		-webkit-appearance: none !important;
+		background-color: transparent !important;
+	}
 </style>
 
