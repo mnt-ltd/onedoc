@@ -50,18 +50,19 @@
 			</swiper>
 		</view>
 		<view class="pdl-15 pdr-15">
-			<scroll-view class="hor font-lv3" scroll-with-animation scroll-x>
-				<view v-for="(doc,idx) in documents" :key="'dc-'+doc.category_id"
-					:class="['scroll-item', idx == activeIndex ? 'active': '']" @click="activeIndex=idx">
+			<scroll-view class="hor font-lv3" :scroll-left="scrollLeft" scroll-with-animation scroll-x>
+				<view v-for="(doc,idx) in documents" :key="'dc-'+doc.category_id" :data-index="idx" :id="'scroll-'+idx"
+					:class="['scroll-item', idx == activeIndex ? 'active': '']" @click="changeCate">
 					{{doc.category_name}}
 				</view>
 			</scroll-view>
 		</view>
-		<view class="documents" v-if="documents.length>0">
+		<view @touchstart="touchStart" @touchend="touchEnd" @touchmove="touchMove" class="documents"
+			v-if="documents.length>0">
 			<view>
 				<view class="row" v-for="doc in (documents[activeIndex].document || [])" :key="'dl-'+doc.id">
 					<view class="col-3">
-						<image class="doc-cover" mode="widthFix" :src="doc.cover"></image>
+						<image class="doc-cover" :src="doc.cover"></image>
 					</view>
 					<view class="col-9">
 						<view class="doc-title font-lv3 font-w400 ellipsis-1row">{{doc.title}}</view>
@@ -118,6 +119,12 @@
 				recommendDocuments: [],
 				documents: [],
 				activeIndex: 0,
+				scrollLeft: 0,
+				moveData: {
+					startX: 0,
+					startY: 0,
+					moved: false,
+				}
 			}
 		},
 		components: {
@@ -197,9 +204,42 @@
 					this.documents = documents
 				}
 			},
-			changeCate(cate) {
-				console.log(cate)
-			}
+			changeCate(e) {
+				console.log(e)
+				this.activeIndex = e.currentTarget.dataset.index
+				let scrollLeft = e.currentTarget.offsetLeft - (uni.getSystemInfoSync().screenWidth / 2 - 50)
+				this.scrollLeft = scrollLeft
+			},
+			touchStart(e) {
+				if (e.changedTouches.length > 0) {
+					this.moveData.startX = e.changedTouches[0].clientX; //手指按下时的X坐标
+					this.moveData.startY = e.changedTouches[0].clientY; //手指按下时的Y坐标
+				}
+			},
+			touchMove(e) {
+				this.moveData.moved = true
+			},
+			touchEnd(e) {
+				console.log(this.moveData, e)
+				if (this.moveData.moved && e.changedTouches.length > 0) {
+					const deltaX = e.changedTouches[0].clientX - this.moveData.startX
+					const deltaY = Math.abs(e.changedTouches[0].clientY - this.moveData.startY)
+					console.log(deltaX, deltaY)
+					if (Math.abs(deltaX) > deltaY) { // 移动了
+						if (deltaX > 0) {
+							if (this.activeIndex > 0) this.activeIndex--
+						} else {
+							if (this.activeIndex < this.documents.length - 1) this.activeIndex++
+						}
+						// 滚动
+						this.scrollLeft = (this.activeIndex-1)*84
+					}
+					
+				}
+				this.moveData.moved = false
+				this.moveData.startX = 0
+				this.moveData.startY = 0
+			},
 		}
 	}
 </script>
@@ -278,7 +318,7 @@
 	}
 
 	.scroll-item {
-		max-width: 130px;
+		width: 60px;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
