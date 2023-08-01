@@ -1,6 +1,6 @@
 <template>
 	<view class="page page-index">
-		<view class="search" :style="background">
+		<view id="search" class="search" :style="background">
 			<m-search @focus="go2search"></m-search>
 			<view class="radius-block"></view>
 		</view>
@@ -25,7 +25,8 @@
 					</text>
 				</view>
 				<view class="m-card-body">
-					<navigator  class="row"  hover-class="none" v-for="doc in recommendDocuments" :key="'rcm-'+doc.id" :url="'/pages/document/document?id='+doc.id">
+					<navigator class="row" hover-class="none" v-for="doc in recommendDocuments" :key="'rcm-'+doc.id"
+						:url="'/pages/document/document?id='+doc.id">
 						<view class="col-9">
 							<view class="font-lv3 ellipsis-1row">
 								{{doc.title}}
@@ -49,18 +50,20 @@
 				</swiper-item>
 			</swiper>
 		</view>
-		<view class="pdl-15 pdr-15">
-			<scroll-view class="hor font-lv3" :scroll-left="scrollLeft" scroll-with-animation scroll-x>
+		<view class="pdl-15 pdr-15" :class="fixedCategory ? 'fixed-category' : '' "
+			:style="`top: ${searchHeight - 15}px;transition:top 0.2s`">
+			<scroll-view id="scroll-view" class="hor font-lv3" :scroll-left="scrollLeft" scroll-with-animation scroll-x>
 				<view v-for="(doc,idx) in documents" :key="'dc-'+doc.category_id" :data-index="idx" :id="'scroll-'+idx"
 					:class="['scroll-item', idx == activeIndex ? 'active': '']" @click="changeCate">
 					{{doc.category_name}}
 				</view>
 			</scroll-view>
 		</view>
-		<view @touchstart="touchStart" @touchend="touchEnd" @touchmove="touchMove" class="documents"
+		<view @touchstart="touchStart" @touchend="touchEnd" @touchmove="touchMove" id="documents" class="documents" :class="fixedCategory? 'documents-fixed-padding': ''"
 			v-if="documents.length>0">
 			<view>
-				<navigator :url="'/pages/document/document?id='+doc.id" hover-class="none" class="row" v-for="doc in (documents[activeIndex].document || [])" :key="'dl-'+doc.id">
+				<navigator :url="'/pages/document/document?id='+doc.id" hover-class="none" class="row"
+					v-for="doc in (documents[activeIndex].document || [])" :key="'dl-'+doc.id">
 					<view class="col-3">
 						<image class="doc-cover" :src="doc.cover"></image>
 					</view>
@@ -99,6 +102,8 @@
 	export default {
 		data() {
 			return {
+				searchHeight: 0,
+				fixedCategory: false,
 				title: 'Hello',
 				autoplay: true,
 				indicatorDots: true,
@@ -130,11 +135,30 @@
 		components: {
 			mSearch,
 		},
+		mounted() {
+			const query = uni.createSelectorQuery().in(this)
+			query.select('#search').boundingClientRect(res => {
+				// console.log('search', res)
+				this.searchHeight = res.height
+			}).exec()
+		},
 		onLoad() {
 			this.listBanner()
 			this.listCategory()
 			this.getRecommendDocments()
 			this.listDocumentForHome()
+		},
+		onPageScroll(e) {
+			console.log('onPageScroll', e)
+			const query = uni.createSelectorQuery().in(this)
+			query.select('#documents').boundingClientRect(res => {
+				console.log('documents', res)
+				if (res.top <= this.searchHeight + 45) {
+					this.fixedCategory = true
+				} else {
+					this.fixedCategory = false
+				}
+			}).exec()
 		},
 		methods: {
 			go2search() {
@@ -232,9 +256,9 @@
 							if (this.activeIndex < this.documents.length - 1) this.activeIndex++
 						}
 						// 滚动
-						this.scrollLeft = (this.activeIndex-1)*84
+						this.scrollLeft = (this.activeIndex - 1) * 84
 					}
-					
+
 				}
 				this.moveData.moved = false
 				this.moveData.startX = 0
@@ -332,6 +356,15 @@
 		}
 	}
 
+	.fixed-category {
+		position: fixed;
+		background-color: $uni-bg-color-grey;
+		width: 100%;
+		box-sizing: border-box;
+	}
+	.documents-fixed-padding{
+		padding-top: 60px; // 45 + 15
+	}
 	.documents {
 		padding: 0 15px;
 
