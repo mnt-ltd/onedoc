@@ -53,6 +53,20 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
+		}, {
+			"path": "pages/list/list",
+			"style": {
+				"navigationBarTitleText": "文库",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/document/document",
+			"style": {
+				"navigationBarTitleText": "文档",
+				"enablePullDownRefresh": false
+			}
+
 		}
 	],
 	"globalStyle": {
@@ -66,8 +80,7 @@
 	"tabBar": {
 		"height": "60px",
 		"selectedColor": "#07C160",
-		"list": [
-			{
+		"list": [{
 				"text": "首页",
 				"iconPath": "static/images/icon/home.png",
 				"selectedIconPath": "static/images/icon/home-selected.png",

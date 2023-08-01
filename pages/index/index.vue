@@ -7,7 +7,7 @@
 		<view class="category">
 			<view class="row">
 				<view class="col-3" v-for="cate in parentCategories" :key="'cate-'+cate.id">
-					<navigator :url="'/pages/category/category'">
+					<navigator :url="'/pages/list/list?category_id='+cate.id" hover-class="none">
 						<image :src="cate.icon || '/static/images/empty-image.png'" class="icon-small icon-circle">
 						</image>
 						<view class="font-lv4 ellipsis-1row">{{cate.title}}</view>
@@ -25,7 +25,7 @@
 					</text>
 				</view>
 				<view class="m-card-body">
-					<view class="row" v-for="doc in recommendDocuments" :key="'rcm-'+doc.id">
+					<navigator  class="row"  hover-class="none" v-for="doc in recommendDocuments" :key="'rcm-'+doc.id" :url="'/pages/document/document?id='+doc.id">
 						<view class="col-9">
 							<view class="font-lv3 ellipsis-1row">
 								{{doc.title}}
@@ -34,7 +34,7 @@
 						<view class="col-3 text-right text-grey">
 							<text class="font-lv5 ellipsis-1row">{{ doc.recommend_at}}</text>
 						</view>
-					</view>
+					</navigator>
 				</view>
 			</view>
 		</view>
@@ -60,7 +60,7 @@
 		<view @touchstart="touchStart" @touchend="touchEnd" @touchmove="touchMove" class="documents"
 			v-if="documents.length>0">
 			<view>
-				<view class="row" v-for="doc in (documents[activeIndex].document || [])" :key="'dl-'+doc.id">
+				<navigator :url="'/pages/document/document?id='+doc.id" hover-class="none" class="row" v-for="doc in (documents[activeIndex].document || [])" :key="'dl-'+doc.id">
 					<view class="col-3">
 						<image class="doc-cover" :src="doc.cover"></image>
 					</view>
@@ -72,7 +72,7 @@
 						</view>
 						<view class="doc-desc font-lv4 ellipsis-2row text-grey">{{doc.description}}</view>
 					</view>
-				</view>
+				</navigator>
 			</view>
 		</view>
 		<view>&nbsp;</view>
@@ -291,7 +291,7 @@
 	}
 
 	.banner {
-		padding: 15px;
+		padding: 15px 15px 10px;
 
 		.swiper {
 			border-radius: 8px !important;
@@ -336,10 +336,9 @@
 		padding: 0 15px;
 
 		&>view {
-			margin-bottom: 0;
 			padding: 15px;
 			background-color: #fff;
-			margin-bottom: 15px;
+			margin-bottom: -5px;
 			border-radius: 8px;
 			box-sizing: border-box;
 
