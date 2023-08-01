@@ -211,7 +211,7 @@ export const toastSuccess = (content) => {
 	})
 }
 
-export const fixView = (view) => {
+export const formatView = (view) => {
 	if (view > 10000) {
 		view = (view / 10000).toFixed(1) + "w"
 	} else if (view > 1000) {
@@ -321,16 +321,13 @@ export const formatReading = (seconds) => {
 }
 
 export const getSysInfo = () => {
-	let val = uni.getStorageSync(keySysInfo)
-	if (!val) {
-		return {
-			windowWidth: 0,
-			windowHeight: 0,
-			baseWidth: 0,
-			baseHeight: 0,
-		}
+	let sysInfo = uni.getSystemInfoSync()
+	if (sysInfo.model && sysInfo.model.indexOf('iPhone') !== -1) {
+		sysInfo.titleBarHeight = 44
+	} else {
+		sysInfo.titleBarHeight = 48
 	}
-	return JSON.parse(val)
+	return sysInfo
 }
 
 export const setSignedAt = (timestamp) => {
@@ -395,8 +392,7 @@ export default {
 	getReaderSetting,
 	isEmail,
 	getSysInfo,
-	setSysInfo,
-	fixView,
+	formatView,
 	formatReading,
 	setSignedAt,
 	getSignedAt,

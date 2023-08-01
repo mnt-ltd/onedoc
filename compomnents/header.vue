@@ -54,7 +54,7 @@
 		props: {
 			title: {
 				type: String,
-				default: 'BookChat'
+				default: '魔豆文库'
 			},
 			showIcon: {
 				type: Boolean,
@@ -83,6 +83,7 @@
 		},
 		created() {
 			let sysInfo = util.getSysInfo()
+			console.log(sysInfo)
 			let that = this
 			let statusBarHeight = sysInfo.statusBarHeight
 			let titleBarHeight = sysInfo.titleBarHeight
@@ -133,12 +134,12 @@
 	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	.header {
 		top: 0;
 		position: fixed;
 		width: 100%;
-		background-color: #FFFFFF;
+		background-color: $uni-color-success;
 		z-index: 9999;
 		vertical-align: center;
 	}

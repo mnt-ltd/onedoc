@@ -118,4 +118,5 @@ export const setDocumentsVIP = (data) => {
 export default {
 	listDocument,
 	listDocumentForHome,
+	getDocument,
 }
