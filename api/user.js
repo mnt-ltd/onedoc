@@ -180,3 +180,7 @@ export const findPasswordByMobile = (data) => {
     data,
   })
 }
+
+export default{
+	getUserCaptcha,
+}

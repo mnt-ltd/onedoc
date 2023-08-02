@@ -6,12 +6,12 @@
 					<view v-if="showIcon" class="header-icon icon-left">
 						<block v-if="currentPagesLength>1">
 							<view class="back" @click="headerBack" :style="iconPadding">
-								<image src="/static/images/header-back.png"></image>
+								<image src="/static/images/back-white.png"></image>
 							</view>
 							<view class="line" :style="lineMargin"></view>
 						</block>
 						<view class="home" @click="headerHome" :style="iconPadding">
-							<image src="/static/images/header-home.png"></image>
+							<image src="/static/images/home-white.png"></image>
 						</view>
 					</view>
 				</view>
@@ -21,7 +21,7 @@
 				<view class="col-3">
 					<view class="header-icon icon-right">
 						<!-- #ifdef APP-PLUS -->
-						<view v-if="showShare" :style="iconPadding" @click="share">
+						<!-- <view v-if="showShare" :style="iconPadding" @click="share">
 							<image src="/static/images/share.png"></image>
 						</view>
 						<view v-if="showSearch" @click="headerSearch" :style="iconPadding" class="search">
@@ -29,7 +29,7 @@
 						</view>
 						<view v-if="showSign" class="sign" :style="iconPadding">
 							<image src="/static/images/sign.png"></image>
-						</view>
+						</view> -->
 						<!-- #endif -->
 					</view>
 				</view>
@@ -142,52 +142,57 @@
 		background-color: $uni-color-success;
 		z-index: 9999;
 		vertical-align: center;
-	}
 
-	.header-border {
-		border-bottom: 1upx solid #EFEFEF;
-	}
+		.header-icon {
+			display: flex;
+		}
 
-	.header .header-icon {
-		display: flex;
-	}
+		.icon-right {
+			flex-direction: row-reverse;
+			padding-right: 15px;
+		}
 
-	.header .icon-right {
-		flex-direction: row-reverse;
-		padding-right: 15px;
-	}
+		.header-icon>view {
+			height: 16px;
+			padding: 0 8px;
+		}
 
-	.header .header-icon>view {
-		height: 16px;
-		padding: 0upx 8px;
-	}
+		.header-icon .line {
+			border: 0;
+			width: 1px;
+			background-color: #fff;
+			height: 16px;
+			padding: 0;
+			margin: 0 3px 0 0;
+		}
 
-	.header .header-icon .line {
-		border: 0;
-		width: 1upx;
-		background-color: #CCCCCC;
-		height: 16px;
-		padding: 0;
-		margin: 0 3px 0 0;
-	}
+		.back {
+			padding-left: 15px;
+		}
 
-	.header .back {
-		padding-left: 15px;
-	}
+		image {
+			width: 16px;
+			height: 16px;
+			display: block;
+			background: transparent;
+		}
+		
+		.home{
+			image{
+				width: 20px;
+				height: 20px;
+				position: relative;
+				top: -2px;
+			}
+		}
 
-	.header image {
-		width: 16px;
-		height: 16px;
-		display: block;
-		background: transparent;
-	}
-
-	.header .header-title {
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		font-size: 16px;
-		color: #000000;
-		text-align: center;
+		.header-title {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			font-size: 16px;
+			color: #fff;
+			text-align: center;
+		}
 	}
 </style>
