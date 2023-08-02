@@ -183,4 +183,6 @@ export const findPasswordByMobile = (data) => {
 
 export default{
 	getUserCaptcha,
+	login,
+	loginByMobile,
 }
