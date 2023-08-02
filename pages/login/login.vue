@@ -23,7 +23,7 @@
 				<navigator hover-class="none" class="font-lv3" url="/pages/register/register">注册账号</navigator>
 				<navigator hover-class="none" class="font-lv3 findpwd" url="/pages/findpwd/findpwd">忘记密码？</navigator>
 			</view>
-			<button type="warn" class="btn-password-login btn-block" @click="loginByPassword">密码登录</button>
+			<button type="warn" class="btn-password-login btn-block" @click="login">密码登录</button>
 			<button type="primary" class="btn-wechat-login btn-block" @click="loginByWechat">微信登录</button>
 		</view>
 	</view>
@@ -32,8 +32,14 @@
 <script>
 	import iheader from '@/compomnents/header.vue'
 	import {
+		useUserStore
+	} from '@/stores/user.js'
+	import {
+		mapActions,
+		mapGetters,
+	} from 'pinia'
+	import {
 		getUserCaptcha,
-		login
 	} from '@/api/user.js'
 	import {
 		debug
@@ -41,7 +47,8 @@
 	import {
 		toastError,
 		toastSuccess,
-	}from '@/utils/util.js'
+		redirectTo,
+	} from '@/utils/util.js'
 	export default {
 		data() {
 			return {
@@ -53,19 +60,30 @@
 				},
 				captcha: {
 					enable: false
-				}
+				},
+				redirect: ''
 			}
+		},
+		computed: {
+			...mapGetters(useUserStore, ['token', 'user'])
 		},
 		components: {
 			iheader
 		},
 		onLoad(args) {
 			if (debug) {
-				console.log('onLoad', args)
+				console.log('onLoad', 'args', args, 'token', this.token, 'user', this.user)
+			}
+			this.redirect = args.redirect || '/pages/me/me'
+			if (this.token || this.user.id !== 0) {
+				// 用户已登录
+				redirectTo(this.redirect)
+				return
 			}
 			this.getUserCaptcha()
 		},
 		methods: {
+			...mapActions(useUserStore, ['loginByPassword']),
 			async getUserCaptcha() {
 				const res = await getUserCaptcha({
 					type: 'login'
@@ -80,19 +98,20 @@
 					}
 				}
 			},
-			async loginByPassword() {
+			async login() {
 				const req = {
 					...this.form,
 					captcha_id: this.captcha.id
 				}
-				const res = await login(req)
+				const res = await this.loginByPassword(req)
 				if (debug) {
 					console.log('loginByPassword', 'form', this.form, 'req', req, 'res', res)
 				}
-				if(res.statusCode===200){
+				if (res.statusCode === 200) {
 					toastSuccess('登录成功')
-				}else{
-					toastError(res.data.message || '登录失败'+res.errMsg)
+					redirectTo(this.redirect)
+				} else {
+					toastError(res.data.message || '登录失败' + res.errMsg)
 				}
 			},
 			async loginByWechat() {

@@ -115,7 +115,7 @@ export const getToken = () => {
 	return ""
 }
 
-export const redirect = (uriWithDecode) => {
+export const redirectTo = (uriWithDecode) => {
 	// 带问号的，用 redirectTo，不带问号的，用switchTab
 	if (uriWithDecode.indexOf("?") > -1) {
 		uni.redirectTo({
@@ -397,7 +397,7 @@ export default {
 	setSignedAt,
 	getSignedAt,
 	isSignedToday,
-	redirect,
+	redirectTo,
 	joinImage,
 	formatBytes,
 }

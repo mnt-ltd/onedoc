@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "pinia-plugin-unistorage": "^0.0.17",
     "qs": "^6.11.2"
   }
 }
