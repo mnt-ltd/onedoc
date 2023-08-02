@@ -13,7 +13,7 @@
 				<view class="label">密码</view>
 				<input v-model="form.password" type="password" placeholder="请输入您的登录密码">
 			</view>
-			<view class="item">
+			<view class="item" v-if="captcha.enable">
 				<view class="label">验证码</view>
 				<input type="text" placeholder="请输入验证码">
 				<image :src="captcha.captcha" @click="getUserCaptcha" style="height: 50px;width: 150px;"></image>
@@ -51,7 +51,10 @@
 		components: {
 			iheader
 		},
-		onLoad() {
+		onLoad(args) {
+			if(debug){
+				console.log('onLoad', args)
+			}
 			this.getUserCaptcha()
 		},
 		methods: {
