@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<iheader />
+		<mHeader />
 		<view class="font-lv2 doc-title">
 			<image src="/static/images/pdf_24.png" class="icon-mini"></image>
 			<text>{{document.title}}</text>
@@ -72,7 +72,7 @@
 	import {
 		debug
 	} from '@/config.js'
-	import iheader from '@/compomnents/header.vue'
+	import mHeader from '@/compomnents/header.vue'
 	import {
 		getDocument, getRelatedDocuments
 	} from '@/api/document.js'
@@ -96,7 +96,7 @@
 			}
 		},
 		components: {
-			iheader,
+			mHeader,
 		},
 		onLoad(args) {
 			if (debug) {

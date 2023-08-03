@@ -1,6 +1,13 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		 {
+		 	"path": "pages/list/list",
+		 	"style": {
+		 		"navigationBarTitleText": "资料库",
+		 		"enablePullDownRefresh": false
+		 	}
+		 
+		 }, {
 		 	"path": "pages/me/me",
 		 	"style": {
 		 		"navigationBarTitleText": "",
@@ -51,14 +58,7 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
-		}, {
-			"path": "pages/list/list",
-			"style": {
-				"navigationBarTitleText": "文库",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
+		},{
 			"path": "pages/document/document",
 			"style": {
 				"navigationBarTitleText": "文档",
@@ -101,17 +101,11 @@
 				"pagePath": "pages/index/index"
 			},
 			{
-				"text": "文库",
+				"text": "资料库",
 				"iconPath": "static/images/icon/category.png",
 				"selectedIconPath": "static/images/icon/category-selected.png",
-				"pagePath": "pages/category/category"
+				"pagePath": "pages/list/list"
 			},
-			// {
-			// 	"text": "搜索",
-			// 	"iconPath": "static/images/icon/search.png",
-			// 	"selectedIconPath": "static/images/icon/search-selected.png",
-			// 	"pagePath": "pages/search/search"
-			// },
 			{
 				"text": "我的",
 				"iconPath": "static/images/icon/me.png",

@@ -1,8 +1,8 @@
 <template>
 	<view>
-		<form class='search' @click="focusSearch">
-			<input :focus='focus || clickFocus' :value='searchWd' :placeholder='placeholder' @input="change" @confirm="search" confirm-type="search"
-			 name='wd' />
+		<form :class="isMiniSearch ? 'search mini-search' : 'search'" @click="focusSearch">
+			<input :focus='focus || clickFocus' :value='searchWd' :placeholder='placeholder' @input="change"
+				@confirm="search" confirm-type="search" name='wd' />
 			<image @click.stop='clear' v-if='showClear' class='clear' src='/static/images/clear.png'></image>
 			<image @click.stop='search' src='/static/images/search.png'></image>
 		</form>
@@ -33,6 +33,10 @@
 			placeholder: {
 				type: String,
 				default: 'Search...'
+			},
+			isMiniSearch: {
+				type: Boolean,
+				default: false
 			}
 		},
 		created() {
@@ -65,8 +69,8 @@
 					})
 				}
 			},
-			focusSearch(){
-				this.clickFocus=true
+			focusSearch() {
+				this.clickFocus = true
 				this.$emit('focus')
 			}
 		},
@@ -78,71 +82,60 @@
 	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	form {
 		position: relative;
 		display: block;
 		background-color: #fff;
 		border-radius: 20px;
 		padding-right: 70px;
-		padding-top: 8px;
 		padding-left: 15px;
-		padding-bottom: 8px;
 		height: 40px;
 		box-sizing: border-box;
-	}
+		line-height: 40px;
 
-	form input {
-		height: 24px;
-		line-height: 24px;
-		font-size: 15px;
-		min-height: 24px;
-	}
+		input {
+			height: 40px;
+			line-height: 40px;
+			font-size: 15px;
+		}
 
-	form image {
-		margin: 0;
-		position: absolute;
-		top: 0;
-		right: 0;
-		box-sizing: border-box;
-		height: 40px;
-		width: 40px;
-		padding: 8px 8px;
-		z-index: 99;
-	}
-
-	form image.clear {
-		right: 35px;
-		z-index: 88;
-	}
-
-	@media (min-width: 768px) {
-		form {
-			height: 50px;
-			border-radius: 5px;
-			padding-right: 70px;
-			padding-top: 10px;
-			padding-bottom: 10px;
-			padding-left: 15px;
+		image {
+			margin: 0;
+			position: absolute;
+			top: 0;
+			right: 0;
 			box-sizing: border-box;
+			height: 40px;
+			width: 40px;
+			padding: 8px 8px;
+			z-index: 99;
+
+			&.clear {
+				right: 35px;
+				z-index: 88;
+			}
 		}
+	}
 
-		form input {
-			font-size: 17px;
-			height: 30px;
-			line-height: 30px;
-			min-height: 30px;
+	form.mini-search {
+		height: 32px;
+		input {
+			height: 32px;
+			line-height: 32px;
+			font-size: 13px;
+			line-height: 32px;
 		}
-
-
-		form image {
-			height: 50px;
-			width: 50px;
-			padding: 10px 10px;
-		}
-
-		form image.clear {
-			right: 35px;
+		image {
+			height: 32px;
+			width: 32px;
+			padding: 8px 8px;
+			z-index: 99;
+		
+			&.clear {
+				right: 25px;
+				z-index: 88;
+			}
 		}
 	}
 </style>

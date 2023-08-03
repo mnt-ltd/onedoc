@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<iheader title="登录" />
+		<mHeader title="登录" />
 		<view class="login">
 			<view class="logo">
 				<image src="/static/logo.png"></image>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-	import iheader from '@/compomnents/header.vue'
+	import mHeader from '@/compomnents/header.vue'
 	import {
 		useUserStore
 	} from '@/stores/user.js'
@@ -68,7 +68,7 @@
 			...mapGetters(useUserStore, ['token', 'user'])
 		},
 		components: {
-			iheader
+			mHeader
 		},
 		onLoad(args) {
 			if (debug) {

@@ -1,6 +1,6 @@
 <template>
 	<view class="page-me">
-		<iheader title="" :show-icon="false" />
+		<mHeader title="" :show-icon="false" />
 		<view class="user" :style="titleBarHeight>0 && statusBarHeight>0 ? `top: ${titleBarHeight + statusBarHeight}px` : ''">
 			<view>
 				<view class="avatar">
@@ -89,7 +89,7 @@
 </template>
 
 <script>
-	import iheader from '@/compomnents/header.vue'
+	import mHeader from '@/compomnents/header.vue'
 	import {
 		useUserStore
 	} from '@/stores/user.js'
@@ -108,7 +108,7 @@
 			}
 		},
 		components: {
-			iheader
+			mHeader
 		},
 		computed: {
 			...mapGetters(useUserStore, ['user'])
