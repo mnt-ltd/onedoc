@@ -29,56 +29,58 @@
 
 		<view class="box">
 			<view>
-				<image src=""></image><text>我的动态</text>
+				<image src="/static/images/icon/dynamic.png"></image><text>我的动态</text>
 				<image src="/static/images/next.png"></image>
 			</view>
 			<view>
-				<image src=""></image><text>我的VIP</text>
+				<image src="/static/images/icon/vip.png"></image><text>我的VIP</text>
 				<image src="/static/images/next.png"></image>
 			</view>
 			<view>
-				<image src=""></image><text>我的订单</text>
-				<image src="/static/images/next.png"></image>
-			</view>
-		</view>
-		<view class="box">
-			<view>
-				<image src="/static/images/document.png"></image><text>我的文档</text>
-				<image src="/static/images/next.png"></image>
-			</view>
-			<view>
-				<image src="/static/images/favorite.png"></image><text>我的收藏</text>
-				<image src="/static/images/next.png"></image>
-			</view>
-			<view>
-				<image src="/static/images/download.png"></image><text>我的下载</text>
+				<image src="/static/images/icon/order.png"></image><text>我的订单</text>
 				<image src="/static/images/next.png"></image>
 			</view>
 		</view>
 		<view class="box">
 			<view>
-				<image src="/static/images/"></image>
+				<image src="/static/images/icon/document.png"></image><text>我的文档</text>
+				<image src="/static/images/next.png"></image>
+			</view>
+			<view>
+				<image src="/static/images/icon/favorite.png"></image><text>我的收藏</text>
+				<image src="/static/images/next.png"></image>
+			</view>
+			<view>
+				<image src="/static/images/icon/download.png"></image><text>我的下载</text>
+				<image src="/static/images/next.png"></image>
+			</view>
+		</view>
+		<view class="box">
+			<view>
+				<image src="/static/images/user.png"></image>
 				<text>个人资料</text>
 				<image src="/static/images/next.png"></image>
 			</view>
 			<view>
-				<image src="/static/images/"></image>
+				<image src="/static/images/icon/setting.png"></image>
 				<text>修改资料</text>
 				<image src="/static/images/next.png"></image>
 			</view>
 			<view>
-				<image src="/static/images/"></image>
+				<image src="/static/images/icon/password.png"></image>
 				<text>修改密码</text>
-				<image src="/static/images/next.png"></image>
-			</view>
-			<view>
-				<image src="/static/images/login.png"></image><text>退出登录</text>
 				<image src="/static/images/next.png"></image>
 			</view>
 		</view>
 		<view class="box">
 			<view>
-				<image src="/static/images/about-us.png"></image><text>关于我们</text>
+				<image src="/static/images/icon/info.png"></image><text>关于我们</text>
+				<image src="/static/images/next.png"></image>
+			</view>
+		</view>
+		<view class="box">
+			<view>
+				<image src="/static/images/icon/logout.png"></image><text>退出登录</text>
 				<image src="/static/images/next.png"></image>
 			</view>
 		</view>
@@ -124,7 +126,7 @@
 
 <style lang="scss" scoped>
 	.page-me{
-		padding-top: 125px;
+		padding-top: 130px;
 	}
 	.user {
 		background-color: $uni-color-success;
@@ -186,18 +188,28 @@
 	.box {
 		margin-top: 10px;
 		background-color: #fff;
-		padding: 0 0 0 15px;
+		padding: 0 15px;
 		font-size: 15px;
 		line-height: 50px;
+		color: $uni-color-subtitle;
 
 		&>view {
 			border-bottom: 1px solid $uni-bg-color-hover;
-
+			display: flex;
+			justify-content: space-between;
+			text{
+				flex: 1;
+			}
 			image {
 				width: 20px;
 				height: 20px;
 				vertical-align: middle;
-				margin-right: 5px;
+				margin-right: 0;
+				line-height: 50px;
+				margin-top: 15px;
+				&:first-of-type{
+					margin-right: 10px;
+				}
 			}
 
 			&:last-of-type {

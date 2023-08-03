@@ -12,9 +12,9 @@
 				<view>
 					<image src="/static/images/credit.png"></image> {{document.price || '0'}} 积分
 				</view>
-				<view>
+		<!-- 		<view>
 					<image src="/static/images/time.png"></image> {{relativeTime(document.created_at)}}
-				</view>
+				</view> -->
 				<view class="author" v-if="document.user">
 					<navigator hover-class="none" :url="'/pages/user/user?id='+document.user.id">
 						<image src="/static/images/user.png"></image>
