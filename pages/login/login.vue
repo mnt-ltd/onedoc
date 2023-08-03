@@ -109,7 +109,9 @@
 				}
 				if (res.statusCode === 200) {
 					toastSuccess('登录成功')
-					redirectTo(this.redirect)
+					setTimeout(function() {
+						redirectTo(this.redirect)
+					}, 2000)
 				} else {
 					toastError(res.data.message || '登录失败' + res.errMsg)
 				}
