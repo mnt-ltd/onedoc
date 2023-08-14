@@ -1,7 +1,7 @@
 <template>
 	<view class="com-doc-list">
 		<navigator
-			v-for="doc in docs"
+			v-for="doc in documents"
 			:key="'dl-' + doc.id"
 			:url="'/pages/document/document?id=' + doc.id"
 			hover-class="none"
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+	import { relativeTime, joinImage, formatBytes } from "@/utils/util.js";
 	export default {
 		name: "DocList",
 		props: {
@@ -37,11 +38,19 @@
 		},
 		watch: {
 			docs: {
-				handler: function (val, oldVal) {
-					console.log("docs changed", val, oldVal);
+				handler: function (val) {
+					this.documents = (val || []).map((doc) => {
+						doc.cover = joinImage(doc.cover);
+						doc.created_at = relativeTime(doc.created_at);
+						doc.size = formatBytes(doc.size);
+						return doc;
+					});
 				},
 				immediate: true,
 			},
+		},
+		data() {
+			return { documents: [] };
 		},
 	};
 </script>

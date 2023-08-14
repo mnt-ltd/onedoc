@@ -203,18 +203,7 @@
 					field: ['id', 'title', 'ext', 'description', 'created_at', 'size']
 				})
 				if (res.statusCode === 200) {
-					let documents = res.data.document || []
-					documents = documents.map(item => {
-						item.document = (item.document || []).map(doc => {
-							doc.cover = joinImage(doc.cover)
-							doc.created_at = relativeTime(doc.created_at)
-							doc.size = formatBytes(doc.size)
-							return doc
-						})
-						return item
-					})
-					console.log(documents)
-					this.documents = documents
+					this.documents = res.data.document || []
 				}
 			},
 			changeCate(e) {
