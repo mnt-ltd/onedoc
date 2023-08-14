@@ -372,6 +372,12 @@ export const getSysInfo = () => {
 	return sysInfo
 }
 
+export const getHeaderHeight = () => {
+	let sysInfo = getSysInfo()
+	let headerHeight = sysInfo.titleBarHeight + sysInfo.statusBarHeight
+	return headerHeight
+}
+
 export const setSignedAt = (timestamp) => {
 	// timestamp = 0 表示重置签到时间
 	if (timestamp == 0 || timestamp > getSignedAt()) uni.setStorageSync(keySign, timestamp)
@@ -444,4 +450,5 @@ export default {
 	formatBytes,
 	tree2MultiPickerOptions,
 	getTreeNodeByIndexes,
+	getHeaderHeight,
 }

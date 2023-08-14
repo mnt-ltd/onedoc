@@ -1,11 +1,6 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "moredoc"
-			}
-		}, {
+		 {
 			"path": "pages/list/list",
 			"style": {
 				"navigationBarTitleText": "资料库",
@@ -13,6 +8,11 @@
 			}
 
 		}, {
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "moredoc"
+			}
+		},{
 			"path": "pages/me/me",
 			"style": {
 				"navigationBarTitleText": "",
@@ -30,14 +30,6 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
-
-		}, {
-			"path": "pages/category/category",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
-			}
-
 		}, {
 			"path": "pages/upload/upload",
 			"style": {
