@@ -239,26 +239,67 @@ export const _findChildren = (menu, pid) => {
 	return left, children
 }
 
-export const menuToTree = (menu) => {
-	// 来自这篇博客，谢谢: https://blog.csdn.net/u013373006/article/details/82108873
+export const categoryToTree = (menu, isForPicker = false) => {
 	menu.forEach(function(item) {
 		delete item.children;
 	});
-	var map = {};
+	let map = {};
 	menu.forEach(function(item) {
 		map[item.id] = item;
 	});
-	var val = [];
+	let val = [];
 	menu.forEach(function(item) {
-		var parent = map[item.pid];
+		let parent = map[item.parent_id];
 		if (parent) {
-			(parent.children || (parent.children = [])).push(item);
+			let defaultChildren = []
+			if (isForPicker) {
+				defaultChildren = [{
+					id: 0,
+					parent_id: item.parent_id || 0,
+					title: '全部',
+					enable: true
+				}]
+			}
+			(parent.children || (parent.children = defaultChildren)).push(item)
 		} else {
 			val.push(item);
 		}
 	});
 	return val;
 }
+
+export const tree2MultiPickerOptions = (tree) => {
+	tree = tree || []
+	let options = []
+	if (tree.length > 0 && tree[0].children && tree[0].children.length > 0) {
+		options.push(...tree2MultiPickerOptions(tree[0].children))
+	}
+	options = [tree.map(item => item.title), ...options]
+	return options
+}
+
+export const getTreeNodeByIndexes = (tree, indexes = [0]) => {
+	tree = tree || []
+	let nodeTree = null
+	indexes.map(idx => {
+		if (!nodeTree) {
+			if (tree.length < idx + 1) {
+				return {}
+			} else {
+				nodeTree = tree[idx]
+			}
+		}else{
+			if (nodeTree.children && nodeTree.children.length > idx + 1) {
+				if(nodeTree.children[idx].id===0){
+					return nodeTree
+				}
+				nodeTree = nodeTree.children[idx]
+			}
+		}
+	})
+	return nodeTree
+}
+
 
 export const menuSortIds = (menuTree) => {
 	let docs = []
@@ -301,6 +342,7 @@ export const getReaderSetting = () => {
 	if (val.fontIndex == undefined) val.fontIndex = 0
 	return val
 }
+
 
 export const setSysInfo = (obj) => {
 	uni.setStorageSync(keySysInfo, JSON.stringify(obj))
@@ -385,7 +427,7 @@ export default {
 	getUser,
 	getWeChatUser,
 	getToken,
-	menuToTree,
+	categoryToTree,
 	menuSortIds,
 	menuTreeReaded,
 	setReaderSetting,
@@ -400,4 +442,6 @@ export default {
 	redirectTo,
 	joinImage,
 	formatBytes,
+	tree2MultiPickerOptions,
+	getTreeNodeByIndexes,
 }

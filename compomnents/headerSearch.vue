@@ -36,7 +36,7 @@
 			let titleBarHeight = sysInfo.titleBarHeight
 
 			this.customBarStyle =
-				`height: ${titleBarHeight+statusBarHeight}px;line-height: ${titleBarHeight}px;padding-top: ${(titleBarHeight-32)/2+statusBarHeight}px`
+				`height: ${titleBarHeight+statusBarHeight}px;line-height: ${titleBarHeight}px;padding-top: ${(titleBarHeight-32)/2+statusBarHeight}px;box-sizing:border-box;`
 			this.titleBarHeight = titleBarHeight
 		},
 		methods: {
