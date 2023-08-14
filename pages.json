@@ -1,22 +1,22 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		 {
-		 	"path": "pages/list/list",
-		 	"style": {
-		 		"navigationBarTitleText": "资料库",
-		 		"enablePullDownRefresh": false
-		 	}
-		 
-		 }, {
-		 	"path": "pages/me/me",
-		 	"style": {
-		 		"navigationBarTitleText": "",
-		 		"enablePullDownRefresh": false
-		 	}
-		 },{
+		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "moredoc"
+			}
+		}, {
+			"path": "pages/list/list",
+			"style": {
+				"navigationBarTitleText": "资料库",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/me/me",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
 			}
 		}, {
 			"path": "pages/login/login",
@@ -58,7 +58,7 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
-		},{
+		}, {
 			"path": "pages/document/document",
 			"style": {
 				"navigationBarTitleText": "文档",
@@ -72,17 +72,15 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/findpwd/findpwd",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	    ,{
-            "path" : "pages/findpwd/findpwd",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "moredoc",

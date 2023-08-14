@@ -62,20 +62,7 @@
 		<view @touchstart="touchStart" @touchend="touchEnd" @touchmove="touchMove" id="documents" class="documents" :class="fixedCategory? 'documents-fixed-padding': ''"
 			v-if="documents.length>0">
 			<view>
-				<navigator :url="'/pages/document/document?id='+doc.id" hover-class="none" class="row"
-					v-for="doc in (documents[activeIndex].document || [])" :key="'dl-'+doc.id">
-					<view class="col-3">
-						<image class="doc-cover" :src="doc.cover"></image>
-					</view>
-					<view class="col-9">
-						<view class="doc-title font-lv3 font-w400 ellipsis-1row">{{doc.title}}</view>
-						<view class="doc-desc font-lv5 ellipsis-1row text-grey">
-							<text>{{doc.created_at}}</text> &nbsp;&nbsp;
-							<text>{{doc.size}}</text>
-						</view>
-						<view class="doc-desc font-lv4 ellipsis-2row text-grey">{{doc.description}}</view>
-					</view>
-				</navigator>
+				<docList :docs="documents[activeIndex].document || []"/>
 			</view>
 		</view>
 		<view>&nbsp;</view>
@@ -84,6 +71,7 @@
 
 <script>
 	import mSearch from '@/compomnents/search.vue'
+	import docList from '@/compomnents/docList.vue'
 	import {
 		listBanner
 	} from '@/api/banner.js'
@@ -134,6 +122,7 @@
 		},
 		components: {
 			mSearch,
+			docList
 		},
 		mounted() {
 			const query = uni.createSelectorQuery().in(this)
@@ -367,34 +356,5 @@
 	}
 	.documents {
 		padding: 0 15px;
-
-		&>view {
-			padding: 15px;
-			background-color: #fff;
-			margin-bottom: -5px;
-			border-radius: 8px;
-			box-sizing: border-box;
-
-			.row {
-				margin-bottom: 15px;
-				border-bottom: 1px solid #efefef;
-				padding-bottom: 13px;
-
-				// .doc-title {
-				// 	margin-top: 5px;
-				// }
-
-				.doc-desc {
-					line-height: 180%;
-					margin-top: 5px;
-				}
-
-				&:last-of-type {
-					margin-bottom: 0;
-					padding-bottom: 0;
-					border-bottom: 0;
-				}
-			}
-		}
 	}
 </style>
