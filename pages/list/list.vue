@@ -5,8 +5,9 @@
 			<view class="item">
 				<view class="item-title">分类</view>
 				<view class="item-value">
-					<view class="active">不限</view>
-					<view v-for="cate in categories" :key="'cate-' + cate.id">{{
+					<view :class="query.category_id>0 ? '':'active'" @click="changeCategory(0)">不限</view>
+					<view v-for="cate in categories" :key="'cate-' + cate.id" @click="changeCategory(cate.id)"
+						:class="query.category_id===cate.id ? 'active':''">{{
 						cate.title
 					}}</view>
 				</view>
@@ -14,11 +15,8 @@
 			<view class="item">
 				<view class="item-title">类型</view>
 				<view class="item-value">
-					<view
-						v-for="(ext, idx) in extOptions"
-						:class="idx === 0 ? 'active' : ''"
-						:key="'ext-' + ext.value"
-					>
+					<view v-for="(ext, idx) in extOptions" :class="query.ext === ext.value ? 'active' : ''"
+						:key="'ext-' + ext.value" @click="changeExt(ext.value)">
 						{{ ext.label }}
 					</view>
 				</view>
@@ -26,40 +24,48 @@
 			<view class="item">
 				<view class="item-title">费用</view>
 				<view class="item-value">
-					<view
-						v-for="(feeType, idx) in feeTypeOptions"
-						:class="idx === 0 ? 'active' : ''"
-						:key="'feeType-' + feeType.value"
-						>{{ feeType.label }}</view
-					>
+					<view v-for="(feeType, idx) in feeTypeOptions"
+						:class="query.fee_type===feeType.value ? 'active' : ''" :key="'feeType-' + feeType.value"
+						@click="changeFeeType(feeType.value)">
+						{{ feeType.label }}
+					</view>
 				</view>
 			</view>
 			<view class="item">
 				<view class="item-title">排序</view>
 				<view class="item-value">
-					<view
-						v-for="(sort, idx) in sortOptions"
-						:class="idx === 0 ? 'active' : ''"
-						:key="'sort-' + sort.value"
-					>
-						{{ sort.label }}</view
-					>
+					<view v-for="(sort, idx) in sortOptions" :class="query.sort===sort.value ? 'active' : ''"
+						:key="'sort-' + sort.value" @click="changeSort(sort.value)">
+						{{ sort.label }}
+					</view>
 				</view>
 			</view>
 		</view>
 		<view class="list" :style="`margin-top: ${filterHeight + 30}px`">
 			<docList :docs="documents" />
 		</view>
+		<view></view>
 	</view>
 </template>
 
 <script>
 	import mHeaderSearch from "@/compomnents/headerSearch.vue";
 	import docList from "@/compomnents/docList";
-	import { listDocument } from "@/api/document.js";
-	import { listCategory } from "@/api/category.js";
-	import { categoryToTree, getHeaderHeight } from "@/utils/util.js";
-	import { feeTypeOptions, extOptions, sortOptions } from "@/utils/enum.js";
+	import {
+		listDocument
+	} from "@/api/document.js";
+	import {
+		listCategory
+	} from "@/api/category.js";
+	import {
+		categoryToTree,
+		getHeaderHeight
+	} from "@/utils/util.js";
+	import {
+		feeTypeOptions,
+		extOptions,
+		sortOptions
+	} from "@/utils/enum.js";
 	export default {
 		data() {
 			return {
@@ -75,10 +81,10 @@
 				total: 0,
 				query: {
 					order: "",
-					sort: "",
+					sort: "default",
 					ext: "",
 					category_id: 0,
-					status: 2,
+					fee_type: '',
 					page: 1,
 					size: 10,
 				},
@@ -117,6 +123,22 @@
 						})
 						.exec();
 				}
+			},
+			changeCategory(categoryId) {
+				this.query.category_id = categoryId
+				this.getDocuments()
+			},
+			changeSort(sort) {
+				this.query.sort = sort
+				this.getDocuments()
+			},
+			changeFeeType(ft) {
+				this.query.fee_type = ft
+				this.getDocuments()
+			},
+			changeExt(ext) {
+				this.query.ext = ext
+				this.getDocuments()
 			},
 			async getDocuments() {
 				let order = "id desc";
@@ -195,9 +217,11 @@
 		padding: 10px 15px 10px;
 		position: fixed;
 		background-color: $uni-bg-color-grey;
+
 		.active {
 			color: $uni-color-success;
 		}
+
 		.item {
 			display: flex;
 			font-size: 14px;
@@ -211,13 +235,14 @@
 			.item-value {
 				flex: 1;
 
-				& > view {
+				&>view {
 					display: inline-block;
 					margin-left: 15px;
 				}
 			}
 		}
 	}
+
 	.list {
 		padding: 0 15px;
 	}
