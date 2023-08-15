@@ -12,7 +12,8 @@ uni.addInterceptor('request', {
 		} = args
 		if (String(method) === 'get') {
 			args.url = args.url + "?" + qs.stringify(data, {
-				arrayFormat: 'repeat'
+				arrayFormat: 'repeat',
+				skipNulls: true
 			})
 			delete args.data
 		}

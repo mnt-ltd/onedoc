@@ -5,7 +5,7 @@
 			<view class="item">
 				<view class="item-title">分类</view>
 				<view class="item-value">
-					<view :class="query.category_id>0 ? '':'active'" @click="changeCategory(0)">不限</view>
+					<view :class="query.category_id>0 ? '':'active'" @click="changeCategory(null)">不限</view>
 					<view v-for="cate in categories" :key="'cate-' + cate.id" @click="changeCategory(cate.id)"
 						:class="query.category_id===cate.id ? 'active':''">{{
 						cate.title
@@ -42,7 +42,8 @@
 			</view>
 		</view>
 		<view class="list" :style="`margin-top: ${filterHeight + 30}px`">
-			<docList :docs="documents" />
+			<docList v-if="documents.length>0" :docs="documents" />
+			<mEmpty v-else/>
 		</view>
 		<view></view>
 	</view>
@@ -50,6 +51,7 @@
 
 <script>
 	import mHeaderSearch from "@/compomnents/headerSearch.vue";
+	import mEmpty from '@/compomnents/empty.vue'
 	import docList from "@/compomnents/docList";
 	import {
 		listDocument
@@ -73,17 +75,13 @@
 				extOptions,
 				sortOptions,
 				categories: [],
-				feeTypeIndex: 0,
-				sortIndex: 0,
-				extIndex: 0,
-				cateIndex: 0,
 				documents: [],
 				total: 0,
 				query: {
 					order: "",
 					sort: "default",
-					ext: "",
-					category_id: 0,
+					ext: '',
+					category_id: null,
 					fee_type: '',
 					page: 1,
 					size: 10,
@@ -95,6 +93,7 @@
 		components: {
 			mHeaderSearch,
 			docList,
+			mEmpty
 		},
 		computed: {},
 		onLoad() {
@@ -175,8 +174,9 @@
 					status,
 					page: this.query.page,
 					size: this.query.size,
-					category_id: this.query.categoryId,
+					category_id: this.query.category_id,
 					ext: this.query.ext,
+					fee_type: this.query.fee_type,
 					field: [
 						"id",
 						"title",
@@ -193,7 +193,6 @@
 						"score",
 						"is_vip",
 					],
-					fee_type: this.query.feeType,
 				});
 				console.log(res);
 				if (res.statusCode === 200) {
