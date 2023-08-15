@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<mHeader />
+		<mHeader :title="document.title"/>
 		<view class="font-lv2 doc-title">
 			<image src="/static/images/pdf_24.png" class="icon-mini"></image>
 			<text>{{document.title}}</text>
@@ -35,12 +35,7 @@
 			<view class="m-card">
 				<view class="m-card-header">相关文档</view>
 				<view class="m-card-body">
-					<navigator class="row" hover-class="none" v-for="doc in relatedDocuments" :key="'related-'+doc.id" :url="'/pages/document/document?id='+doc.id">
-						<image class="doc-cover" :src="doc.cover || '/static/images/logo.png'"></image>
-						<view class="col pdl-15">
-							<view>{{doc.title}}</view>
-						</view>
-					</navigator>
+					<doc-list :docs="relatedDocuments"></doc-list>
 				</view>
 			</view>
 		</view>
@@ -73,6 +68,7 @@
 		debug
 	} from '@/config.js'
 	import mHeader from '@/compomnents/header.vue'
+	import docList from '@/compomnents/docList.vue'
 	import {
 		getDocument, getRelatedDocuments
 	} from '@/api/document.js'
@@ -97,6 +93,7 @@
 		},
 		components: {
 			mHeader,
+			docList,
 		},
 		onLoad(args) {
 			if (debug) {
@@ -161,7 +158,10 @@
 					console.log('getRelatedDocuments', res)
 				}
 				if(res.statusCode===200){
-					this.relatedDocuments=res.data.document || []
+					this.relatedDocuments=(res.data.document || []).map(item=>{
+						item.cover = `/view/cover/${item.attachment.hash}`
+						return item
+					})
 				}
 			}
 		}
@@ -219,7 +219,11 @@
 	}
 	
 	.related-documents{
+		margin-top: 15px;
 		padding: 0 5px 15px;
+		.m-card-body{
+			padding: 0;
+		}
 		.row{
 			border-bottom: 1px solid $uni-bg-color-grey;
 			padding-bottom: 15px;
