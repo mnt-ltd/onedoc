@@ -2,6 +2,9 @@ import {
 	addr
 } from '../config.js'
 import qs from 'qs'
+import {
+	useUserStore
+} from '@/stores/user.js'
 
 // 序列化Get请求数据，以处理query中带数组的情况
 uni.addInterceptor('request', {
@@ -36,15 +39,15 @@ export const service = (option) => {
 		url: '',
 		...option
 	}
-
-	const token = uni.getStorageSync('token')
+	
+	const store = useUserStore()
 	if (params) data = {
 		...data,
 		...params
 	}
 
 	url = addr.trim() + url
-	if (!header['authorization']) header['authorization'] = 'bearer ' + token
+	if (!header['authorization']) header['authorization'] = 'bearer ' + store.token
 
 	return new Promise((resolve, reject) => {
 		uni.request({

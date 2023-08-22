@@ -185,4 +185,5 @@ export default{
 	getUserCaptcha,
 	login,
 	loginByMobile,
+	getDynamics,
 }
