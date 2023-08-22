@@ -2,8 +2,8 @@
 	import {getSettings} from './api/config.js'
 	export default {
 		async onLaunch() {
-			const res = await getSettings()
-			console.log('App Launch', res)
+			// ''const res = await getSettings()
+			console.log('App Launch')
 		},
 		onShow: function() {
 			console.log('App Show')

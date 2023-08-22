@@ -105,11 +105,12 @@
 				}
 				const res = await this.loginByPassword(req)
 				if (debug) {
-					console.log('loginByPassword', 'form', this.form, 'req', req, 'res', res)
+					console.log('loginByPassword', 'form', this.form, 'req', req, 'res', res, 'redirect', this
+						.redirect)
 				}
 				if (res.statusCode === 200) {
 					toastSuccess('登录成功')
-					setTimeout(function() {
+					setTimeout(() => {
 						redirectTo(this.redirect)
 					}, 2000)
 				} else {

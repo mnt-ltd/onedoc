@@ -1,8 +1,9 @@
 <template>
 	<view class="page-me">
 		<mHeader title="" :show-icon="false" />
-		<view class="user" :style="titleBarHeight>0 && statusBarHeight>0 ? `top: ${titleBarHeight + statusBarHeight}px` : ''">
-			<view>
+		<view class="user"
+			:style="titleBarHeight>0 && statusBarHeight>0 ? `top: ${titleBarHeight + statusBarHeight}px` : ''">
+			<view @click="login">
 				<view class="avatar">
 					<image :src="user.avatar || '/static/images/avatar.png'"></image>
 				</view>
@@ -26,59 +27,58 @@
 				</view>
 			</view>
 		</view>
-
 		<view class="box">
-			<view>
+			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydynamic/mydynamic'">
 				<image src="/static/images/icon/dynamic.png"></image><text>我的动态</text>
 				<image src="/static/images/next.png"></image>
-			</view>
-			<view>
+			</navigator>
+			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myvip/myvip'">
 				<image src="/static/images/icon/vip.png"></image><text>我的VIP</text>
 				<image src="/static/images/next.png"></image>
-			</view>
-			<view>
+			</navigator>
+			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myorder/myorder'">
 				<image src="/static/images/icon/order.png"></image><text>我的订单</text>
 				<image src="/static/images/next.png"></image>
-			</view>
+			</navigator>
 		</view>
 		<view class="box">
-			<view>
+			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydoc/mydoc'">
 				<image src="/static/images/icon/document.png"></image><text>我的文档</text>
 				<image src="/static/images/next.png"></image>
-			</view>
-			<view>
+			</navigator>
+			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myfavorite/myfavorite'">
 				<image src="/static/images/icon/favorite.png"></image><text>我的收藏</text>
 				<image src="/static/images/next.png"></image>
-			</view>
-			<view>
+			</navigator>
+			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydownload/mydownload'">
 				<image src="/static/images/icon/download.png"></image><text>我的下载</text>
 				<image src="/static/images/next.png"></image>
-			</view>
+			</navigator>
 		</view>
 		<view class="box">
-			<view>
+			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myprofile/myprofile'">
 				<image src="/static/images/user.png"></image>
 				<text>个人资料</text>
 				<image src="/static/images/next.png"></image>
-			</view>
-			<view>
+			</navigator>
+			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/editprofile/editprofile'">
 				<image src="/static/images/icon/setting.png"></image>
 				<text>修改资料</text>
 				<image src="/static/images/next.png"></image>
-			</view>
-			<view>
+			</navigator>
+			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/editpassword/editpassword'">
 				<image src="/static/images/icon/password.png"></image>
 				<text>修改密码</text>
 				<image src="/static/images/next.png"></image>
-			</view>
+			</navigator>
 		</view>
 		<view class="box">
-			<view>
+			<navigator hover-class="none" url="/pages/article/article?identify=aboutus">
 				<image src="/static/images/icon/info.png"></image><text>关于我们</text>
 				<image src="/static/images/next.png"></image>
-			</view>
+			</navigator>
 		</view>
-		<view class="box">
+		<view class="box" v-if="user.id">
 			<view>
 				<image src="/static/images/icon/logout.png"></image><text>退出登录</text>
 				<image src="/static/images/next.png"></image>
@@ -91,11 +91,11 @@
 <script>
 	import mHeader from '@/compomnents/header.vue'
 	import {
-		useUserStore
-	} from '@/stores/user.js'
-	import {
 		getSysInfo
 	} from '@/utils/util.js'
+	import {
+		useUserStore
+	} from '@/stores/user.js'
 	import {
 		mapGetters,
 		mapActions
@@ -105,6 +105,7 @@
 			return {
 				statusBarHeight: 0,
 				titleBarHeight: 0,
+				loginPage: '/pages/login/login'
 			}
 		},
 		components: {
@@ -113,21 +114,30 @@
 		computed: {
 			...mapGetters(useUserStore, ['user'])
 		},
-		created(){
+		onLoad() {
+			console.log('用户信息', this.user)
 			const sysInfo = getSysInfo()
 			this.statusBarHeight = sysInfo.statusBarHeight
-			this.titleBarHeight=sysInfo.titleBarHeight
+			this.titleBarHeight = sysInfo.titleBarHeight
 		},
 		methods: {
-
+			login() {
+				if (this.user.id) {
+					return
+				}
+				uni.navigateTo({
+					url: '/pages/login/login'
+				})
+			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-	.page-me{
+	.page-me {
 		padding-top: 130px;
 	}
+
 	.user {
 		background-color: $uni-color-success;
 		color: #fff;
@@ -193,13 +203,16 @@
 		line-height: 50px;
 		color: $uni-color-subtitle;
 
-		&>view {
+		&>view,
+		&>navigator {
 			border-bottom: 1px solid $uni-bg-color-hover;
 			display: flex;
 			justify-content: space-between;
-			text{
+
+			text {
 				flex: 1;
 			}
+
 			image {
 				width: 20px;
 				height: 20px;
@@ -207,7 +220,8 @@
 				margin-right: 0;
 				line-height: 50px;
 				margin-top: 15px;
-				&:first-of-type{
+
+				&:first-of-type {
 					margin-right: 10px;
 				}
 			}
@@ -216,7 +230,8 @@
 				border-bottom: 0;
 			}
 		}
-		&:last-of-type{
+
+		&:last-of-type {
 			margin-bottom: 0;
 		}
 	}
