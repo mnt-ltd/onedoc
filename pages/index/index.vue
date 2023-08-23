@@ -7,11 +7,11 @@
 		<view class="category">
 			<view class="row">
 				<view class="col-3" v-for="cate in parentCategories" :key="'cate-'+cate.id">
-					<navigator :url="'/pages/list/list?category_id='+cate.id" hover-class="none">
+					<view @click="iswitch('/pages/list/list?category_id='+cate.id)" hover-class="none">
 						<image :src="cate.icon || '/static/images/empty-image.png'" class="icon-small icon-circle">
 						</image>
 						<view class="font-lv4 ellipsis-1row">{{cate.title}}</view>
-					</navigator>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -153,6 +153,11 @@
 			go2search() {
 				uni.navigateTo({
 					url: '/pages/search/search'
+				})
+			},
+			iswitch(url){
+				uni.switchTab({
+					url: url
 				})
 			},
 			async listBanner() {
