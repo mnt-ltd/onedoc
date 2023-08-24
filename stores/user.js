@@ -3,7 +3,8 @@ import {
 	defineStore
 } from 'pinia';
 import {
-	login
+	login,
+	logout,
 } from '@/api/user.js'
 import {
 	debug
@@ -44,5 +45,17 @@ export const useUserStore = defineStore('user', {
 			}
 			return res
 		},
+		async logout(){
+			const res = await logout()
+			if(res.statusCode===200){
+				this.$patch(state=>{
+					state.itoken = ''
+					state.iuser = {
+						id: 0
+					}
+				})
+			}
+			return res
+		}
 	},
 });

@@ -79,7 +79,7 @@
 			</navigator>
 		</view>
 		<view class="box" v-if="user.id">
-			<view>
+			<view @click="execLogout">
 				<image src="/static/images/icon/logout.png"></image><text>退出登录</text>
 				<image src="/static/images/next.png"></image>
 			</view>
@@ -91,7 +91,9 @@
 <script>
 	import mHeader from '@/compomnents/header.vue'
 	import {
-		getSysInfo
+		getSysInfo,
+		toastSuccess,
+		toastError,
 	} from '@/utils/util.js'
 	import {
 		useUserStore
@@ -121,6 +123,7 @@
 			this.titleBarHeight = sysInfo.titleBarHeight
 		},
 		methods: {
+			...mapActions(useUserStore, ['logout']),
 			login() {
 				if (this.user.id) {
 					return
@@ -128,6 +131,15 @@
 				uni.navigateTo({
 					url: '/pages/login/login'
 				})
+			},
+			async execLogout(){
+				const res = await this.logout()
+				if(res.statusCode===200){
+					toastSuccess('退出登录成功')
+				}else{
+					console.log(res)
+					toastError(res.data.message || '退出登录失败')
+				}
 			}
 		}
 	}
