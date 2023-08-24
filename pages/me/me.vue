@@ -73,7 +73,7 @@
 			</navigator>
 		</view>
 		<view class="box">
-			<navigator hover-class="none" url="/pages/article/article?identify=aboutus">
+			<navigator hover-class="none" url="/pages/article/article?identifier=about">
 				<image src="/static/images/icon/info.png"></image><text>关于我们</text>
 				<image src="/static/images/next.png"></image>
 			</navigator>
