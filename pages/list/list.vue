@@ -194,7 +194,6 @@
 						"is_vip",
 					],
 				});
-				console.log(res);
 				if (res.statusCode === 200) {
 					this.total = res.data.total;
 					this.documents = (res.data.document || []).map((item) => {
@@ -216,6 +215,8 @@
 		padding: 10px 15px 10px;
 		position: fixed;
 		background-color: $uni-bg-color-grey;
+		z-index: 99;
+		width: 100%;
 
 		.active {
 			color: $uni-color-success;

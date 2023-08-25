@@ -30,11 +30,11 @@
 	padding-bottom: 15px;
 }
 
-.pdl-15{
+.pdl-15 {
 	padding-left: 15px;
 }
 
-.pdr-15{
+.pdr-15 {
 	padding-right: 15px;
 }
 
@@ -169,7 +169,7 @@
 	padding: 30px;
 }
 
-.icon-mini{
+.icon-mini {
 	width: 24px;
 	height: 24px;
 }
@@ -189,7 +189,7 @@
 	height: 64px;
 }
 
-.icon-circle{
+.icon-circle {
 	border-radius: 50%;
 	overflow: hidden;
 	box-sizing: border-box;
@@ -199,7 +199,7 @@
 	text-align: center;
 }
 
-.text-right{
+.text-right {
 	text-align: right;
 }
 
@@ -223,19 +223,19 @@
 	font-size: 10px !important;
 }
 
-.float-right{
+.float-right {
 	float: right;
 }
 
-.text-grey{
+.text-grey {
 	color: #999;
 }
 
-.font-w400{
+.font-w400 {
 	font-weight: 400;
 }
 
-.doc-cover{
+.doc-cover {
 	width: 70px;
 	height: 100px;
 	border-radius: 8px;
@@ -243,4 +243,21 @@
 	max-width: 100%;
 	background-color: #fff;
 	box-sizing: border-box;
+	position: relative;
+	z-index: 1;
+}
+
+.doc-cover-vip::after {
+	content: "";
+	position: absolute;
+	z-index: 666;
+	right: 2px;
+	font-size: 12px;
+	padding: 2px 3px 2px 1px;
+	border-radius: 4px;
+	height: 12px;
+	width: 28px;
+	top: 2px;
+	background: #fff url(../images/icon-vip-doc.png);
+	background-size: 100% 100%;
 }

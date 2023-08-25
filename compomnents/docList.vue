@@ -1,19 +1,16 @@
 <template>
 	<view class="com-doc-list">
-		<navigator
-			v-for="doc in documents"
-			:key="'dl-' + doc.id"
-			:url="'/pages/document/document?id=' + doc.id"
-			hover-class="none"
-			class="row"
-		>
+		<navigator v-for="doc in documents" :key="'dl-' + doc.id" :url="'/pages/document/document?id=' + doc.id"
+			hover-class="none" class="row">
 			<view class="col-3">
-				<image class="doc-cover" :src="doc.cover"></image>
+				<image class="doc-cover" :class="doc.is_vip ? 'doc-cover-vip': ''" :src="doc.cover"></image>
 			</view>
 			<view class="col-9">
-				<view class="doc-title font-lv3 font-w400 ellipsis-1row">{{
+				<view class="doc-title font-lv3 font-w400 ellipsis-1row">
+					<image :src="`/static/images/${getIcon(doc.ext)}_24.png`" class="icon-mini" /> {{
 					doc.title
-				}}</view>
+				}}
+				</view>
 				<view class="doc-desc font-lv5 ellipsis-1row text-grey">
 					<text>{{ doc.created_at }}</text> &nbsp;&nbsp;
 					<text>{{ doc.size }}</text>
@@ -27,7 +24,12 @@
 </template>
 
 <script>
-	import { relativeTime, joinImage, formatBytes } from "@/utils/util.js";
+	import {
+		relativeTime,
+		joinImage,
+		formatBytes,
+		getIcon
+	} from "@/utils/util.js";
 	export default {
 		name: "DocList",
 		props: {
@@ -38,7 +40,7 @@
 		},
 		watch: {
 			docs: {
-				handler: function (val) {
+				handler: function(val) {
 					this.documents = (val || []).map((doc) => {
 						doc.cover = joinImage(doc.cover);
 						doc.created_at = relativeTime(doc.created_at);
@@ -50,8 +52,13 @@
 			},
 		},
 		data() {
-			return { documents: [] };
+			return {
+				documents: []
+			};
 		},
+		methods:{
+			getIcon,
+		}
 	};
 </script>
 
@@ -62,6 +69,13 @@
 		margin-bottom: -5px;
 		border-radius: 8px;
 		box-sizing: border-box;
+		
+		.icon-mini{
+			width: 15px;
+			height: 15px;
+			position: relative;
+			top: 2px;
+		}
 
 		.row {
 			margin-bottom: 15px;

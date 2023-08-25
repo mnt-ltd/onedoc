@@ -205,7 +205,7 @@
 			async listDocumentForHome() {
 				const res = await listDocumentForHome({
 					limit: 10,
-					field: ['id', 'title', 'ext', 'description', 'created_at', 'size']
+					field: ['id', 'title', 'ext', 'description', 'created_at', 'size','is_vip']
 				})
 				if (res.statusCode === 200) {
 					this.documents = res.data.document || []
@@ -344,6 +344,7 @@
 		background-color: $uni-bg-color-grey;
 		width: 100%;
 		box-sizing: border-box;
+		z-index: 999;
 	}
 	.documents-fixed-padding{
 		padding-top: 60px; // 45 + 15

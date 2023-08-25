@@ -41,7 +41,7 @@
 				headerHeight: getHeaderHeight(),
 				query: {
 					page: 1,
-					size: 20,
+					size: 10,
 					user_id: 0
 				},
 				data: []
