@@ -12,8 +12,8 @@
 				}}
 				</view>
 				<view class="doc-desc font-lv5 ellipsis-1row text-grey">
-					<text>{{ doc.created_at }}</text> &nbsp;&nbsp;
-					<text>{{ doc.size }}</text>
+					<text>{{ relativeTime(new Date(doc.created_at)) }}</text> &nbsp;&nbsp;
+					<text>{{ formatBytes(doc.size) }}</text>
 				</view>
 				<view class="doc-desc font-lv4 ellipsis-2row text-grey">{{
 					doc.description
@@ -43,8 +43,6 @@
 				handler: function(val) {
 					this.documents = (val || []).map((doc) => {
 						doc.cover = joinImage(doc.cover);
-						doc.created_at = relativeTime(doc.created_at);
-						doc.size = formatBytes(doc.size);
 						return doc;
 					});
 				},
@@ -57,6 +55,8 @@
 			};
 		},
 		methods:{
+			relativeTime,
+			formatBytes,
 			getIcon,
 		}
 	};
