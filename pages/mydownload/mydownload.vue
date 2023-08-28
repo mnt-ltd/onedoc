@@ -7,6 +7,9 @@
 			</template>
 			<mEmpty v-else />
 		</view>
+		<view class="no-more" v-if="query.page===0 && data.length>0">
+			已无更多动态数据...
+		</view>
 	</view>
 </template>
 
@@ -125,17 +128,11 @@
 		}
 	}
 
-
-	.scroll-view_H {
-		white-space: nowrap;
-		width: 100%;
-	}
-
-	.scroll-view-item_H {
-		display: inline-block;
-		height: 30px;
-		line-height: 30px;
+	.no-more {
+		text-align: center;
 		font-size: 12px;
-		margin-right: 15px;
+		color: #888;
+		line-height: 30px;
 	}
+
 </style>
