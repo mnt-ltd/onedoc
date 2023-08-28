@@ -187,4 +187,5 @@ export default{
 	loginByMobile,
 	getDynamics,
 	listUserVIP,
+	getUserDownloads,
 }
