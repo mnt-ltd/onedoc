@@ -47,7 +47,7 @@
 		},
 		data() {
 			return {
-				documents: []
+				documents: [],
 			};
 		},
 		methods:{
@@ -78,6 +78,7 @@
 			margin-bottom: 15px;
 			border-bottom: 1px solid #efefef;
 			padding-bottom: 13px;
+			position: relative;
 
 			.doc-desc {
 				line-height: 180%;
@@ -89,6 +90,13 @@
 				padding-bottom: 0;
 				border-bottom: 0;
 			}
+		}
+		
+		.slot{
+			position: absolute;
+			background-color: #000;
+			top: 0;
+			bottom: 0;
 		}
 	}
 </style>

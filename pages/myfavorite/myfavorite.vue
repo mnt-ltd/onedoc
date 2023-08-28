@@ -3,7 +3,7 @@
 		<mHeader title="我的收藏" />
 		<view class="box">
 			<template v-if="data.length>0">
-				<doc-simple-list :docs="data"/>
+				<doc-simple-list :docs="data"></doc-simple-list>
 			</template>
 			<mEmpty v-else />
 		</view>
@@ -76,7 +76,7 @@
 				}
 				const res = await listFavorite(query)
 				if (res.statusCode === 200) {
-					const data = (res.data.favorite || []).map(item=>{
+					const data = (res.data.favorite || []).map(item => {
 						// item.cover = `/view/cover/${item.attachment.hash}`;
 						return item;
 					})
