@@ -229,6 +229,10 @@
 			padding-bottom: 15px;
 		}
 	}
+	
+	.m-card{
+		margin-bottom: 60px;
+	}
 
 	.fixed-footer {
 		width: 100%;
@@ -243,6 +247,7 @@
 		border-top: 1px solid #eee;
 		box-sizing: border-box;
 		font-weight: 500;
+		z-index: 99;
 
 		image {
 			width: 18px;
