@@ -3,21 +3,21 @@
 		<view class="userinfo">
 			<view class="row">
 				<view class="col-5 part-left">
-					<image src="../static/images/avatar.png" class="avatar"></image>
+					<image :src="profile.avatar || '/static/images/avatar.png'" class="avatar"></image>
 					<text>用户名</text>
 				</view>
 				<view class="col-7 part-right font-lv4">
 					<view>
 						<text class="item">注册</text>
-						<text>2023-12-23 23:32:32</text>
+						<text>{{formatTime(new Date(profile.created_at))}}</text>
 					</view>
 					<view>
 						<text class="item">登录</text>
-						<text>2023-12-23 23:32:32</text>
+						<text>{{formatTime(new Date(profile.updated_at))}}</text>
 					</view>
 					<view>
 						<text class="item">登录IP</text>
-						<text>192.168.0.244</text>
+						<text>{{profile.last_login_ip || '-'}}</text>
 					</view>
 				</view>
 			</view>
@@ -29,9 +29,9 @@
 		</view>
 		<view class="box">
 			<view class="box-content" :class="'box-'+tab">
-				<formProfile v-if="tab==='profile'" :user="user" :disabled="true"/>
-				<formProfile v-else-if="tab==='edit'" :user="user"/>
-				<formPassword v-else-if="tab==='password'" :user="user"/>
+				<formProfile v-if="tab==='profile'" :user="profile" :disabled="true"/>
+				<formProfile v-else-if="tab==='edit'" :user="profile"/>
+				<formPassword v-else-if="tab==='password'" :user="profile"/>
 			</view>
 		</view>
 	</view>
@@ -41,8 +41,14 @@
 	import formProfile from '@/compomnents/formProfile.vue'
 	import formPassword from '@/compomnents/formPassword.vue'
 	import {
+		formatTime,
+	} from '@/utils/util.js'
+	import {
 		useUserStore
 	} from '@/stores/user.js'
+	import {
+		getUser,
+	} from '@/api/user.js'
 	import {
 		mapGetters,
 	} from 'pinia'
@@ -59,16 +65,33 @@
 		},
 		data(){
 			return{
-				tab: 'profile'
+				tab: 'profile',
+				profile: {},
 			}
 		},
 		computed: {
 			...mapGetters(useUserStore, ['user'])
 		},
+		created() {
+			if(!this.user.id){
+				uni.redirectTo({
+					url: '/pages/login/login'
+				})
+				return
+			}
+			this.getUser()
+		},
 		methods:{
+			formatTime,
 			changeTab(tab){
 				this.tab = tab
 			},
+			async getUser(){
+				const res = await getUser()
+				if(res.statusCode === 200){
+					this.profile = res.data || {}
+				}
+			}
 		}
 	}
 </script>
