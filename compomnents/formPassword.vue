@@ -1,5 +1,5 @@
 <template>
-	<view class="com-form-profile">
+	<view class="com-form-password">
 		<view class="row">
 			<view class="col-3">
 				<text>用户名</text>
@@ -8,94 +8,59 @@
 				<input
 					type="text"
 					v-model="profile.username"
-					:disabled="disabled"
-					class="input"
-					:class="disabled ? 'disabled' : ''"
+					:disabled="true"
+					class="input disabled"
 				/>
 			</view>
 		</view>
 		<view class="row">
 			<view class="col-3">
-				<text>真实姓名</text>
+				<text>原密码</text>
 			</view>
 			<view class="col-9">
 				<input
 					type="text"
 					v-model="profile.realname"
-					:disabled="disabled"
 					class="input"
-					:class="disabled ? 'disabled' : ''"
 				/>
 			</view>
 		</view>
 		<view class="row">
 			<view class="col-3">
-				<text>身份证号</text>
+				<text>原密码</text>
 			</view>
 			<view class="col-9">
 				<input
 					type="text"
-					v-model="profile.identity"
-					:disabled="disabled"
+					v-model="profile.old_password"
 					class="input"
-					:class="disabled ? 'disabled' : ''"
 				/>
 			</view>
 		</view>
 		<view class="row">
 			<view class="col-3">
-				<text>联系邮箱</text>
+				<text>新密码</text>
 			</view>
 			<view class="col-9">
 				<input
 					type="text"
-					v-model="profile.email"
-					:disabled="disabled || profile.email"
+					v-model="profile.password"
 					class="input"
-					:class="disabled || profile.email ? 'disabled' : ''"
 				/>
 			</view>
 		</view>
 		<view class="row">
 			<view class="col-3">
-				<text>联系电话</text>
+				<text>确认密码</text>
 			</view>
 			<view class="col-9">
 				<input
 					type="text"
-					v-model="profile.mobile"
-					:disabled="disabled || profile.mobile"
+					v-model="profile.repeat_password"
+					:disabled="disabled"
 					class="input"
-					:class="disabled || profile.mobile ? 'disabled' : ''"
+					:class="disabled ? 'disabled' : ''"
 				/>
-			</view>
-		</view>
-		<view class="row">
-			<view class="col-3">
-				<text>联系地址</text>
-			</view>
-			<view class="col-9">
-				<textarea
-					rows="3"
-					v-model="profile.address"
-					:disabled="disabled"
-					class="input"
-					:class="disabled ? 'disabled' : ''"
-				></textarea>
-			</view>
-		</view>
-		<view class="row">
-			<view class="col-3">
-				<text>个性签名</text>
-			</view>
-			<view class="col-9">
-				<textarea
-					rows="3"
-					v-model="profile.signature"
-					:disabled="disabled"
-					class="input"
-					:class="disabled ? 'disabled' : ''"
-				></textarea>
 			</view>
 		</view>
 		<view class="row btn-row" v-if="!disabled">
@@ -108,7 +73,7 @@
 
 <script>
 	export default {
-		name: "formProfile",
+		name: "formPassword",
 		props: {
 			disabled: {
 				type: String,
@@ -138,7 +103,7 @@
 </script>
 
 <style lang="scss" scoped>
-	.com-form-profile {
+	.com-form-password {
 		font-size: 14px;
 		.row {
 			line-height: 50px;

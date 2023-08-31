@@ -31,6 +31,7 @@
 			<view class="box-content" :class="'box-'+tab">
 				<formProfile v-if="tab==='profile'" :user="user" :disabled="true"/>
 				<formProfile v-else-if="tab==='edit'" :user="user"/>
+				<formPassword v-else-if="tab==='password'" :user="user"/>
 			</view>
 		</view>
 	</view>
@@ -38,16 +39,17 @@
 
 <script>
 	import formProfile from '@/compomnents/formProfile.vue'
+	import formPassword from '@/compomnents/formPassword.vue'
 	import {
 		useUserStore
 	} from '@/stores/user.js'
 	import {
 		mapGetters,
-		mapActions
 	} from 'pinia'
 	export default{
 		components:{
 			formProfile,
+			formPassword,
 		},
 		props:{
 			tab:{
