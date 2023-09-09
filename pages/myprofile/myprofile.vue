@@ -1,7 +1,7 @@
 <template>
 	<view>
-		<m-header title="个人资料"></m-header>
-		<user-profile :tab="profile"></user-profile>
+		<m-header :title="title"></m-header>
+		<user-profile :tab="'profile'" @onTitle="changeTitle"></user-profile>
 	</view>
 </template>
 
@@ -15,11 +15,13 @@
 		},
 		data() {
 			return {
-				
+				title: '个人资料'
 			}
 		},
 		methods: {
-			
+			changeTitle(title){
+				this.title = title
+			}
 		}
 	}
 </script>

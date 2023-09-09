@@ -19,19 +19,7 @@
 			</view>
 			<view class="col-9">
 				<input
-					type="text"
-					v-model="profile.realname"
-					class="input"
-				/>
-			</view>
-		</view>
-		<view class="row">
-			<view class="col-3">
-				<text>原密码</text>
-			</view>
-			<view class="col-9">
-				<input
-					type="text"
+					password
 					v-model="profile.old_password"
 					class="input"
 				/>
@@ -43,8 +31,8 @@
 			</view>
 			<view class="col-9">
 				<input
-					type="text"
-					v-model="profile.password"
+					password
+					v-model="profile.new_password"
 					class="input"
 				/>
 			</view>
@@ -55,7 +43,7 @@
 			</view>
 			<view class="col-9">
 				<input
-					type="text"
+					password
 					v-model="profile.repeat_password"
 					:disabled="disabled"
 					class="input"
@@ -65,13 +53,20 @@
 		</view>
 		<view class="row btn-row" v-if="!disabled">
 			<view class="col-12">
-				<button type="primary">提交修改</button>
+				<button type="default" @click="onSubmit">提交修改</button>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		updateUserPassword
+	} from '@/api/user.js'
+	import {
+		toastError,
+		toastSuccess,
+	} from '@/utils/util.js'
 	export default {
 		name: "formPassword",
 		props: {
@@ -96,14 +91,50 @@
 		},
 		data() {
 			return {
-				profile: {},
+				profile: {
+					id: 0,
+					username: '',
+					old_password: '',
+					new_password: '',
+					repeat_password:'',
+				},
 			};
 		},
+		methods:{
+			async onSubmit(){
+				if(this.profile.new_password!==this.profile.repeat_password){
+					toastError('新密码与确认密码不一致')
+					return
+				}
+				
+				const res = await updateUserPassword({
+					id: this.profile.id,
+					old_password: this.profile.old_password,
+					new_password: this.profile.new_password
+				})
+				
+				if(res.statusCode===200){
+					toastSuccess('密码修改成功')
+					this.profile.old_password=''
+					this.profile.new_password=''
+					this.profile.repeat_password=''
+					return
+				}
+				toastError(res.data.message || '修改失败')
+			}
+		}
 	};
 </script>
 
 <style lang="scss" scoped>
 	.com-form-password {
+		button[type=default]{
+			background-color: $uni-color-success;
+			border: 0;
+			border-radius: 8px;
+			color: #fff;
+			font-size: 16px;
+		}
 		font-size: 14px;
 		.row {
 			line-height: 50px;

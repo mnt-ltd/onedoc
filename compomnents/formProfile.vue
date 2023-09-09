@@ -100,7 +100,7 @@
 		</view>
 		<view class="row btn-row" v-if="!disabled">
 			<view class="col-12">
-				<button type="primary" @click="onSubmit">提交修改</button>
+				<button type="default" @click="onSubmit">提交修改</button>
 			</view>
 		</view>
 	</view>
@@ -188,6 +188,13 @@
 		}
 		.btn-row {
 			margin: 20px 0 0;
+		}
+		button[type=default]{
+			background-color: $uni-color-success;
+			border: 0;
+			border-radius: 8px;
+			color: #fff;
+			font-size: 16px;
 		}
 	}
 </style>

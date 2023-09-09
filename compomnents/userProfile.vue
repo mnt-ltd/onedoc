@@ -23,15 +23,15 @@
 			</view>
 		</view>
 		<view class="tabs row font-lv3">
-			<view class="col-3" @click="changeTab('profile')" :class="tab==='profile' ? 'active': ''">个人资料</view>
-			<view class="col-3" @click="changeTab('edit')" :class="tab==='edit' ? 'active': ''">修改资料</view>
-			<view class="col-3" @click="changeTab('password')"  :class="tab==='password' ? 'active': ''">修改密码</view>
+			<view class="col-3" @click="changeTab('profile')" :class="itab==='profile' ? 'active': ''">个人资料</view>
+			<view class="col-3" @click="changeTab('edit')" :class="itab==='edit' ? 'active': ''">修改资料</view>
+			<view class="col-3" @click="changeTab('password')"  :class="itab==='password' ? 'active': ''">修改密码</view>
 		</view>
 		<view class="box">
-			<view class="box-content" :class="'box-'+tab">
-				<formProfile v-if="tab==='profile'" :user="profile" :disabled="true"/>
-				<formProfile v-else-if="tab==='edit'" :user="profile" @onUpdateProfileSuccess="onUpdateProfileSuccess"/>
-				<formPassword v-else-if="tab==='password'" :user="profile"/>
+			<view class="box-content" :class="'box-'+itab">
+				<formProfile v-if="itab==='profile'" :user="profile" :disabled="true"/>
+				<formProfile v-else-if="itab==='edit'" :user="profile" @onUpdateProfileSuccess="onUpdateProfileSuccess"/>
+				<formPassword v-else-if="itab==='password'" :user="profile"/>
 			</view>
 		</view>
 	</view>
@@ -65,9 +65,17 @@
 		},
 		data(){
 			return{
-				tab: 'profile',
 				profile: {},
+				itab: 'profile'
 			}
+		},
+		watch:{
+			tab: {
+				handler: function (val) {
+					this.itab = val
+				},
+				immediate: true,
+			},
 		},
 		computed: {
 			...mapGetters(useUserStore, ['user'])
@@ -84,7 +92,20 @@
 		methods:{
 			formatTime,
 			changeTab(tab){
-				this.tab = tab
+				this.itab = tab
+				this.$emit('onTab', tab)
+				let title = '个人资料'
+				switch (tab){
+					case 'password':
+						title = '修改密码'
+						break;
+					case 'edit':
+						title = '修改资料'
+						break;
+					default:
+						break;
+				}
+				this.$emit('onTitle', title)
 			},
 			async getUser(){
 				const res = await getUser()
