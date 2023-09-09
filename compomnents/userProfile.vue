@@ -30,7 +30,7 @@
 		<view class="box">
 			<view class="box-content" :class="'box-'+tab">
 				<formProfile v-if="tab==='profile'" :user="profile" :disabled="true"/>
-				<formProfile v-else-if="tab==='edit'" :user="profile"/>
+				<formProfile v-else-if="tab==='edit'" :user="profile" @onUpdateProfileSuccess="onUpdateProfileSuccess"/>
 				<formPassword v-else-if="tab==='password'" :user="profile"/>
 			</view>
 		</view>
@@ -91,6 +91,9 @@
 				if(res.statusCode === 200){
 					this.profile = res.data || {}
 				}
+			},
+			onUpdateProfileSuccess(){
+				this.getUser()
 			}
 		}
 	}

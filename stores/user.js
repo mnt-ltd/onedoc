@@ -5,6 +5,7 @@ import {
 import {
 	login,
 	logout,
+	updateUserProfile,
 } from '@/api/user.js'
 import {
 	debug
@@ -52,6 +53,18 @@ export const useUserStore = defineStore('user', {
 					state.itoken = ''
 					state.iuser = {
 						id: 0
+					}
+				})
+			}
+			return res
+		},
+		async updateUserProfile(profile){
+			const res = await updateUserProfile(profile)
+			if(res.statusCode===200){
+				this.$patch(state => {
+					state.iuser = {
+						...state.iuser,
+						...profile,
 					}
 				})
 			}

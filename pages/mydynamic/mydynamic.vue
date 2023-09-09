@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<view class="no-more" v-if="query.page===0 && dynamics.length>0">
-			已无更多动态数据...
+			已无更多数据...
 		</view>
 	</view>
 </template>

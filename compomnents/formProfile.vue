@@ -50,9 +50,9 @@
 				<input
 					type="text"
 					v-model="profile.email"
-					:disabled="disabled || profile.email"
+					:disabled="disabled || user.email"
 					class="input"
-					:class="disabled || profile.email ? 'disabled' : ''"
+					:class="disabled || user.email ? 'disabled' : ''"
 				/>
 			</view>
 		</view>
@@ -64,9 +64,9 @@
 				<input
 					type="text"
 					v-model="profile.mobile"
-					:disabled="disabled || profile.mobile"
+					:disabled="disabled || user.mobile"
 					class="input"
-					:class="disabled || profile.mobile ? 'disabled' : ''"
+					:class="disabled || user.mobile ? 'disabled' : ''"
 				/>
 			</view>
 		</view>
@@ -100,13 +100,23 @@
 		</view>
 		<view class="row btn-row" v-if="!disabled">
 			<view class="col-12">
-				<button type="primary">提交修改</button>
+				<button type="primary" @click="onSubmit">提交修改</button>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		useUserStore
+	} from '@/stores/user.js'
+	import {
+		mapActions,
+	} from 'pinia'
+	import {
+		toastError,
+		toastSuccess,
+	} from '@/utils/util.js'
 	export default {
 		name: "formProfile",
 		props: {
@@ -134,6 +144,18 @@
 				profile: {},
 			};
 		},
+		methods:{
+			...mapActions(useUserStore, ['updateUserProfile']),
+			async onSubmit(){
+				const res = await this.updateUserProfile(this.profile)
+				if(res.statusCode===200){
+					toastSuccess('修改成功')
+					this.$emit('onUpdateProfileSuccess')
+					return
+				}
+				toastError(res.data.message || '修改失败')
+			}
+		}
 	};
 </script>
 
