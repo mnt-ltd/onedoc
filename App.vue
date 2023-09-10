@@ -1,9 +1,14 @@
 <script>
-	import {getSettings} from './api/config.js'
+	import {
+		useSettingStore
+	} from '@/stores/settings.js'
+	import {
+		mapActions
+	} from 'pinia'
 	export default {
 		async onLaunch() {
-			// ''const res = await getSettings()
-			console.log('App Launch')
+			const res = await this.getSettings()
+			console.log('App Launch', res)
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -11,6 +16,9 @@
 		onHide: function() {
 			console.log('App Hide')
 		},
+		methods:{
+			...mapActions(useSettingStore,['getSettings'])
+		}
 	}
 </script>
 
