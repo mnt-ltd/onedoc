@@ -235,6 +235,11 @@
 	font-weight: 400;
 }
 
+/* 将非白色的图片变为白色 */
+.white-image{
+	filter: brightness(0) invert(1);
+}
+
 .doc-cover {
 	width: 70px;
 	height: 100px;

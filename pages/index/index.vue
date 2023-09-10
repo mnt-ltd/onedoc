@@ -1,17 +1,18 @@
 <template>
 	<view class="page page-index">
 		<view id="search" class="search" :style="background">
+			<image :src="logo" class="white-image logo" mode="heightFix"></image>
 			<m-search @focus="go2search"></m-search>
 			<view class="radius-block"></view>
 		</view>
 		<view class="category">
 			<view class="row">
 				<view class="col-3" v-for="cate in parentCategories" :key="'cate-'+cate.id">
-					<view @click="iswitch('/pages/list/list?category_id='+cate.id)" hover-class="none">
+					<navigator :url="`/pages/list/list?category_id=${cate.id}`" hover-class="none">
 						<image :src="cate.icon || '/static/images/empty-image.png'" class="icon-small icon-circle">
 						</image>
 						<view class="font-lv4 ellipsis-1row">{{cate.title}}</view>
-					</view>
+					</navigator>
 				</view>
 			</view>
 		</view>
@@ -19,9 +20,9 @@
 			<view class="m-card">
 				<view class="m-card-header">
 					<text class="font-lv2">最新推荐</text>
-					<text class="font-lv5 float-right text-grey">
-						<text>13123 文档</text>
-						<text>123 用户</text>
+					<text class="font-lv5 float-right text-grey stats">
+						<text>{{stats.document_count || '-'}} 文档</text>
+						<text>{{stats.user_count || '-'}} 用户</text>
 					</text>
 				</view>
 				<view class="m-card-body">
@@ -59,10 +60,10 @@
 				</view>
 			</scroll-view>
 		</view>
-		<view @touchstart="touchStart" @touchend="touchEnd" @touchmove="touchMove" id="documents" class="documents" :class="fixedCategory? 'documents-fixed-padding': ''"
-			v-if="documents.length>0">
+		<view @touchstart="touchStart" @touchend="touchEnd" @touchmove="touchMove" id="documents" class="documents"
+			:class="fixedCategory? 'documents-fixed-padding': ''" v-if="documents.length>0">
 			<view>
-				<docList :docs="documents[activeIndex].document || []"/>
+				<docList :docs="documents[activeIndex].document || []" />
 			</view>
 		</view>
 		<view>&nbsp;</view>
@@ -83,10 +84,19 @@
 		listDocumentForHome
 	} from '@/api/document.js'
 	import {
+		getStats
+	} from '@/api/config'
+	import {
 		relativeTime,
 		joinImage,
 		formatBytes
 	} from '@/utils/util.js'
+	import {
+		useSettingStore
+	} from '@/stores/settings.js'
+	import {
+		mapGetters
+	} from 'pinia'
 	export default {
 		data() {
 			return {
@@ -117,12 +127,19 @@
 					startX: 0,
 					startY: 0,
 					moved: false,
-				}
+				},
+				stats: {},
 			}
 		},
 		components: {
 			mSearch,
 			docList
+		},
+		computed:{
+			...mapGetters(useSettingStore,['system']),
+			logo(){
+				return this.system.logo ? joinImage(this.system.logo) : '/static/images/logo-transparent.png'
+			}
 		},
 		mounted() {
 			const query = uni.createSelectorQuery().in(this)
@@ -132,10 +149,13 @@
 			}).exec()
 		},
 		onLoad() {
-			this.listBanner()
-			this.listCategory()
-			this.getRecommendDocments()
-			this.listDocumentForHome()
+			Promise.all([
+				this.getStats(),
+				this.listBanner(),
+				this.listCategory(),
+				this.getRecommendDocments(),
+				this.listDocumentForHome(),
+			])
 		},
 		onPageScroll(e) {
 			console.log('onPageScroll', e)
@@ -155,10 +175,16 @@
 					url: '/pages/search/search'
 				})
 			},
-			iswitch(url){
+			iswitch(url) {
 				uni.switchTab({
 					url: url
 				})
+			},
+			async getStats() {
+				const res = await getStats()
+				if (res.statusCode === 200) {
+					this.stats = res.data || {}
+				}
 			},
 			async listBanner() {
 				const res = await listBanner({
@@ -205,7 +231,7 @@
 			async listDocumentForHome() {
 				const res = await listDocumentForHome({
 					limit: 10,
-					field: ['id', 'title', 'ext', 'description', 'created_at', 'size','is_vip']
+					field: ['id', 'title', 'ext', 'description', 'created_at', 'size', 'is_vip']
 				})
 				if (res.statusCode === 200) {
 					this.documents = res.data.document || []
@@ -252,12 +278,17 @@
 </script>
 
 <style lang="scss" scoped>
+	.stats{
+		text{margin-left: 10px;}
+	}
+	.logo{
+		height: 40px;
+		position: absolute;
+		top: 40px;
+		z-index: 99;
+	}
 	.search {
-		background-image: url(../../static/images/logo-transparent.png?id=1);
 		background-color: $uni-color-success;
-		background-size: auto 40px;
-		background-repeat: no-repeat;
-		background-position: 10px 40px;
 		padding: 100px 10px 0;
 		position: fixed;
 		top: 0;
@@ -346,9 +377,11 @@
 		box-sizing: border-box;
 		z-index: 999;
 	}
-	.documents-fixed-padding{
+
+	.documents-fixed-padding {
 		padding-top: 60px; // 45 + 15
 	}
+
 	.documents {
 		padding: 0 15px;
 	}

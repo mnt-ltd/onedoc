@@ -1,6 +1,11 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		}, {
 			"path": "pages/search/search",
 			"style": {
 				"navigationBarTitleText": "",
@@ -47,11 +52,6 @@
 			}
 		
 		},{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "首页"
-			}
-		}, {
 			"path": "pages/mydynamic/mydynamic",
 			"style": {
 				"navigationBarTitleText": "",
@@ -150,6 +150,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/category/category",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -172,7 +181,7 @@
 				"text": "资料库",
 				"iconPath": "static/images/icon/category.png",
 				"selectedIconPath": "static/images/icon/category-selected.png",
-				"pagePath": "pages/list/list"
+				"pagePath": "pages/category/category"
 			},
 			{
 				"text": "我的",
