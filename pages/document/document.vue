@@ -46,11 +46,21 @@
 			<view class="m-card">
 				<view class="m-card-header">相关文档</view>
 				<view class="m-card-body">
-					<doc-list :docs="relatedDocuments"></doc-list>
+					<!-- <doc-list :docs="relatedDocuments"></doc-list> -->
+					<scroll-document :docs="relatedDocuments"/>
 				</view>
 			</view>
 		</view>
-
+		
+		<view class="comment-box">
+			<view class="m-card">
+				<view class="m-card-header">文档点评</view>
+				<view class="m-card-body">
+					ewqweqw
+				</view>
+			</view>
+		</view>
+		<view>&nbsp;</view>
 		<view class="fixed-footer">
 			<view class="item item-share">
 				<image src="/static/images/share.png"></image>
@@ -64,7 +74,7 @@
 				<image src="/static/images/favorite.png"></image>
 				<view>收藏</view>
 			</view>
-			<view class="item item-comment">
+			<view class="item item-comment" @click="go2comment">
 				<image src="/static/images/comment.png"></image>
 				<view>点评</view>
 			</view>
@@ -84,6 +94,7 @@
 	} from '@/config.js'
 	import mHeader from '@/compomnents/header.vue'
 	import docList from '@/compomnents/docList.vue'
+	import scrollDocument from '@/compomnents/scrollDocument.vue'
 	import {
 		getDocument,
 		getRelatedDocuments
@@ -99,6 +110,9 @@
 	import {
 		useSettingStore,
 	} from '@/stores/settings.js'
+	import {
+		useUserStore
+	} from '@/stores/user.js'
 	import {
 		mapGetters,
 	} from 'pinia'
@@ -127,6 +141,7 @@
 		components: {
 			mHeader,
 			docList,
+			scrollDocument,
 		},
 		onLoad(args) {
 			if (debug) {
@@ -143,7 +158,8 @@
 			])
 		},
 		computed: {
-			...mapGetters(useSettingStore, ['display', 'system'])
+			...mapGetters(useSettingStore, ['display', 'system']),
+			...mapGetters(useUserStore, ['user'])
 		},
 		methods: {
 			formatBytes,
@@ -200,7 +216,7 @@
 				}
 				if (res.statusCode === 200) {
 					this.relatedDocuments = (res.data.document || []).map(item => {
-						item.cover = `/view/cover/${item.attachment.hash}`
+						item.cover = joinImage(`/view/cover/${item.attachment.hash}`)
 						return item
 					})
 				}
@@ -261,6 +277,19 @@
 						id: 0
 					}
 				}
+			},
+			// 去点评
+			go2comment(){
+				const commentURL = `/pages/comment/comment?document_id=${this.document.id}&title=${this.document.title}`
+				if(!this.user.id){
+					uni.navigateTo({
+						url: '/pages/user/login?redirect='+encodeURIComponent(commentURL)
+					})
+					return
+				}
+				uni.navigateTo({
+					url: commentURL,
+				})
 			}
 		}
 	}
@@ -339,11 +368,11 @@
 	}
 
 	.related-documents {
-		margin-top: 15px;
-		padding: 0 5px 15px;
+		margin-top: 10px;
+		padding: 0 5px 10px;
 
 		.m-card-body {
-			padding: 0;
+			padding: 8px;
 		}
 
 		.row {
@@ -352,8 +381,9 @@
 		}
 	}
 
-	.m-card {
-		margin-bottom: 60px;
+	.comment-box {
+		margin-bottom: 50px;
+		padding: 0 5px;
 	}
 
 	.fixed-footer {
