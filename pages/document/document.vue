@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<mHeader :title="document.title"/>
+		<mHeader :title="document.title" />
 		<view class="font-lv2 doc-title">
 			<image src="/static/images/pdf_24.png" class="icon-mini"></image>
 			<text>{{document.title}}</text>
@@ -12,7 +12,7 @@
 				<view>
 					<image src="/static/images/credit.png"></image> {{document.price || '0'}} 积分
 				</view>
-		<!-- 		<view>
+				<!-- 		<view>
 					<image src="/static/images/time.png"></image> {{relativeTime(document.created_at)}}
 				</view> -->
 				<view class="author" v-if="document.user">
@@ -24,10 +24,20 @@
 			</view>
 		</view>
 		<view class="doc-pages">
-			<image class="doc-page" :src="page" v-for="page in pages" :key="page"
+			<image class="doc-page" :src="page" v-for="page in pages" :key="page" lazy-load
 				:style="`width: ${document.width}px;height: ${document.height}px`"></image>
-			<view>
-				<button>继续阅读</button>
+			<view v-if="document.preview - pages.length > 0" class="text-muted">
+				还有 <text>{{ document.preview - pages.length }}</text> 页可预览
+			</view>
+			<template v-else>
+				<view v-if="document.pages != document.preview" class="text-muted">
+					- 可预览页数已用完，剩余
+					<text>{{ document.pages - document.preview }}</text> 页请下载阅读 -
+				</view>
+			</template>
+			<view class="continue-read">
+				<button @click="continueRead"
+					:disabled="document.pages != document.preview || pages.length===document.pages">继续阅读</button>
 			</view>
 		</view>
 		<!-- 相关文档 -->
@@ -39,7 +49,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="fixed-footer">
 			<view class="item item-share">
 				<image src="/static/images/share.png"></image>
@@ -70,7 +80,8 @@
 	import mHeader from '@/compomnents/header.vue'
 	import docList from '@/compomnents/docList.vue'
 	import {
-		getDocument, getRelatedDocuments
+		getDocument,
+		getRelatedDocuments
 	} from '@/api/document.js'
 	import {
 		formatBytes,
@@ -78,6 +89,12 @@
 		formatView,
 		joinImage,
 	} from '@/utils/util.js'
+	import {
+		useSettingStore,
+	} from '@/stores/settings.js'
+	import {
+		mapGetters,
+	} from 'pinia'
 	export default {
 		data() {
 			return {
@@ -89,6 +106,7 @@
 				},
 				pages: [],
 				relatedDocuments: [],
+				pagesPerRead: 5,
 			}
 		},
 		components: {
@@ -105,6 +123,9 @@
 			}
 			this.getDocument()
 			this.getRelatedDocuments()
+		},
+		computed: {
+			...mapGetters(useSettingStore, ['display'])
 		},
 		methods: {
 			formatBytes,
@@ -153,22 +174,51 @@
 				}
 			},
 			async getRelatedDocuments() {
-				const res = await getRelatedDocuments({id: this.args.id})
-				if(debug) {
+				const res = await getRelatedDocuments({
+					id: this.args.id
+				})
+				if (debug) {
 					console.log('getRelatedDocuments', res)
 				}
-				if(res.statusCode===200){
-					this.relatedDocuments=(res.data.document || []).map(item=>{
+				if (res.statusCode === 200) {
+					this.relatedDocuments = (res.data.document || []).map(item => {
 						item.cover = `/view/cover/${item.attachment.hash}`
 						return item
 					})
 				}
+			},
+			continueRead() {
+				let pagesPerRead =
+					this.display.pages_per_read || this.pagesPerRead
+				let end = this.pages.length + pagesPerRead
+				if (end > this.document.preview) {
+					end = this.document.preview
+				}
+				let j = 0
+				let startLazyLoad = 2
+				for (let i = this.pages.length + 1; i <= end; i++) {
+					j += 1
+					const src = this.document.enable_gzip ?
+						`/view/page/${this.document.attachment.hash}/${i}.gzip.svg` :
+						`/view/page/${this.document.attachment.hash}/${i}.svg`
+					this.pages.push(joinImage(src))
+				}
+			},
+			previewImage(page) {
+				uni.previewImage({
+					urls: this.pages,
+					current: page,
+				})
 			}
 		}
 	}
 </script>
 
 <style scoped lang="scss">
+	image {
+		background-color: #fff;
+	}
+
 	.doc-title {
 		padding: 15px;
 		box-sizing: border-box;
@@ -216,21 +266,41 @@
 				width: 100%;
 			}
 		}
+
+		.text-muted {
+			color: $uni-color-subtitle;
+			font-size: 13px;
+			text-align: center;
+			margin-bottom: 10px;
+
+			text {
+				color: $uni-color-error;
+			}
+		}
 	}
-	
-	.related-documents{
+
+	.continue-read {
+		button {
+			line-height: 260%;
+			font-size: 15px;
+		}
+	}
+
+	.related-documents {
 		margin-top: 15px;
 		padding: 0 5px 15px;
-		.m-card-body{
+
+		.m-card-body {
 			padding: 0;
 		}
-		.row{
+
+		.row {
 			border-bottom: 1px solid $uni-bg-color-grey;
 			padding-bottom: 15px;
 		}
 	}
-	
-	.m-card{
+
+	.m-card {
 		margin-bottom: 60px;
 	}
 
