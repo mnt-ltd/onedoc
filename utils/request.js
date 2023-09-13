@@ -13,7 +13,7 @@ uni.addInterceptor('request', {
 			data,
 			method
 		} = args
-		if (String(method) === 'get') {
+		if (String(method) === 'get' || String(method) === 'delete') {
 			args.url = args.url + "?" + qs.stringify(data, {
 				arrayFormat: 'repeat',
 				skipNulls: true

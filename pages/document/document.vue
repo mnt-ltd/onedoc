@@ -10,7 +10,8 @@
 					<image src="/static/images/eye.png"></image> {{formatView(document.view_count)}} 浏览
 				</view>
 				<view>
-					<image src="/static/images/credit.png"></image> {{document.price || '0'}} 积分
+					<image src="/static/images/credit.png"></image> {{document.price || '0'}}
+					{{system.credit_name || '积分'}}
 				</view>
 				<!-- 		<view>
 					<image src="/static/images/time.png"></image> {{relativeTime(document.created_at)}}
@@ -55,7 +56,11 @@
 				<image src="/static/images/share.png"></image>
 				<view>分享</view>
 			</view>
-			<view class="item item-favorite">
+			<view class="item item-favorite" v-if="favorite.id>0" @click="deleteFavorite">
+				<image src="/static/images/favorite-selected.png"></image>
+				<view>收藏</view>
+			</view>
+			<view class="item item-favorite" v-else @click="createFavorite">
 				<image src="/static/images/favorite.png"></image>
 				<view>收藏</view>
 			</view>
@@ -88,6 +93,8 @@
 		relativeTime,
 		formatView,
 		joinImage,
+		toastError,
+		toastSuccess,
 	} from '@/utils/util.js'
 	import {
 		useSettingStore,
@@ -95,6 +102,11 @@
 	import {
 		mapGetters,
 	} from 'pinia'
+	import {
+		getFavorite,
+		createFavorite,
+		deleteFavorite
+	} from '@/api/favorite'
 	export default {
 		data() {
 			return {
@@ -107,6 +119,9 @@
 				pages: [],
 				relatedDocuments: [],
 				pagesPerRead: 5,
+				favorite: {
+					id: 0
+				}
 			}
 		},
 		components: {
@@ -121,11 +136,14 @@
 				...this.args,
 				...args
 			}
-			this.getDocument()
-			this.getRelatedDocuments()
+			Promise.all([
+				this.getDocument(),
+				this.getRelatedDocuments(),
+				this.getFavorite(),
+			])
 		},
 		computed: {
-			...mapGetters(useSettingStore, ['display'])
+			...mapGetters(useSettingStore, ['display', 'system'])
 		},
 		methods: {
 			formatBytes,
@@ -209,6 +227,40 @@
 					urls: this.pages,
 					current: page,
 				})
+			},
+			async deleteFavorite() {
+				const res = await deleteFavorite({
+					id: this.favorite.id
+				})
+				if (res.statusCode === 200) {
+					toastSuccess('取消收藏成功')
+					this.favorite = {
+						id: 0
+					}
+				} else {
+					toastError(res.data.message || '取消收藏失败')
+				}
+			},
+			async createFavorite() {
+				const res = await createFavorite({
+					document_id: this.document.id,
+				})
+				if (res.statusCode === 200) {
+					toastSuccess('收藏成功')
+					this.favorite = res.data
+				} else {
+					toastError(res.data.message || '收藏失败')
+				}
+			},
+			async getFavorite() {
+				const res = await getFavorite({
+					document_id: this.args.id
+				})
+				if (res.statusCode === 200) {
+					this.favorite = res.data || {
+						id: 0
+					}
+				}
 			}
 		}
 	}
@@ -332,6 +384,12 @@
 		.item-share {
 			image {
 				padding: 1px;
+			}
+		}
+		.item-favorite {
+			image {
+				width: 19px;
+				height: 19px;
 			}
 		}
 
