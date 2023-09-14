@@ -1,60 +1,34 @@
 <template>
-	<view>
-		<view :class="`row com-comment-item com-comment-item-${size}`">
-			<view class="col-2">
-				<nuxt-link :to="{ name: 'user-id', params: { id: user.id } }">
-					<user-avatar v-if="isMobile" :size="size == 'small' ? 32 : 36" :user="comment.user" />
-					<user-avatar v-else :size="size == 'small' ? 40 : 48" :user="comment.user" />
-				</nuxt-link>
+	<view :class="`comment-item comment-item-${size}`">
+		<view class="avatar">
+			<image :src="joinImage(comment.user.avatar) || '/static/images/avatar.png'"></image>
+		</view>
+		<view class="main">
+			<view class="username">{{comment.user.username}}</view>
+			<view class="content">
+				<text v-if="comment.replay_user" class="reply-user">{{comment.replay_user}}</text>
+				{{comment.content}}
 			</view>
-			<el-col :span="isMobile ? 21 : 22">
-				<div class="username">
-					<nuxt-link class="el-link el-link--default"
-						:to="{ name: 'user-id', params: { id: comment.user_id } }">{{ comment.user.username }}</nuxt-link>
-				</div>
-				<div class="comment-content">
-					<!-- eslint-disable-next-line vue/no-v-html -->
-					<span v-html="comment.reply_user" />
-					{{ comment.content }}
-				</div>
-				<div class="comment-action">
-					<el-row class="help-block">
-						<el-col :span="12">
-							<el-tooltip :content="formatDatetime(comment.created_at)" placement="right">
-								<small class="text-muted">
-									<i class="el-icon-time"></i>
-									{{ formatRelativeTime(comment.created_at) }}
-								</small>
-							</el-tooltip>
-						</el-col>
-						<el-col :span="12" class="text-right">
-							<el-button type="text" size="small" icon="el-icon-chat-dot-square"
-								@click="reply">回复</el-button>
-						</el-col>
-					</el-row>
-				</div>
-				<form-comment v-if="replyComment" :document-id="comment.document_id" :parent-id="comment.id"
-					:placeholder="`回复 ${comment.user.username}`" @success="commentSuccess" />
-				<slot></slot>
-			</el-col>
+			<view class="action">
+				<view class="time">
+					<image src="/static/images/time.png"></image>
+					<text>1个月前</text>
+				</view>
+				<view class="reply" @click="reply">
+					<image src="/static/images/comment.png"></image>
+					<text size="mini">回复</text>
+				</view>
+			</view>
+			<slot></slot>
 		</view>
 	</view>
 </template>
+
 <script>
 	import {
-		mapGetters
-	} from 'vuex'
-	import UserAvatar from '~/components/UserAvatar.vue'
-	import {
-		formatRelativeTime,
-		formatDatetime
-	} from '~/utils/utils'
-
+		joinImage
+	} from '@/utils/util.js'
 	export default {
-		name: 'CommentItem',
-		components: {
-			UserAvatar
-		},
 		props: {
 			size: {
 				type: String,
@@ -80,61 +54,83 @@
 				replyComment: false,
 			}
 		},
-		computed: {
-			...mapGetters('user', ['user']),
-		},
 		methods: {
-			formatRelativeTime,
-			formatDatetime,
-			reply() {
-				this.replyComment = !this.replyComment
-			},
-			commentSuccess() {
-				this.$emit('success')
-			},
-		},
+			joinImage,
+			reply(){
+				this.$emit('reply', this.comment)
+			}
+		}
 	}
 </script>
+
 <style lang="scss" scoped>
-	.com-comment-item {
-		font-size: 14px;
+	.comment-item {
+		display: flex;
+		margin-top: 10px;
 
-		.comment-content {
-			margin-top: 10px;
-			margin-bottom: 10px;
-			background-color: #f5f7f8;
-			border-radius: 4px;
-			padding: 20px;
-			box-sizing: border-box;
-			color: #565656;
+		.avatar {
+			width: 36px;
+			height: 36px;
+			border: 1px solid $uni-border-color;
+			overflow: hidden;
+			border-radius: 50%;
 
-			span {
-				position: relative;
-				top: -2px;
+			image {
+				width: 100%;
+				height: 100%;
 			}
 		}
 
-		.username a {
-			font-weight: 400;
-			font-size: 1.2em;
+		.main {
+			flex: 1;
+			box-sizing: border-box;
+			padding-left: 10px;
+
+			.content {
+				margin-top: 10px;
+				margin-bottom: 5px;
+				background-color: #f5f7f8;
+				border-radius: 4px;
+				padding: 10px;
+				font-size: 14px;
+				box-sizing: border-box;
+				color: #565656;
+			}
+
+			.action {
+				display: flex;
+				justify-content: space-between;
+				font-size: 12px;
+				margin-bottom: 20px;
+				color: $uni-text-color-disable;
+				image{
+					width: 14px;
+					height: 14px;
+					vertical-align: middle;
+					margin-right: 3px;
+				}
+				.time{
+					image{
+						position: relative;
+						top: -1px;
+					}
+				}
+				.reply{
+					color: $uni-color-primary;
+				}
+			}
+		}
+
+		&.comment-item-small {
+			.avatar {
+				width: 32px;
+				height: 32px;
+
+				image {
+					width: 100%;
+					height: 100%;
+				}
+			}
 		}
 	}
-
-	.com-comment-item-small {
-		font-size: 13px;
-
-		.el-col-2 {
-			width: 7%;
-		}
-
-		.el-col-22 {
-			width: 93%;
-		}
-
-		.comment-content {
-			padding: 15px;
-		}
-	}
-
-	@media screen and (max-width: $mobile-width) {}
 </style>

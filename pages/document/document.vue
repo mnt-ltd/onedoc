@@ -56,7 +56,7 @@
 			<view class="m-card">
 				<view class="m-card-header">文档点评</view>
 				<view class="m-card-body">
-					ewqweqw
+					<comment-list @reply="reply" :documentId="document.id"/>
 				</view>
 			</view>
 		</view>
@@ -74,17 +74,17 @@
 				<image src="/static/images/favorite.png"></image>
 				<view>收藏</view>
 			</view>
-			<view class="item item-comment" @click="go2comment">
+			<view class="item item-comment" @click="reply">
 				<image src="/static/images/comment.png"></image>
 				<view>点评</view>
 			</view>
-			<!-- <view class="item item-price">
-				123 魔豆
-			</view> -->
 			<view class="item item-button">
 				<button type="default" class="btn-download">获取文档</button>
 			</view>
 		</view>
+		<m-dialog :visible="replyVisible">
+			<form-comment :comment="comment"/>
+		</m-dialog>
 	</view>
 </template>
 
@@ -94,7 +94,10 @@
 	} from '@/config.js'
 	import mHeader from '@/compomnents/header.vue'
 	import docList from '@/compomnents/docList.vue'
+	import commentList from '@/compomnents/commentList.vue'
 	import scrollDocument from '@/compomnents/scrollDocument.vue'
+	import formComment from '@/compomnents/formComment.vue'
+	import mDialog from '@/compomnents/dialog.vue'
 	import {
 		getDocument,
 		getRelatedDocuments
@@ -135,13 +138,18 @@
 				pagesPerRead: 5,
 				favorite: {
 					id: 0
-				}
+				},
+				comment:{},
+				replyVisible: false,
 			}
 		},
 		components: {
 			mHeader,
 			docList,
 			scrollDocument,
+			commentList,
+			formComment,
+			mDialog,
 		},
 		onLoad(args) {
 			if (debug) {
@@ -206,6 +214,12 @@
 					this.pages = pages
 					this.document = document
 				}
+			},
+			reply(comment){
+				// 回复或发表评论
+				console.log('reply', comment)
+				this.comment = comment
+				this.replyVisible=true
 			},
 			async getRelatedDocuments() {
 				const res = await getRelatedDocuments({
