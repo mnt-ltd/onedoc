@@ -6,7 +6,7 @@
 		<view class="main">
 			<view class="username">{{comment.user.username}}</view>
 			<view class="content">
-				<text v-if="comment.replay_user" class="reply-user">{{comment.replay_user}}</text>
+				<text v-if="comment.reply_user" class="reply-user">{{comment.reply_user}}</text>
 				{{comment.content}}
 			</view>
 			<view class="action">
@@ -95,6 +95,10 @@
 				font-size: 14px;
 				box-sizing: border-box;
 				color: #565656;
+			}
+			
+			.reply-user{
+				color: #999999;
 			}
 
 			.action {

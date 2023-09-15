@@ -47,16 +47,16 @@
 				<view class="m-card-header">相关文档</view>
 				<view class="m-card-body">
 					<!-- <doc-list :docs="relatedDocuments"></doc-list> -->
-					<scroll-document :docs="relatedDocuments"/>
+					<scroll-document :docs="relatedDocuments" />
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="comment-box">
 			<view class="m-card">
 				<view class="m-card-header">文档点评</view>
 				<view class="m-card-body">
-					<comment-list @reply="reply" :documentId="document.id"/>
+					<comment-list ref="commentList" @reply="reply" :documentId="document.id" />
 				</view>
 			</view>
 		</view>
@@ -82,8 +82,8 @@
 				<button type="default" class="btn-download">获取文档</button>
 			</view>
 		</view>
-		<m-dialog :visible="replyVisible">
-			<form-comment :comment="comment"/>
+		<m-dialog :visible="replyVisible" @close="closeDialog">
+			<form-comment :comment="comment" @success="commentSuccess" />
 		</m-dialog>
 	</view>
 </template>
@@ -139,7 +139,7 @@
 				favorite: {
 					id: 0
 				},
-				comment:{},
+				comment: {},
 				replyVisible: false,
 			}
 		},
@@ -173,6 +173,18 @@
 			formatBytes,
 			relativeTime,
 			formatView,
+			closeDialog(e) {
+				this.replyVisible = false
+			},
+			commentSuccess(){
+				this.replyVisible=false
+				try{
+					this.$refs.commentList.getComments()
+				}catch(e){
+					//TODO handle the exception
+					console.log(e)
+				}
+			},
 			async getDocument() {
 				const res = await getDocument({
 					id: this.args.id,
@@ -215,11 +227,14 @@
 					this.document = document
 				}
 			},
-			reply(comment){
+			reply(comment) {
 				// 回复或发表评论
-				console.log('reply', comment)
-				this.comment = comment
-				this.replyVisible=true
+				this.comment = {
+					document_id: this.document.id,
+					...comment
+				}
+				console.log('document.vue reply', this.comment)
+				this.replyVisible = true
 			},
 			async getRelatedDocuments() {
 				const res = await getRelatedDocuments({
@@ -293,11 +308,11 @@
 				}
 			},
 			// 去点评
-			go2comment(){
+			go2comment() {
 				const commentURL = `/pages/comment/comment?document_id=${this.document.id}&title=${this.document.title}`
-				if(!this.user.id){
+				if (!this.user.id) {
 					uni.navigateTo({
-						url: '/pages/user/login?redirect='+encodeURIComponent(commentURL)
+						url: '/pages/user/login?redirect=' + encodeURIComponent(commentURL)
 					})
 					return
 				}
@@ -430,6 +445,7 @@
 				padding: 1px;
 			}
 		}
+
 		.item-favorite {
 			image {
 				width: 19px;

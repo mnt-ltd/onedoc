@@ -1,7 +1,15 @@
 <template>
 	<view class="form-comment">
 		<form @submit="submit">
-			<textarea name="content" class='font-lv3' :placeholder="placeholder" auto-focus />
+			<textarea name="content" class='font-lv3' :placeholder="placeholder" :auto-focus="autoFocus" />
+			<view class="row captcha" v-if="captcha.enable">
+				<view class="col-6">
+					<input type="text" placeholder="请输入验证码" name="captcha" />
+				</view>
+				<view class="col-6">
+					<image @click="loadCaptcha" :src="captcha.captcha" mode="heightFix"></image>
+				</view>
+			</view>
 			<view class='submit'>
 				<text class='font-lv4 tips' :cursor-spacing="100">文明评论，理性发言.</text>
 				<view>
@@ -14,12 +22,27 @@
 </template>
 
 <script>
-	const defaulPlaceholder='您的点评能帮助其他小伙伴了解内容哟'
+	import {
+		createComment
+	} from '@/api/comment.js'
+	import {
+		getUserCaptcha
+	} from '@/api/user.js'
+	import {
+		toastError,
+		toastSuccess,
+	} from '@/utils/util.js'
+
+	const defaulPlaceholder = '您的点评能帮助其他小伙伴了解内容哟'
 	export default {
 		data() {
 			return {
 				loading: false,
-				placeholder: defaulPlaceholder
+				autoFocus: false,
+				placeholder: defaulPlaceholder,
+				captcha: {
+					enable: false,
+				},
 			}
 		},
 		props: {
@@ -35,15 +58,42 @@
 				handler: function(val) {
 					if (val.user && val.user.username) {
 						this.placeholder = `回复 @${val.user.username}`
-					}else{
-						this.placeholder=defaulPlaceholder
+					} else {
+						this.placeholder = defaulPlaceholder
 					}
+					this.$nextTick(() => {
+						this.autoFocus = true
+					})
+					this.loadCaptcha()
 				}
 			}
 		},
 		methods: {
-			submit(e) {
-				console.log(e)
+			async submit(e) {
+				let comment = {
+					document_id: this.comment.document_id,
+					parent_id: this.comment.id || 0,
+					captcha_id: this.captcha.id,
+					...e.detail.value,
+				}
+				const res = await createComment(comment)
+				if (res.statusCode === 200) {
+					toastSuccess('发表成功')
+					this.$emit('success')
+				} else {
+					toastError(res.data.message || '发表失败')
+					this.loadCaptcha()
+				}
+			},
+			async loadCaptcha() {
+				const res = await getUserCaptcha({
+					type: 'comment',
+					t: Date.now()
+				})
+				if (res.data.enable) {
+					this.captcha = res.data
+					console.log(this.captcha)
+				}
 			},
 		}
 	}
@@ -54,8 +104,8 @@
 		button {
 			background-color: $uni-color-success;
 		}
-		
-		textarea{
+
+		textarea {
 			border: 1px solid #efefef;
 			padding: 10px;
 			border-radius: 4px;
@@ -65,8 +115,8 @@
 			line-height: 150%;
 			color: #666;
 		}
-		
-		.tips{
+
+		.tips {
 			line-height: 33px;
 			color: $uni-text-color-grey;
 		}
@@ -77,6 +127,25 @@
 
 			button {
 				display: inline-block;
+			}
+		}
+
+		.captcha {
+			margin-bottom: 20px;
+
+			input {
+				border: 1px solid #efefef;
+				line-height: 33px;
+				height: 33px;
+				box-sizing: border-box;
+				width: 90%;
+				padding: 0 10px;
+				border-radius: 4px;
+				font-size: 14px;
+			}
+
+			image {
+				height: 30px;
 			}
 		}
 	}

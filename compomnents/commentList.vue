@@ -83,6 +83,7 @@
 						tree.push(comment)
 					}
 				})
+				console.log(tree)
 				return tree
 			},
 		}
