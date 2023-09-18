@@ -35,10 +35,14 @@
 					- 可预览页数已用完，剩余
 					<text>{{ document.pages - document.preview }}</text> 页请下载阅读 -
 				</view>
+				<view v-else class="text-muted">
+					- 文档已阅读完 -
+				</view>
+				
 			</template>
 			<view class="continue-read">
 				<button @click="continueRead"
-					:disabled="document.pages != document.preview || pages.length===document.pages">继续阅读</button>
+					:disabled="!(document.preview - pages.length > 0)">继续阅读</button>
 			</view>
 		</view>
 		<!-- 相关文档 -->
