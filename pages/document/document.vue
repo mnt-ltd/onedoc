@@ -56,7 +56,7 @@
 			<view class="m-card">
 				<view class="m-card-header">文档点评</view>
 				<view class="m-card-body">
-					<comment-list ref="commentList" @reply="reply" :documentId="document.id" />
+					<comment-list ref="commentList" @reply="go2comment" :documentId="document.id" />
 				</view>
 			</view>
 		</view>
@@ -74,7 +74,7 @@
 				<image src="/static/images/favorite.png"></image>
 				<view>收藏</view>
 			</view>
-			<view class="item item-comment" @click="reply">
+			<view class="item item-comment" @click="go2comment">
 				<image src="/static/images/comment.png"></image>
 				<view>点评</view>
 			</view>
@@ -82,9 +82,6 @@
 				<button type="default" class="btn-download">获取文档</button>
 			</view>
 		</view>
-		<m-dialog :visible="replyVisible" @close="closeDialog">
-			<form-comment :comment="comment" @success="commentSuccess" />
-		</m-dialog>
 	</view>
 </template>
 
@@ -97,7 +94,6 @@
 	import commentList from '@/compomnents/commentList.vue'
 	import scrollDocument from '@/compomnents/scrollDocument.vue'
 	import formComment from '@/compomnents/formComment.vue'
-	import mDialog from '@/compomnents/dialog.vue'
 	import {
 		getDocument,
 		getRelatedDocuments
@@ -140,7 +136,6 @@
 					id: 0
 				},
 				comment: {},
-				replyVisible: false,
 			}
 		},
 		components: {
@@ -149,7 +144,6 @@
 			scrollDocument,
 			commentList,
 			formComment,
-			mDialog,
 		},
 		onLoad(args) {
 			if (debug) {
@@ -173,11 +167,7 @@
 			formatBytes,
 			relativeTime,
 			formatView,
-			closeDialog(e) {
-				this.replyVisible = false
-			},
 			commentSuccess(){
-				this.replyVisible=false
 				try{
 					this.$refs.commentList.getComments()
 				}catch(e){
@@ -227,14 +217,24 @@
 					this.document = document
 				}
 			},
-			reply(comment) {
-				// 回复或发表评论
-				this.comment = {
+			go2comment(comment) {
+				let args = {
 					document_id: this.document.id,
 					...comment
 				}
-				console.log('document.vue reply', this.comment)
-				this.replyVisible = true
+				let username = ''
+				if (args.user && args.user.username) username = args.user.username
+				let commentURL = `/pages/comment/comment?document_id=${args.document_id}&comment_id=${args.id || 0}&reply_user=${username}`
+				
+				if (!this.user.id) {
+					uni.navigateTo({
+						url: '/pages/user/login?redirect=' + encodeURIComponent(commentURL)
+					})
+					return
+				}
+				uni.navigateTo({
+					url: commentURL
+				})
 			},
 			async getRelatedDocuments() {
 				const res = await getRelatedDocuments({
@@ -306,19 +306,6 @@
 						id: 0
 					}
 				}
-			},
-			// 去点评
-			go2comment() {
-				const commentURL = `/pages/comment/comment?document_id=${this.document.id}&title=${this.document.title}`
-				if (!this.user.id) {
-					uni.navigateTo({
-						url: '/pages/user/login?redirect=' + encodeURIComponent(commentURL)
-					})
-					return
-				}
-				uni.navigateTo({
-					url: commentURL,
-				})
 			}
 		}
 	}

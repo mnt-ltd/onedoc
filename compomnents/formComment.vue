@@ -1,10 +1,10 @@
 <template>
 	<view class="form-comment">
-		<form @submit="submit">
+		<form @submit="submit" ref="form">
 			<textarea name="content" class='font-lv3' :placeholder="placeholder" :auto-focus="autoFocus" />
 			<view class="row captcha" v-if="captcha.enable">
 				<view class="col-6">
-					<input type="text" placeholder="请输入验证码" name="captcha" />
+					<input type="text" v-model="icomment.content" placeholder="请输入验证码" name="captcha" />
 				</view>
 				<view class="col-6">
 					<image @click="loadCaptcha" :src="captcha.captcha" mode="heightFix"></image>
@@ -43,6 +43,10 @@
 				captcha: {
 					enable: false,
 				},
+				icomment:{ // 用作清空绑定
+					content: '',
+					captcha: '',
+				}
 			}
 		},
 		props: {
@@ -56,8 +60,8 @@
 		watch: {
 			comment: {
 				handler: function(val) {
-					if (val.user && val.user.username) {
-						this.placeholder = `回复 @${val.user.username}`
+					if (val.reply_user) {
+						this.placeholder = `回复 @${val.reply_user}`
 					} else {
 						this.placeholder = defaulPlaceholder
 					}
@@ -80,6 +84,10 @@
 				if (res.statusCode === 200) {
 					toastSuccess('发表成功')
 					this.$emit('success')
+					this.icomment = {
+						content: '',
+						captcha:'',
+					}
 				} else {
 					toastError(res.data.message || '发表失败')
 					this.loadCaptcha()
