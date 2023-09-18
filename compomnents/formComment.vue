@@ -1,7 +1,7 @@
 <template>
 	<view class="form-comment">
 		<form @submit="submit" ref="form">
-			<textarea name="content" class='font-lv3' :placeholder="placeholder" :auto-focus="autoFocus" />
+			<textarea name="content" class='font-lv3' :placeholder="placeholder" auto-focus />
 			<view class="row captcha" v-if="captcha.enable">
 				<view class="col-6">
 					<input type="text" v-model="icomment.content" placeholder="请输入验证码" name="captcha" />
@@ -38,7 +38,6 @@
 		data() {
 			return {
 				loading: false,
-				autoFocus: false,
 				placeholder: defaulPlaceholder,
 				captcha: {
 					enable: false,
@@ -53,7 +52,11 @@
 			comment: {
 				type: Object,
 				default: () => {
-					return {}
+					return {
+						document_id: 0,
+						comment_id: 0,
+						reply_user: ''
+					}
 				}
 			}
 		},
@@ -76,18 +79,18 @@
 			async submit(e) {
 				let comment = {
 					document_id: this.comment.document_id,
-					parent_id: this.comment.id || 0,
+					parent_id: this.comment.comment_id || 0,
 					captcha_id: this.captcha.id,
 					...e.detail.value,
 				}
 				const res = await createComment(comment)
 				if (res.statusCode === 200) {
 					toastSuccess('发表成功')
-					this.$emit('success')
 					this.icomment = {
 						content: '',
 						captcha:'',
 					}
+					uni.navigateBack()
 				} else {
 					toastError(res.data.message || '发表失败')
 					this.loadCaptcha()
@@ -109,6 +112,9 @@
 
 <style lang="scss" scoped>
 	.form-comment {
+		background-color: #fff;
+		padding: 10px;
+		border-radius: 4px;
 		button {
 			background-color: $uni-color-success;
 		}

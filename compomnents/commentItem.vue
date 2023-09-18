@@ -105,7 +105,7 @@
 				display: flex;
 				justify-content: space-between;
 				font-size: 12px;
-				margin-bottom: 20px;
+				margin-bottom: 10px;
 				color: $uni-text-color-disable;
 				image{
 					width: 14px;

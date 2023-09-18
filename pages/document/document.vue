@@ -28,7 +28,7 @@
 			<image class="doc-page" :src="page" v-for="page in pages" :key="page" lazy-load
 				:style="`width: ${document.width}px;height: ${document.height}px`"></image>
 			<view v-if="document.preview - pages.length > 0" class="text-muted">
-				还有 <text>{{ document.preview - pages.length }}</text> 页可预览
+				共 <text>{{ document.pages }}</text> 页，还有 <text>{{ document.preview - pages.length }}</text> 页可预览
 			</view>
 			<template v-else>
 				<view v-if="document.pages != document.preview" class="text-muted">
@@ -159,6 +159,14 @@
 				this.getFavorite(),
 			])
 		},
+		onShow() {
+			try{
+				this.$refs.commentList.getComments()
+			}catch(e){
+				//TODO handle the exception
+				console.log(e)
+			}
+		},
 		computed: {
 			...mapGetters(useSettingStore, ['display', 'system']),
 			...mapGetters(useUserStore, ['user'])
@@ -167,14 +175,6 @@
 			formatBytes,
 			relativeTime,
 			formatView,
-			commentSuccess(){
-				try{
-					this.$refs.commentList.getComments()
-				}catch(e){
-					//TODO handle the exception
-					console.log(e)
-				}
-			},
 			async getDocument() {
 				const res = await getDocument({
 					id: this.args.id,
