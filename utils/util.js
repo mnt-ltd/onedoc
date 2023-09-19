@@ -288,9 +288,9 @@ export const getTreeNodeByIndexes = (tree, indexes = [0]) => {
 			} else {
 				nodeTree = tree[idx]
 			}
-		}else{
+		} else {
 			if (nodeTree.children && nodeTree.children.length > idx + 1) {
-				if(nodeTree.children[idx].id===0){
+				if (nodeTree.children[idx].id === 0) {
 					return nodeTree
 				}
 				nodeTree = nodeTree.children[idx]
@@ -445,10 +445,32 @@ const extMapIcon = {
 	'.mobi': 'mobi',
 	'.chm': 'chm',
 	'.umd': 'umd',
-  }
-  
+}
+
 export const getIcon = (ext) => {
 	return extMapIcon[ext] || 'other'
+}
+
+const keyLatestSearchKeywords = 'latestSearchKeywords'
+
+// 获取最近搜索
+export const getLatestSearchKeywords = () => {
+	let keywords = uni.getStorageSync(keyLatestSearchKeywords) || '[]'
+	try {
+		return JSON.parse(keywords) || []
+	} catch (e) {
+		//TODO handle the exception
+		console.log(e)
+	}
+	return []
+}
+
+// 设置搜索词
+export const setLatestSearchKeywords = (keyword) => {
+	let existKeywords = getLatestSearchKeywords()
+	existKeywords.splice(0,0, keyword)
+	let newKeywords = Array.from(new Set(existKeywords)).splice(12)
+	uni.setStorageSync(keyLatestSearchKeywords, JSON.stringify(newKeywords))
 }
 
 export default {
@@ -485,4 +507,6 @@ export default {
 	getTreeNodeByIndexes,
 	getHeaderHeight,
 	getIcon,
+	getLatestSearchKeywords,
+	setLatestSearchKeywords,
 }

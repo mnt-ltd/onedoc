@@ -2,20 +2,15 @@
 	<view>
 		<mHeader title="搜索" />
 		<view class="searchbox">
-			<mSearch />
+			<mSearch :autoFocus="true" />
 		</view>
 		<view class="searchwords">
-			<view>
+			<view v-if="latestKeywords.length>0">
 				<view class="bold">最近搜索</view>
-				<navigator url="/pages/result/result?wd=JavaScript" hover-class="none">JavaScript</navigator>
-				<navigator url="/pages/result/result?wd=JavaScript">JavaScript</navigator>
-				<navigator url="/pages/result/result?wd=JavaScript">JavaScript</navigator>
-				<navigator url="/pages/result/result?wd=JavaScript">JavaScript</navigator>
-				<navigator url="/pages/result/result?wd=JavaScript">JavaScript</navigator>
-				<navigator url="/pages/result/result?wd=JavaScript">JavaScript</navigator>
-				<navigator url="/pages/result/result?wd=JavaScript">JavaScript</navigator>
+				<navigator v-for="(keyword,index) in latestKeywords" :key="'lk-'+index"
+					:url="`/pages/result/result?wd=${keyword}`" hover-class="none">{{keyword}}</navigator>
 			</view>
-			<view>
+			<view v-if="keywords.length>0">
 				<view class="bold">推荐搜索</view>
 				<navigator v-for="(keyword,index) in keywords" :key="'kw-'+index"
 					:url="`/pages/result/result?wd=${keyword}`" hover-class="none">{{keyword}}</navigator>
@@ -58,6 +53,9 @@
 	import {
 		mapGetters
 	} from 'pinia'
+	import {
+		getLatestSearchKeywords
+	} from '@/utils/util.js'
 	import mHeader from "@/compomnents/header.vue";
 	import mSearch from '@/compomnents/search.vue';
 	export default {
@@ -75,6 +73,9 @@
 			...mapGetters(useSettingStore, ['system']),
 			keywords() {
 				return this.system.recommend_words || []
+			},
+			latestKeywords() { // 最近搜索
+				return getLatestSearchKeywords()
 			}
 		},
 		created() {
@@ -82,10 +83,10 @@
 			this.getDownloads()
 		},
 		onShareAppMessage() {
-			
+
 		},
 		onShareTimeline() {
-			
+
 		},
 		methods: {
 			// 获取推荐文档
@@ -187,6 +188,7 @@
 			line-height: 30px;
 			overflow: hidden;
 			text-overflow: ellipsis;
+
 			text {
 				color: #666;
 				display: inline-block;

@@ -1,8 +1,8 @@
 <template>
 	<view>
 		<form :class="isMiniSearch ? 'search mini-search' : 'search'" @click="focusSearch">
-			<input :focus='focus || clickFocus' :value='searchWd' :placeholder='placeholder' @input="change"
-				@confirm="search" confirm-type="search" name='wd' />
+			<input :value='searchWd' :placeholder='placeholder' @input="change"
+				@confirm="search" confirm-type="search" name='wd' :auto-focus="autoFocus" />
 			<image @click.stop='clear' v-if='showClear' class='clear' src='/static/images/clear.png'></image>
 			<image @click.stop='search' src='/static/images/search.png'></image>
 		</form>
@@ -10,6 +10,9 @@
 </template>
 
 <script>
+	import {
+		setLatestSearchKeywords
+	} from '@/utils/util.js'
 	export default {
 		name: "search",
 		data() {
@@ -21,7 +24,8 @@
 		},
 		props: {
 			focus: {
-				type: Boolean
+				type: Boolean,
+				default: false,
 			},
 			wd: {
 				type: String,
@@ -37,6 +41,10 @@
 			isMiniSearch: {
 				type: Boolean,
 				default: false
+			},
+			autoFocus:{
+				type: Boolean,
+				default: false,
 			}
 		},
 		created() {
@@ -58,7 +66,6 @@
 				this.searchWd = wd
 			},
 			search() {
-				this.clickFocus = false
 				if (this.target) {
 					uni.navigateTo({
 						url: this.target + "?wd=" + this.searchWd
@@ -68,9 +75,14 @@
 						wd: this.searchWd
 					})
 				}
+				if(this.searchWd){
+					setLatestSearchKeywords(this.searchWd)
+				}
 			},
 			focusSearch() {
-				this.clickFocus = true
+				if (this.autoFocus){
+					return
+				}
 				this.$emit('focus')
 			}
 		},
