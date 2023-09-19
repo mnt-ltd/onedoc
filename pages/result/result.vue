@@ -2,7 +2,7 @@
 	<view>
 		<mHeader title="搜索" />
 		<view class="searchbox">
-			<mSearch :wd="query.wd" @clear="goback" />
+			<mSearch :wd="query.wd" @clear="goback" @search="search" />
 		</view>
 		<view class="filter" :style="`top: ${headerHeight + 60}px`">
 			<view class="row">
@@ -34,10 +34,10 @@
 		</view>
 		<view class="result" :style="`top: ${headerHeight + 60 + 40}px`">
 			<docList v-if="documents.length>0" :docs="documents" :is-html="true" />
-			<view v-if="query.page===0" class="no-more">
+			<view v-if="query.page===0 && documents.length>0" class="no-more">
 				-- 这是底线，已无更多数据 --
 			</view>
-			<m-empty v-if="query.page===0 && documents.length===0"></m-empty>
+			<m-empty v-if="query.page===0 && documents.length===0" tips="很遗憾, 未能检索到结果"></m-empty>
 		</view>
 	</view>
 </template>
@@ -51,6 +51,12 @@
 		sort: 'default', // 排序
 		category_id: 0,
 		duration: 'all',
+	}
+	const defaultFilter = {
+		extIndex: 0,
+		sortIndex: 0,
+		durationIndex: 0,
+		cateIndex: 0,
 	}
 	import {
 		useSettingStore
@@ -70,6 +76,7 @@
 		genTimeDuration,
 		getIcon,
 		getHeaderHeight,
+		joinImage,
 	} from '@/utils/util.js'
 	import mHeader from "@/compomnents/header.vue"
 	import mSearch from '@/compomnents/search.vue'
@@ -95,10 +102,7 @@
 				keywords: [],
 				documents: [], // 搜索结果
 				filter: {
-					extIndex: 0,
-					sortIndex: 0,
-					durationIndex: 0,
-					cateIndex: 0,
+					...defaultFilter,
 				},
 				searchExts: [{
 						label: '全部格式',
@@ -209,8 +213,11 @@
 
 		},
 		onReachBottom() {
-			this.query.page++
-			this.searchDocuments()
+			console.log('onReachBottom', this.query)
+			if(this.query.page>0){
+				this.query.page++
+				this.searchDocuments()
+			}
 		},
 		onLoad(args) {
 			console.log('result.vue', args)
@@ -227,6 +234,19 @@
 		methods: {
 			goback() {
 				uni.navigateBack()
+			},
+			search(e){
+				if(e.wd){
+					this.query = {
+						...defaultQuery,
+						wd: e.wd,
+						page: 1
+					}
+					this.filter = {
+						...defaultFilter
+					}
+					this.searchDocuments()
+				}
 			},
 			async getCategories() {
 				const res = await listCategory({
@@ -249,6 +269,7 @@
 			},
 			changeSort(e) {
 				this.filter.sortIndex = e.detail.value || 0
+				this.query.page = 1
 				this.query.sort = this.searchSorts[this.filter.sortIndex].value
 				this.searchDocuments()
 			},
@@ -290,6 +311,7 @@
 						doc.score = doc.score || 300
 						doc.score = doc.score / 100
 						doc.icon = getIcon(doc.ext)
+						doc.cover = joinImage(`/view/cover/${doc.attachment.hash}`)
 						try {
 							doc.keywords.split(',').map((keyword) => {
 								keyword = keyword.trim()

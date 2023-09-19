@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<form :class="isMiniSearch ? 'search mini-search' : 'search'" @click="focusSearch">
-			<input :value='searchWd' :placeholder='placeholder' @input="change"
+			<input v-model='searchWd' :placeholder='placeholder' @input="change"
 				@confirm="search" confirm-type="search" name='wd' :auto-focus="autoFocus" />
 			<image @click.stop='clear' v-if='showClear' class='clear' src='/static/images/clear.png'></image>
 			<image @click.stop='search' src='/static/images/search.png'></image>
@@ -66,6 +66,9 @@
 				this.searchWd = wd
 			},
 			search() {
+				if(this.searchWd){
+					setLatestSearchKeywords(this.searchWd)
+				}
 				if (this.target) {
 					uni.navigateTo({
 						url: this.target + "?wd=" + this.searchWd
@@ -74,9 +77,6 @@
 					this.$emit('search', {
 						wd: this.searchWd
 					})
-				}
-				if(this.searchWd){
-					setLatestSearchKeywords(this.searchWd)
 				}
 			},
 			focusSearch() {

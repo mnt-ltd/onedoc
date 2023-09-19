@@ -2,7 +2,7 @@
 	<view>
 		<mHeader title="搜索" />
 		<view class="searchbox">
-			<mSearch :autoFocus="true" />
+			<mSearch :autoFocus="true" @search="search" />
 		</view>
 		<view class="searchwords">
 			<view v-if="latestKeywords.length>0">
@@ -92,6 +92,13 @@
 
 		},
 		methods: {
+			search(e){
+				if(e.wd){
+					uni.navigateTo({
+						url: '/pages/result/result?wd='+e.wd
+					})
+				}
+			},
 			// 获取推荐文档
 			async getRecommends() {
 				const res = await listDocument({
