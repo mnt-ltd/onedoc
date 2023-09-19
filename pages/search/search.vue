@@ -67,6 +67,7 @@
 			return {
 				recommends: [], // 推荐文档
 				downloads: [], // 热门下载
+				latestKeywords: []
 			}
 		},
 		computed: {
@@ -74,13 +75,15 @@
 			keywords() {
 				return this.system.recommend_words || []
 			},
-			latestKeywords() { // 最近搜索
-				return getLatestSearchKeywords()
-			}
 		},
 		created() {
-			this.getRecommends()
-			this.getDownloads()
+			Promise.all([
+				this.getRecommends(),
+				this.getDownloads()
+			])
+		},
+		onShow() {
+			this.latestKeywords = getLatestSearchKeywords()
 		},
 		onShareAppMessage() {
 
