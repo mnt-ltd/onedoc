@@ -66,10 +66,10 @@
 		</view>
 		<view>&nbsp;</view>
 		<view class="fixed-footer">
-			<view class="item item-share">
+			<button class="item item-share" type="default" open-type="share" plain="true">
 				<image src="/static/images/share.png"></image>
 				<view>分享</view>
-			</view>
+			</button>
 			<view class="item item-favorite" v-if="favorite.id>0" @click="deleteFavorite">
 				<image src="/static/images/favorite-selected.png"></image>
 				<view>收藏</view>
@@ -169,6 +169,16 @@
 			}catch(e){
 				//TODO handle the exception
 				console.log(e)
+			}
+		},
+		onShareAppMessage() {
+			return {
+				title: this.document.title
+			}
+		},
+		onShareTimeline() {
+			return {
+				title: this.document.title
 			}
 		},
 		computed: {
@@ -429,9 +439,15 @@
 
 		.item {
 			flex: 1;
+			border: 0;
 		}
-
 		.item-share {
+			border: 0;
+			background-color: #fff;
+			font-size: 12px;
+			line-height: 18px;
+			padding-left: 0;
+			padding-right: 0;
 			image {
 				padding: 1px;
 			}

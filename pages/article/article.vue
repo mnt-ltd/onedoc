@@ -37,6 +37,16 @@
 		onLoad(args) {
 			this.loadArticle(args.identifier)
 		},
+		onShareAppMessage() {
+			return {
+				title: this.article.title,
+			}
+		},
+		onShareTimeline() {
+			return {
+				title: this.article.title
+			}
+		},
 		methods: {
 			formatTime,
 			async loadArticle(identifier) {
@@ -44,7 +54,6 @@
 					identifier,
 					from: 'mp'
 				})
-				console.log(res)
 				if (res.statusCode === 200) {
 					this.article = {
 						title: '文章',

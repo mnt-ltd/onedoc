@@ -11,6 +11,12 @@
 				
 			}
 		},
+		onShareAppMessage() {
+			
+		},
+		onShareTimeline() {
+			
+		},
 		methods: {
 			
 		}

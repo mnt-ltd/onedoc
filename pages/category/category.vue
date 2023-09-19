@@ -14,5 +14,15 @@
 				args: {}
 			}
 		},
+		onShareAppMessage() {
+			return {
+				title: '资料库'
+			}
+		},
+		onShareTimeline() {
+			return {
+				title: '资料库'
+			}
+		},
 	}
 </script>

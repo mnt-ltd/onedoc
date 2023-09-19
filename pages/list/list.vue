@@ -16,6 +16,12 @@
 		},
 		onLoad(args) {
 			this.args = args
+		},
+		onShareAppMessage() {
+			
+		},
+		onShareTimeline() {
+			
 		}
 	}
 </script>

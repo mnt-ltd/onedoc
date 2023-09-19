@@ -81,6 +81,12 @@
 			this.getRecommends()
 			this.getDownloads()
 		},
+		onShareAppMessage() {
+			
+		},
+		onShareTimeline() {
+			
+		},
 		methods: {
 			// 获取推荐文档
 			async getRecommends() {

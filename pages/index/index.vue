@@ -148,14 +148,17 @@
 				this.searchHeight = res.height
 			}).exec()
 		},
-		onLoad() {
-			Promise.all([
+		async onLoad() {
+			await Promise.all([
 				this.getStats(),
 				this.listBanner(),
 				this.listCategory(),
 				this.getRecommendDocments(),
 				this.listDocumentForHome(),
 			])
+			uni.setNavigationBarTitle({
+				title: this.system.sitename
+			})
 		},
 		onPageScroll(e) {
 			console.log('onPageScroll', e)
@@ -168,6 +171,12 @@
 					this.fixedCategory = false
 				}
 			}).exec()
+		},
+		onShareAppMessage() {
+			
+		},
+		onShareTimeline() {
+			
 		},
 		methods: {
 			go2search() {

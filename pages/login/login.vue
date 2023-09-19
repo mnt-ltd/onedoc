@@ -82,6 +82,12 @@
 			}
 			this.getUserCaptcha()
 		},
+		onShareAppMessage() {
+			
+		},
+		onShareTimeline() {
+			
+		},
 		methods: {
 			...mapActions(useUserStore, ['loginByPassword']),
 			async getUserCaptcha() {

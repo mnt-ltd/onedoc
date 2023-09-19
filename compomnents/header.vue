@@ -101,6 +101,17 @@
 			that.showShare = true
 			// #endif
 		},
+		watch:{
+			title: {
+				handler: function(val){
+					uni.setNavigationBarTitle({
+						title: val
+					})
+				},
+				immediate: true,
+				deep: true,
+			}
+		},
 		methods: {
 			headerBack() {
 				uni.navigateBack({

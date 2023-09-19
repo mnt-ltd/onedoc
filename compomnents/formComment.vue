@@ -72,7 +72,8 @@
 						this.autoFocus = true
 					})
 					this.loadCaptcha()
-				}
+				},
+				immediate: true,
 			}
 		},
 		methods: {
