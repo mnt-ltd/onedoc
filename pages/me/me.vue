@@ -5,7 +5,7 @@
 			:style="titleBarHeight>0 && statusBarHeight>0 ? `top: ${titleBarHeight + statusBarHeight}px` : ''">
 			<view @click="login">
 				<view class="avatar">
-					<image :src="user.avatar || '/static/images/avatar.png'"></image>
+					<image :src="joinImage(user.avatar) || '/static/images/avatar.png'"></image>
 				</view>
 				<view class="userinfo">
 					<view class="username font-lv1 ellipsis-1row">{{user.username || '游客，请登录'}}</view>
@@ -94,6 +94,7 @@
 		getSysInfo,
 		toastSuccess,
 		toastError,
+		joinImage,
 	} from '@/utils/util.js'
 	import {
 		useUserStore
@@ -124,6 +125,7 @@
 		},
 		methods: {
 			...mapActions(useUserStore, ['logout']),
+			joinImage,
 			login() {
 				if (this.user.id) {
 					return
@@ -174,6 +176,7 @@
 				border-radius: 50%;
 				box-sizing: border-box;
 				padding: 5px;
+				background-color: #fff;
 			}
 		}
 

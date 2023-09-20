@@ -6,6 +6,7 @@ import {
 	login,
 	logout,
 	updateUserProfile,
+	getUser,
 } from '@/api/user.js'
 import {
 	debug
@@ -66,6 +67,16 @@ export const useUserStore = defineStore('user', {
 						...state.iuser,
 						...profile,
 					}
+				})
+			}
+			return res
+		},
+		async getUser(){
+			const res = await getUser()
+			console.log(res)
+			if(res.statusCode===200){
+				this.$patch(state => {
+					state.iuser = res.data
 				})
 			}
 			return res
