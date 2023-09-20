@@ -8,7 +8,15 @@
 					<image :src="joinImage(user.avatar) || '/static/images/avatar.png'"></image>
 				</view>
 				<view class="userinfo">
-					<view class="username font-lv1 ellipsis-1row">{{user.username || '游客，请登录'}}</view>
+					<view class="username font-lv1 ellipsis-1row">
+						<view>{{user.username || '游客，请登录'}}</view>
+						<button v-if="user.id>0" size="mini" :class="sign.id>0 ? 'signed': ''" :disabled="sign.id>0">
+							<image v-if="sign.id>0" src="/static/images/signed.png"></image>
+							<image v-else src="/static/images/sign.png"></image>
+							<text v-if="sign.id>0">已签到</text>
+							<text v-else>已签到</text>
+						</button>
+					</view>
 					<view class="signature font-lv3 ellipsis-1row">{{user.signature || '暂无个性签名...'}}</view>
 				</view>
 			</view>
@@ -97,6 +105,10 @@
 		joinImage,
 	} from '@/utils/util.js'
 	import {
+		signToday,
+		getSignedToday,
+	} from '@/api/user.js'
+	import {
 		useUserStore
 	} from '@/stores/user.js'
 	import {
@@ -108,7 +120,10 @@
 			return {
 				statusBarHeight: 0,
 				titleBarHeight: 0,
-				loginPage: '/pages/login/login'
+				loginPage: '/pages/login/login',
+				sign: {
+					id: 0
+				}
 			}
 		},
 		components: {
@@ -117,6 +132,9 @@
 		computed: {
 			...mapGetters(useUserStore, ['user'])
 		},
+		created() {
+			this.getSignedToday()
+		},
 		onLoad() {
 			console.log('用户信息', this.user)
 			const sysInfo = getSysInfo()
@@ -124,7 +142,7 @@
 			this.titleBarHeight = sysInfo.titleBarHeight
 		},
 		methods: {
-			...mapActions(useUserStore, ['logout']),
+			...mapActions(useUserStore, ['logout', 'getUser']),
 			joinImage,
 			login() {
 				if (this.user.id) {
@@ -134,15 +152,42 @@
 					url: '/pages/login/login'
 				})
 			},
-			async execLogout(){
+			async execLogout() {
 				const res = await this.logout()
-				if(res.statusCode===200){
+				if (res.statusCode === 200) {
 					toastSuccess('退出登录成功')
-				}else{
+				} else {
 					console.log(res)
 					toastError(res.data.message || '退出登录失败')
 				}
-			}
+			},
+			async getSignedToday() {
+				if (!this.user.id) {
+					return
+				}
+
+				const res = await getSignedToday()
+				if (res.statusCode === 200) {
+					this.sign = res.data || {
+						id: 0
+					}
+				}
+			},
+			async signToday() {
+				const res = await signToday()
+				if (res.statusCode === 200) {
+					const sign = res.data || {
+						id: 1
+					}
+					this.sign = sign
+					this.getUser()
+					toastSuccess(`签到成功，获得 ${sign.award || 0} ${
+			            this.settings.system.credit_name || '魔豆'
+			          }奖励`)
+				} else {
+					totastError(res.message || res.data.message)
+				}
+			},
 		}
 	}
 </script>
@@ -183,6 +228,27 @@
 		.username {
 			font-size: 22px !important;
 			font-weight: bold;
+			display: flex;
+			justify-content: space-between;
+
+			button {
+				width: 95px;
+				border: 0;
+				font-weight: normal;
+				font-size: 13px;
+				display: flex;
+				align-items: center;
+
+				&.signed {
+					color: #ccc;
+				}
+
+				image {
+					width: 15px;
+					height: 15px;
+					margin-right: 5px;
+				}
+			}
 		}
 
 		.signature {

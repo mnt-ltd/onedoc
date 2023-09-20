@@ -3,7 +3,7 @@
 		<mHeader title="登录" />
 		<view class="login">
 			<view class="logo">
-				<image src="/static/logo.png"></image>
+				<image src="/static/images/avatar.png"></image>
 			</view>
 			<view class="item">
 				<view class="label">账号</view>
