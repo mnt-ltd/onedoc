@@ -10,9 +10,6 @@
 </template>
 
 <script>
-	import {
-		setLatestSearchKeywords
-	} from '@/utils/util.js'
 	export default {
 		name: "search",
 		data() {
@@ -66,9 +63,6 @@
 				this.searchWd = wd
 			},
 			search() {
-				if(this.searchWd){
-					setLatestSearchKeywords(this.searchWd)
-				}
 				if (this.target) {
 					uni.navigateTo({
 						url: this.target + "?wd=" + this.searchWd

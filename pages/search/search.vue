@@ -67,7 +67,7 @@
 			return {
 				recommends: [], // 推荐文档
 				downloads: [], // 热门下载
-				latestKeywords: []
+				latestKeywords: [],
 			}
 		},
 		computed: {

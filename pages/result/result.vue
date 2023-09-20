@@ -62,6 +62,9 @@
 		useSettingStore
 	} from '@/stores/settings.js'
 	import {
+		setLatestSearchKeywords
+	} from '@/utils/util.js'
+	import {
 		listDocument,
 		searchDocument
 	} from '@/api/document.js'
@@ -276,7 +279,7 @@
 			changeCategory(e) {
 				this.filter.cateIndex = e.detail.value || 0
 				this.query.page = 1
-				this.query.category_id = this.categories[this.filter.cateIndex].value
+				this.query.category_id = this.categories[this.filter.cateIndex].id
 				this.searchDocuments()
 			},
 			changeDuration(e) {
@@ -289,6 +292,8 @@
 				if (this.query.page === 0) {
 					return
 				}
+				
+				setLatestSearchKeywords(this.query.wd)
 
 				this.loading = true
 				const query = {
@@ -301,7 +306,6 @@
 				delete query.duration
 
 				const res = await searchDocument(query)
-				console.log('search documents', res)
 				if (res.statusCode === 200) {
 					this.total = res.data.total
 					this.spend = res.data.spend
@@ -311,7 +315,11 @@
 						doc.score = doc.score || 300
 						doc.score = doc.score / 100
 						doc.icon = getIcon(doc.ext)
-						doc.cover = joinImage(`/view/cover/${doc.attachment.hash}`)
+						try{
+							doc.cover = joinImage(`/view/cover/${doc.attachment.hash}`)
+						}catch(e){
+							//TODO handle the exception
+						}
 						try {
 							doc.keywords.split(',').map((keyword) => {
 								keyword = keyword.trim()
@@ -329,6 +337,9 @@
 						this.documents.push(...documents)
 					} else {
 						this.documents = documents
+						uni.pageScrollTo({
+							scrollTop: 0
+						})
 					}
 					
 					if (documents.length === 0) {

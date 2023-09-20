@@ -16,7 +16,7 @@ export const formatTime = date => {
 	const minute = date.getMinutes()
 	const second = date.getSeconds()
 
-	return [year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+	return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')
 }
 
 export const timestampToDate = (timestamp) => {
@@ -467,9 +467,14 @@ export const getLatestSearchKeywords = () => {
 
 // 设置搜索词
 export const setLatestSearchKeywords = (keyword) => {
+	
 	let existKeywords = getLatestSearchKeywords()
+	console.log('------',keyword, existKeywords)
 	existKeywords.splice(0, 0, keyword)
-	let newKeywords = Array.from(new Set(existKeywords)).splice(12)
+	console.log(keyword, existKeywords)
+	let newKeywords = Array.from(new Set(existKeywords))
+	newKeywords.splice(12)
+	console.log(keyword, existKeywords, newKeywords)
 	uni.setStorageSync(keyLatestSearchKeywords, JSON.stringify(newKeywords))
 }
 
@@ -511,7 +516,8 @@ export const genTimeDuration = (duration) => {
 		default:
 			return []
 	}
-	return [start.Format(fmt), new Date().Format(fmt)]
+
+	return [formatTime(start), formatTime(new Date())]
 }
 
 
