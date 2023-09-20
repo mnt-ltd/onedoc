@@ -2,7 +2,7 @@
 	<view>
 		<mHeader title="搜索" />
 		<view class="searchbox">
-			<mSearch :wd="query.wd" @clear="goback" @search="search" />
+			<mSearch :wd="query.wd" @search="search" />
 		</view>
 		<view class="filter" :style="`top: ${headerHeight + 60}px`">
 			<view class="row">
@@ -235,9 +235,6 @@
 			this.searchDocuments()
 		},
 		methods: {
-			goback() {
-				uni.navigateBack()
-			},
 			search(e){
 				if(e.wd){
 					this.query = {
