@@ -10,11 +10,11 @@
 				<view class="userinfo">
 					<view class="username font-lv1 ellipsis-1row">
 						<view>{{user.username || '游客，请登录'}}</view>
-						<button v-if="user.id>0" size="mini" :class="sign.id>0 ? 'signed': ''" :disabled="sign.id>0">
+						<button v-if="user.id>0" size="mini" :class="sign.id>0 ? 'signed': ''" :disabled="sign.id>0" @click="signToday">
 							<image v-if="sign.id>0" src="/static/images/signed.png"></image>
 							<image v-else src="/static/images/sign.png"></image>
 							<text v-if="sign.id>0">已签到</text>
-							<text v-else>已签到</text>
+							<text v-else>签到</text>
 						</button>
 					</view>
 					<view class="signature font-lv3 ellipsis-1row">{{user.signature || '暂无个性签名...'}}</view>
@@ -112,6 +112,9 @@
 		useUserStore
 	} from '@/stores/user.js'
 	import {
+		useSettingStore
+	} from '@/stores/settings.js'
+	import {
 		mapGetters,
 		mapActions
 	} from 'pinia'
@@ -130,7 +133,8 @@
 			mHeader
 		},
 		computed: {
-			...mapGetters(useUserStore, ['user'])
+			...mapGetters(useUserStore, ['user']),
+			...mapGetters(useSettingStore,['system'])
 		},
 		created() {
 			this.getSignedToday()
@@ -167,13 +171,21 @@
 				}
 
 				const res = await getSignedToday()
+				console.log('getSignedToday', res)
 				if (res.statusCode === 200) {
 					this.sign = res.data || {
 						id: 0
 					}
+				}else{
+					this.sign = {id:0}
 				}
 			},
 			async signToday() {
+				console.log('signToday', this.user, this.sign)
+				if(!this.user.id || this.sign.id>0){
+					return
+				}
+				
 				const res = await signToday()
 				if (res.statusCode === 200) {
 					const sign = res.data || {
