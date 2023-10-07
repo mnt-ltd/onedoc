@@ -74,7 +74,15 @@
 			if (debug) {
 				console.log('onLoad', 'args', args, 'token', this.token, 'user', this.user)
 			}
-			this.redirect = args.redirect || '/pages/me/me'
+			this.redirect = '/pages/me/me'
+			if (args.redirect) {
+				try {
+					this.redirect = decodeURIComponent(args.redirect)
+				} catch (e) {
+					console.log(e)
+					//TODO handle the exception
+				}
+			}
 			if (this.token || this.user.id !== 0) {
 				// 用户已登录
 				redirectTo(this.redirect)
@@ -83,10 +91,10 @@
 			this.getUserCaptcha()
 		},
 		onShareAppMessage() {
-			
+
 		},
 		onShareTimeline() {
-			
+
 		},
 		methods: {
 			...mapActions(useUserStore, ['loginByPassword']),

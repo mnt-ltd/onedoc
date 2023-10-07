@@ -173,6 +173,15 @@
 		useSettingStore
 	} from '@/stores/settings.js'
 	import {
+		useUserStore
+	} from '@/stores/user.js'
+	import {
+		createOrder
+	} from '@/api/order.js'
+	import {
+		orderTypeBuyVIP
+	} from '@/utils/enum.js'
+	import {
 		mapGetters
 	} from 'pinia'
 	export default {
@@ -182,11 +191,13 @@
 		data() {
 			return {
 				vipType: 'year',
-				vipPrice: 0
+				vipPrice: 0,
+				loading: false,
 			}
 		},
 		computed: {
-			...mapGetters(useSettingStore, ['vip'])
+			...mapGetters(useSettingStore, ['vip']),
+			...mapGetters(useUserStore,['user'])
 		},
 		created() {
 			// 未启用VIP
@@ -217,9 +228,50 @@
 				}
 			},
 			// 购买VIP
-			buyVIP() {
-
-			}
+			async buyVIP() {
+				// 未登录，跳转登录
+				if(!this.user || this.user.id<=0){
+					let redirect= encodeURIComponent('/pages/vip/vip?')
+					uni.navigateTo({
+						url: '/pages/login/login?redirect='+redirect
+					})
+					return
+				}
+				this.loading = true
+				let productId = 0 // 0 年卡，1 季卡，2 月卡
+				switch (this.vipType) {
+					case 'year':
+						this.productId = 0
+						break;
+					case 'quarter':
+						this.productId = 1
+						break;
+					case 'month':
+						this.productId = 2
+						break;
+					default:
+						this.productId = 0
+						break;
+				}
+				// 创建购买VIP订单
+				const res = await createOrder({
+					order_type: orderTypeBuyVIP,
+					product_id: productId,
+				})
+				console.log(res)
+				if (res.statusCode === 200) {
+					// 订单状态为待支付，跳转到支付页面
+					if (res.data.status === 1) {
+						uni.navigateTo({
+							url: '/pages/orderdetail/orderdetail?order_no=' + res.data.order_no,
+						})
+						return
+					}
+				} else {
+					this.$message.error(res.data.message)
+				}
+				this.loading = false
+			},
 		}
 	}
 </script>
@@ -322,26 +374,31 @@
 		width: 100%;
 		left: 0;
 		bottom: 40px;
-		box-shadow: 0 5px 12px 0 #efefef;
+		box-shadow: 0 -6px 6px 0 #efefef;
+
 		.col-6 {
 			display: flex;
 			margin: 5px 0;
+
 			image {
 				width: 36px;
 				height: 36px;
 				border-radius: 50%;
 				overflow: hidden;
 			}
-			&>view{
+
+			&>view {
 				padding-left: 10px;
 				box-sizing: border-box;
 				flex: 1;
-				view{
+
+				view {
 					font-size: 16px;
 					font-weight: bold;
 					line-height: 1;
 				}
-				text{
+
+				text {
 					font-size: 12px;
 					color: #bbb;
 				}

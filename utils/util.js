@@ -121,11 +121,11 @@ export const redirectTo = (uriWithDecode) => {
 		uni.redirectTo({
 			url: uriWithDecode,
 		})
-	} else {
-		uni.switchTab({
-			url: uriWithDecode,
-		})
-	}
+		return
+	} 
+	uni.switchTab({
+		url: uriWithDecode,
+	})
 }
 
 //添加事件结束
