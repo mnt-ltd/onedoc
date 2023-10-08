@@ -33,9 +33,13 @@
 							</view>
 						</view>
 						<view class="row footer">
-							<view class="col-3 primary">支付</view>
-							<view class="col-3 info">查看</view>
-							<view class="col-3 danger">删除</view>
+							<navigator class="col-3 primary" hover-class="none"
+								:url="`/pages/orderdetail/orderdetail?order_no=${row.order_no}`" v-if="row.status===1">
+								支付订单</navigator>
+							<navigator class="col-3 info" hover-class="none"
+								:url="`/pages/orderdetail/orderdetail?order_no=${row.order_no}`">查看订单</navigator>
+							<view class="col-3 danger" v-if="row.status===3" @click="deleteOrder(row)">删除订单</view>
+							<view class="col-3 warning" v-if="row.status===1" @click="closeOrder(row)">关闭订单</view>
 						</view>
 					</view>
 				</view>
@@ -52,6 +56,8 @@
 		getHeaderHeight,
 		relativeTime,
 		formatTime,
+		toastError,
+		toastSuccess,
 	} from '@/utils/util.js'
 	import {
 		useUserStore
@@ -59,6 +65,10 @@
 	import {
 		listUserOrder
 	} from '@/api/user.js'
+	import {
+		closeOrder,
+		deleteOrder,
+	} from '@/api/order.js'
 	import {
 		mapGetters,
 		mapActions
@@ -109,16 +119,47 @@
 				const res = await listUserOrder(this.query)
 				if (res.statusCode === 200) {
 					const orders = res.data.order || []
-					if(this.query.page===1){
+					if (this.query.page === 1) {
 						this.orders = orders
-					}else{
+					} else {
 						this.orders.push(...orders)
 					}
 					if (orders.length === 0) {
 						this.query.page = 0
 					}
 				}
-			}
+			},
+			// 关闭订单
+			async closeOrder(order) {
+				const res = await closeOrder({
+					order_no: order.order_no
+				})
+				if (res.statusCode === 200) {
+					toastSuccess('订单关闭成功')
+					let orders = this.orders.map(item => {
+						if(item.order_no === order.order_no){
+							item.status = 3
+						}
+						return item
+					})
+					this.orders = orders
+				} else {
+					toastError(res.data.message || '关闭订单失败')
+				}
+			},
+			// 删除订单
+			async deleteOrder(order) {
+				const res = await deleteOrder({
+					order_no: order.order_no
+				})
+				if (res.statusCode === 200) {
+					toastSuccess('订单删除成功')
+					let orders = this.orders.filter(item => item.order_no != order.order_no)
+					this.orders = orders
+				} else {
+					toastError(res.data.message || '删除订单失败')
+				}
+			},
 		},
 	}
 </script>
@@ -131,7 +172,7 @@
 		width: 100%;
 		z-index: 999;
 		background-color: $uni-bg-color-grey;
-		
+
 		.col {
 			padding: 10px 0;
 			color: $uni-color-paragraph;
@@ -174,25 +215,28 @@
 				color: $uni-color-primary;
 			}
 		}
-		
-		.body{
+
+		.body {
 			line-height: 40px;
 		}
 	}
-	
-	.btn{
+
+	.btn {
 		border: 1px solid #efefef;
 		border-radius: 3px;
 		padding: 3px 5px;
 		font-size: 10px;
 	}
-	.btn-pay{
+
+	.btn-pay {
 		color: $uni-color-error;
 	}
-	.btn-closed{
+
+	.btn-closed {
 		color: $uni-color-subtitle;
 	}
-	.btn-paid{
+
+	.btn-paid {
 		color: $uni-color-success;
 	}
 
@@ -206,24 +250,28 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
-	
-	.success{
+
+	.success {
 		color: $uni-color-success;
 	}
-	
-	.primary{
+
+	.primary {
 		color: $uni-color-primary;
 	}
-	
-	.danger{
+
+	.danger {
 		color: $uni-color-error;
 	}
-	
-	.info{
-		color: #888;
+
+	.warning {
+		color: $uni-color-warning;
 	}
-	
-	.footer{
+
+	.info {
+		color: #888 !important;
+	}
+
+	.footer {
 		border-top: 1px solid #efefef;
 		font-size: 12px;
 		margin-top: 10px;

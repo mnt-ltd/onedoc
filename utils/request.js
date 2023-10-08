@@ -9,11 +9,12 @@ import {
 // 序列化Get请求数据，以处理query中带数组的情况
 uni.addInterceptor('request', {
 	invoke(args) {
-		const {
+		let {
 			data,
 			method
 		} = args
-		if (String(method) === 'get' || String(method) === 'delete') {
+		method = String(method).toLowerCase()
+		if (method === 'get' || method === 'delete') {
 			args.url = args.url + "?" + qs.stringify(data, {
 				arrayFormat: 'repeat',
 				skipNulls: true
