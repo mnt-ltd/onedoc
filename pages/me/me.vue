@@ -229,7 +229,6 @@
 			image {
 				width: 60px;
 				height: 60px;
-				border: 3px solid #fff;
 				border-radius: 50%;
 				box-sizing: border-box;
 				padding: 5px;

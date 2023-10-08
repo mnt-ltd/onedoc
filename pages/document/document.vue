@@ -2,7 +2,7 @@
 	<view>
 		<mHeader :title="document.title" />
 		<view class="font-lv2 doc-title">
-			<image src="/static/images/pdf_24.png" class="icon-mini"></image>
+			<image :src="`/static/images/${getIcon(document.ext)}_24.png`" class="icon-mini"></image>
 			<text>{{document.title}}</text>
 			<view class="doc-info font-lv4">
 				<view>{{formatBytes(document.size)}}</view>
@@ -38,11 +38,10 @@
 				<view v-else class="text-muted">
 					- 文档已阅读完 -
 				</view>
-				
+
 			</template>
 			<view class="continue-read">
-				<button @click="continueRead"
-					:disabled="!(document.preview - pages.length > 0)">继续阅读</button>
+				<button @click="continueRead" :disabled="!(document.preview - pages.length > 0)">继续阅读</button>
 			</view>
 		</view>
 		<!-- 相关文档 -->
@@ -83,7 +82,7 @@
 				<view>点评</view>
 			</view>
 			<view class="item item-button">
-				<button type="default" class="btn-download">获取文档</button>
+				<button type="default" class="btn-download" @click="buyDocument">获取文档</button>
 			</view>
 		</view>
 	</view>
@@ -100,7 +99,9 @@
 	import formComment from '@/compomnents/formComment.vue'
 	import {
 		getDocument,
-		getRelatedDocuments
+		getRelatedDocuments,
+		downloadDocument,
+		downloadVIPDocument,
 	} from '@/api/document.js'
 	import {
 		formatBytes,
@@ -109,6 +110,7 @@
 		joinImage,
 		toastError,
 		toastSuccess,
+		getIcon,
 	} from '@/utils/util.js'
 	import {
 		useSettingStore,
@@ -116,6 +118,12 @@
 	import {
 		useUserStore
 	} from '@/stores/user.js'
+	import {
+		createOrder
+	} from '@/api/order.js'
+	import {
+		orderTypeBuyDocument
+	} from '@/utils/enum.js'
 	import {
 		mapGetters,
 	} from 'pinia'
@@ -164,9 +172,9 @@
 			])
 		},
 		onShow() {
-			try{
+			try {
 				this.$refs.commentList.getComments()
-			}catch(e){
+			} catch (e) {
 				//TODO handle the exception
 				console.log(e)
 			}
@@ -189,6 +197,7 @@
 			formatBytes,
 			relativeTime,
 			formatView,
+			getIcon,
 			async getDocument() {
 				const res = await getDocument({
 					id: this.args.id,
@@ -238,8 +247,9 @@
 				}
 				let username = ''
 				if (args.user && args.user.username) username = args.user.username
-				let commentURL = `/pages/comment/comment?document_id=${args.document_id}&comment_id=${args.id || 0}&reply_user=${username}`
-				
+				let commentURL =
+					`/pages/comment/comment?document_id=${args.document_id}&comment_id=${args.id || 0}&reply_user=${username}`
+
 				if (!this.user.id) {
 					uni.navigateTo({
 						url: '/pages/user/login?redirect=' + encodeURIComponent(commentURL)
@@ -320,7 +330,68 @@
 						id: 0
 					}
 				}
-			}
+			},
+			// 购买文档
+			// 1. 未登录，跳转到登录
+			// 2. 已购买文档，则提示已购买是否直接下载
+			// 3. 未购买文档
+			// 3.1 VIP用户，弹出VIP额度购买还是直接购买
+			// 3.2 普通用户或者直接购买，则创建购买订单
+			// 4. 跳转订单页面或直接下载
+			async buyDocument() {
+				if (!this.user || this.user.id <= 0) {
+					// 未登录，跳转登录页面
+					let redirect = encodeURIComponent('/pages/document/document?id=' + this.document.id)
+					uni.navigateTo({
+						url: '/pages/login/login?redirect=' + redirect
+					})
+					return
+				}
+
+				// 创建订单
+				const res = await createOrder({
+					order_type: orderTypeBuyDocument,
+					product_id: this.document.id,
+				})
+				if (res.statusCode === 200) {
+					// 订单状态为待支付，跳转到支付页面
+					if (res.data.status === 1) {
+						uni.navigateTo({
+							url: `/pages/orderdetail/orderdetail?order_no=${res.data.order_no}`
+						})
+						return
+					} else if (res.data.status === 2) {
+						toastSuccess('您已购买过该文档，正在为您下载')
+						this.execDownload()
+					}
+				} else {
+					console.log(res)
+					toastError(res.data.message || '获取文档失败')
+				}
+			},
+			async execDownload() {
+				const res = await downloadDocument({
+					id: this.document.id
+				})
+				
+				if (res.statusCode === 200) {
+					let url = res.data.url || ''
+					if (url.indexOf('//')>-1) {
+						url = 'https:' + url
+					}
+					uni.setClipboardData({
+						data: url,
+						success:function(res){
+							uni.showModal({
+								title: '提示',
+								content: '下载链接已复制，请打开浏览器下载'
+							})
+						}
+					})
+				} else {
+					toastError(res.data.message || '下载失败')
+				}
+			},
 		}
 	}
 </script>
@@ -441,6 +512,7 @@
 			flex: 1;
 			border: 0;
 		}
+
 		.item-share {
 			border: 0;
 			background-color: #fff;
@@ -448,6 +520,7 @@
 			line-height: 18px;
 			padding-left: 0;
 			padding-right: 0;
+
 			image {
 				padding: 1px;
 			}
