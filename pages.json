@@ -176,7 +176,7 @@
 			}
 
 		}
-	],
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "moredoc",

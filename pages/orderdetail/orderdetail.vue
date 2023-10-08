@@ -113,13 +113,23 @@
 					</view>
 				</view>
 			</view>
-			<view class="card">
+			<view class="card goods-info">
 				<view class="card-header">
 					商品信息
 				</view>
 				<view class="card-body">
-
+					<!-- 商品卡片 -->
+					<goodsCard :order="order"  v-if="order.order_type === 1" />
+					<!-- VIP卡片 -->
+					<goodsCardVIP :order="order" v-else-if="order.order_type === 2" />
 				</view>
+			</view>
+			<!-- 待支付 -->
+			<view class="card" v-if="order.status === 1">
+				<view class="card-header">
+					支付方式
+				</view>
+				
 			</view>
 		</view>
 	</view>
@@ -127,8 +137,11 @@
 
 <script>
 	import mHeader from '@/compomnents/header.vue'
+	import goodsCard from '@/compomnents/goodsCard.vue'
+	import goodsCardVIP from '@/compomnents/goodsCardVIP.vue'
 	import {
 		getOrder,
+		closeOrder,
 	} from '@/api/order.js'
 	import {
 		useSettingStore
@@ -147,6 +160,8 @@
 	export default {
 		components: {
 			mHeader,
+			goodsCard,
+			goodsCardVIP,
 		},
 		data() {
 			return {
@@ -203,7 +218,15 @@
 		methods: {
 			formatTime,
 			async closeOrder() {
-
+				const res = await closeOrder({
+					order_no: this.orderNO
+				})
+				if(res.statusCode===200){
+					toastSuccess('关闭订单成功')
+					this.getOrder()
+				}else{
+					toastError(res.data.message || '关闭订单失败')
+				}
 			},
 			// 获取订单详情
 			async getOrder() {
@@ -272,7 +295,6 @@
 				}
 
 				text {
-					border: 1px solid red;
 					margin-left: 10px;
 				}
 			}
