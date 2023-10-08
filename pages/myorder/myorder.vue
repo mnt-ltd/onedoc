@@ -11,8 +11,8 @@
 			<template v-if="orders.length>0">
 				<view class="myorder">
 					<view v-for="row in orders" :key="'dy-'+row.id">
-						<view class="title">{{row.product_name}}</view>
-						<view class="row body">
+						<view class="title" @click="go2detail(row)">{{row.product_name}}</view>
+						<view class="row body" @click="go2detail(row)">
 							<view class="col-6">
 								<text class="item">支付状态</text>
 								<text v-if="row.status===1" class="btn btn-pay">待支付</text>
@@ -128,6 +128,11 @@
 						this.query.page = 0
 					}
 				}
+			},
+			go2detail(order){
+				uni.navigateTo({
+					url: '/pages/orderdetail/orderdetail?order_no='+order.order_no
+				})
 			},
 			// 关闭订单
 			async closeOrder(order) {
