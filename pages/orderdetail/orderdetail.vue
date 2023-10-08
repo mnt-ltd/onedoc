@@ -21,7 +21,8 @@
 						<view class="col-3 item-title">商品名称</view>
 						<view class="col-9 item-content">
 							<navigator v-if="order.order_type === 1"
-								:url="`/pages/document/document?id=${order.product_id}`" hover-class="none" class="primary">
+								:url="`/pages/document/document?id=${order.product_id}`" hover-class="none"
+								class="primary">
 								{{order.product_name}}
 							</navigator>
 							<template v-else>{{ order.product_name }}</template>
@@ -119,18 +120,143 @@
 				</view>
 				<view class="card-body">
 					<!-- 商品卡片 -->
-					<goodsCard :order="order"  v-if="order.order_type === 1" />
+					<goodsCard :order="order" v-if="order.order_type === 1" />
 					<!-- VIP卡片 -->
 					<goodsCardVIP :order="order" v-else-if="order.order_type === 2" />
 				</view>
 			</view>
 			<!-- 待支付 -->
-			<view class="card" v-if="order.status === 1">
+			<view class="card payment-type" v-if="order.status === 1">
 				<view class="card-header">
 					支付方式
 				</view>
-				
+				<view class="card-body">
+					<view class="item" :class="paymentType===5 ? 'active':''" @click="changePayment(5)">
+						<view>
+							<view>积分支付</view>
+							<text class="small">剩余 {{ user.credit_count || 0 }}
+								{{ system.credit_name }}</text>
+						</view>
+					</view>
+					<view class="item" :class="paymentType===1 ? 'active':''" @click="changePayment(1)">
+						<view>
+							<view>微信支付</view>
+							<image src="/static/images/pay-wechatpay.png"></image>
+						</view>
+					</view>
+					<view class="item" :class="paymentType===9 ? 'active':''" @click="changePayment(9)">
+						<view>
+							<view>下载码支付</view>
+							<image src="/static/images/pay-downcode.png"></image>
+						</view>
+					</view>
+
+					<view class="row row-pay">
+						<view class="col-7">
+							<view class="price">
+								{{ order.amount || '0' }} {{ system.credit_name
+							          }}
+								<template v-if="system.show_exchange">（
+									<text class="danger">{{
+							                (
+							                  (order.amount || 0) / (system.credit_exchange || 1)
+							                ).toFixed(2)
+							              }}
+										元</text>）</template>
+							</view>
+						</view>
+						<view class="col-5">
+							<button type="warn">支付订单</button>
+						</view>
+					</view>
+				</view>
 			</view>
+
+
+			<!-- <el-card shadow="never" class="mgt-20px" v-if="order.status === 1">
+			      <div slot="header">支付方式</div>
+			      <div class="payment-type">
+			        <el-radio
+			          v-model="paymentType"
+			          class="payment-type-radio"
+			          :label="5"
+			          :disabled="order.amount > user.credit_count"
+			          v-if="order.order_type != 2 || settings.vip.enable_credit_pay"
+			          border
+			        >
+			          积分支付
+			          <small class="el-link el-link--info"
+			            >剩余 {{ user.credit_count || 0 }}
+			            {{ settings.system.credit_name }}</small
+			          > </el-radio
+			        ><el-radio
+			          v-model="paymentType"
+			          class="payment-type-radio"
+			          v-for="item in payments"
+			          :key="'pt-' + item.value"
+			          :label="item.value"
+			          :disabled="
+			            !order.amount ||
+			            (item.name === 'downcode' &&
+			              settings.download.enable_code_download &&
+			              settings.download.max_price > 0 &&
+			              order.amount > settings.download.max_price)
+			          "
+			          v-show="
+			            settings.payment['enable_' + item.name] ||
+			            (item.name === 'downcode' &&
+			              settings.download.enable_code_download &&
+			              order.order_type === 1)
+			          "
+			          border
+			        >
+			          <span v-if="item.name === 'xunhupay'">
+			            {{ settings.payment.xunhupay_name || item.label }}
+			          </span>
+			          <span v-else>{{ item.label }}</span>
+			          <img :src="`/static/images/pay-${item.name}.png`" :alt="item.label" />
+			        </el-radio>
+			      </div>
+			      下载码下载
+			      <div v-if="paymentType === 9">
+			        <div class="downcode-tips">
+			          <div v-html="settings.download.code_tip"></div>
+			        </div>
+			      </div>
+			      <div class="text-right">
+			        输入下载码
+			        <el-input
+			          v-model="downcode"
+			          v-if="paymentType === 9"
+			          placeholder="请输入下载码"
+			          class="downcode"
+			        ></el-input>
+			        <el-button type="text" class="btn-disabled" :disabled="true">
+			          {{ order.amount || '0' }} {{ settings.system.credit_name
+			          }}<template v-if="settings.system.show_exchange"
+			            >（
+			            <span class="el-link el-link--danger price"
+			              >{{
+			                (
+			                  (order.amount || 0) / (settings.system.credit_exchange || 1)
+			                ).toFixed(2)
+			              }}
+			              元</span
+			            >）</template
+			          ></el-button
+			        >
+			        <el-button
+			          type="danger"
+			          :disabled="paymentType === 5 && user.credit_count < order.amount"
+			          @click="payOrder"
+			          :loading="paying"
+			          icon="el-icon-position"
+			          >支付订单</el-button
+			        >
+			      </div>
+			    </el-card> -->
+
+
 		</view>
 	</view>
 </template>
@@ -147,7 +273,11 @@
 		useSettingStore
 	} from '@/stores/settings.js'
 	import {
-		mapGetters
+		useUserStore,
+	} from '@/stores/user.js'
+	import {
+		mapGetters,
+		mapActions,
 	} from 'pinia'
 	import {
 		toastError,
@@ -196,6 +326,7 @@
 		},
 		computed: {
 			...mapGetters(useSettingStore, ['system', 'payment']),
+			...mapGetters(useUserStore, ['user'])
 		},
 		created() {
 			this.paymentTypeMap = paymentTypeOptions.reduce((obj, item) => {
@@ -213,20 +344,24 @@
 			}
 			this.title = `订单: ${args.order_no}`
 			this.orderNO = args.order_no
-			this.getOrder()
+			Promise.all([this.getUser(), this.getOrder()])
 		},
 		methods: {
 			formatTime,
+			...mapActions(useUserStore, ['getUser']),
 			async closeOrder() {
 				const res = await closeOrder({
 					order_no: this.orderNO
 				})
-				if(res.statusCode===200){
+				if (res.statusCode === 200) {
 					toastSuccess('关闭订单成功')
 					this.getOrder()
-				}else{
+				} else {
 					toastError(res.data.message || '关闭订单失败')
 				}
+			},
+			changePayment(paymentType) {
+				this.paymentType = paymentType
 			},
 			// 获取订单详情
 			async getOrder() {
@@ -271,19 +406,19 @@
 		color: $uni-color-primary;
 	}
 
-	.primary{
+	.primary {
 		color: $uni-color-primary;
 	}
-	
-	.info{
+
+	.info {
 		color: $uni-text-color-grey;
 	}
-	
-	.danger{
+
+	.danger {
 		color: $uni-color-error;
 	}
-	
-	.success{
+
+	.success {
 		color: $uni-color-success;
 	}
 
@@ -299,8 +434,9 @@
 				}
 			}
 		}
-		.card-body{
-			.row{
+
+		.card-body {
+			.row {
 				padding: 5px 0;
 			}
 		}
@@ -339,5 +475,75 @@
 		text-decoration: line-through;
 		font-size: 0.9em;
 		color: $uni-text-color-grey;
+	}
+
+	.payment-type {
+		.item {
+			box-sizing: border-box;
+			font-size: 16px;
+			line-height: 25px;
+			margin-bottom: 10px;
+
+			// &:last-of-type{
+			// 	padding-bottom: 0;
+			// }
+			&>view {
+				padding: 10px;
+				padding-left: 30px;
+				border: 1px solid #efefef;
+				display: flex;
+				border-radius: 5px;
+				font-weight: 400;
+				position: relative;
+
+				image {
+					width: 25px;
+					height: 25px;
+				}
+
+				view {
+					flex: 1;
+				}
+
+				text {
+					font-size: 13px;
+					font-weight: normal;
+				}
+
+				&::before {
+					content: "✔";
+					position: absolute;
+					left: 10px;
+					color: $uni-text-color-disable;
+				}
+			}
+
+			&.active {
+				&>view {
+					border: 1px solid $uni-color-success;
+
+					&::before {
+						color: $uni-color-success;
+					}
+				}
+			}
+		}
+	}
+
+	.row-pay {
+		padding: 10px 0 0;
+
+		.price {
+			line-height: 35px;
+			color: $uni-text-color-disable;
+
+			.danger {
+				color: $uni-color-error;
+			}
+		}
+
+		button {
+			font-size: 15px;
+		}
 	}
 </style>
