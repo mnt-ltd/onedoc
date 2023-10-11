@@ -20,11 +20,13 @@
 				<image :src="captcha.captcha" @click="getUserCaptcha" style="height: 50px;width: 150px;"></image>
 			</view>
 			<view class="more">
-				<navigator hover-class="none" class="font-lv3" url="/pages/register/register">注册账号</navigator>
+				<!-- <navigator hover-class="none" class="font-lv3" url="/pages/register/register">注册账号</navigator> -->
 				<navigator hover-class="none" class="font-lv3 findpwd" url="/pages/findpwd/findpwd">忘记密码？</navigator>
 			</view>
 			<button type="warn" class="btn-password-login btn-block" @click="login">密码登录</button>
-			<button type="primary" class="btn-wechat-login btn-block" @click="loginByWechat">微信登录</button>
+			<navigator hover-class="none" class="font-lv3" url="/pages/register/register">
+				<button type="default" class="btn-wechat-login btn-block">注册账号</button>
+			</navigator>
 		</view>
 	</view>
 </template>
@@ -182,15 +184,11 @@
 		.more {
 			color: #666;
 			margin-top: 10px;
-			justify-content: space-around;
+			text-align: right;
 
 			navigator {
 				// width: 100px;
 				display: inline-block;
-			}
-
-			.findpwd {
-				float: right;
 			}
 		}
 

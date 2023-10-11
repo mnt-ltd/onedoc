@@ -7,6 +7,7 @@ import {
 	logout,
 	updateUserProfile,
 	getUser,
+	register,
 } from '@/api/user.js'
 import {
 	debug
@@ -47,10 +48,23 @@ export const useUserStore = defineStore('user', {
 			}
 			return res
 		},
-		async logout(){
+		async register(registerInfo) {
+			const res = await register(registerInfo)
+			if (res.statusCode === 200) {
+				this.$patch(state => {
+					state.itoken = res.data.token || ''
+					state.iuser = {
+						id: 0,
+						...res.data.user
+					}
+				})
+			}
+			return res
+		},
+		async logout() {
 			const res = await logout()
-			if(res.statusCode===200){
-				this.$patch(state=>{
+			if (res.statusCode === 200) {
+				this.$patch(state => {
 					state.itoken = ''
 					state.iuser = {
 						id: 0
@@ -59,9 +73,9 @@ export const useUserStore = defineStore('user', {
 			}
 			return res
 		},
-		async updateUserProfile(profile){
+		async updateUserProfile(profile) {
 			const res = await updateUserProfile(profile)
-			if(res.statusCode===200){
+			if (res.statusCode === 200) {
 				this.$patch(state => {
 					state.iuser = {
 						...state.iuser,
@@ -71,10 +85,10 @@ export const useUserStore = defineStore('user', {
 			}
 			return res
 		},
-		async getUser(){
+		async getUser() {
 			const res = await getUser()
 			console.log(res)
-			if(res.statusCode===200){
+			if (res.statusCode === 200) {
 				this.$patch(state => {
 					state.iuser = res.data
 				})
