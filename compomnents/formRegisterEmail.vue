@@ -1,5 +1,5 @@
 <template>
-	<view class="com-form-register-email">
+	<view>
 		<view class="row">
 			<view class="col-3">邮箱</view>
 			<view class="col-9">

@@ -11,6 +11,7 @@
 				</view>
 			</view>
 			<formRegisterEmail v-if="registerType==='email'" @success="registerSuccess"/>
+			<formRegisterMobile v-if="registerType==='mobile'" @success="registerSuccess"/>
 			<navigator hover-class="none" class="font-lv3" url="/pages/login/login">
 				<button type="default" class="btn-wechat-login btn-block">登录已有账号</button>
 			</navigator>
@@ -21,6 +22,7 @@
 <script>
 	import mHeader from '@/compomnents/header.vue'
 	import formRegisterEmail from '@/compomnents/formRegisterEmail.vue'
+	import formRegisterMobile from '@/compomnents/formRegisterMobile.vue'
 	import {
 		useUserStore
 	} from '@/stores/user.js'
@@ -55,7 +57,7 @@
 				captcha: {
 					enable: false
 				},
-				registerType: 'email',
+				registerType: 'mobile',
 				redirect: ''
 			}
 		},
@@ -66,6 +68,7 @@
 		components: {
 			mHeader,
 			formRegisterEmail,
+			formRegisterMobile,
 		},
 		onLoad(args) {
 			if (debug) {

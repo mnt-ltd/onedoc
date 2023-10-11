@@ -122,7 +122,7 @@ export const redirectTo = (uriWithDecode) => {
 			url: uriWithDecode,
 		})
 		return
-	} 
+	}
 	uni.switchTab({
 		url: uriWithDecode,
 	})
@@ -467,9 +467,9 @@ export const getLatestSearchKeywords = () => {
 
 // 设置搜索词
 export const setLatestSearchKeywords = (keyword) => {
-	
+
 	let existKeywords = getLatestSearchKeywords()
-	console.log('------',keyword, existKeywords)
+	console.log('------', keyword, existKeywords)
 	existKeywords.splice(0, 0, keyword)
 	console.log(keyword, existKeywords)
 	let newKeywords = Array.from(new Set(existKeywords))
@@ -520,6 +520,10 @@ export const genTimeDuration = (duration) => {
 	return [formatTime(start), formatTime(new Date())]
 }
 
+export const isValidMobile = (mobile) => {
+	return /^1[3456789]\d{9}$/.test(mobile)
+}
+
 
 export default {
 	formatTime,
@@ -558,4 +562,5 @@ export default {
 	getLatestSearchKeywords,
 	setLatestSearchKeywords,
 	genTimeDuration,
+	isValidMobile,
 }
