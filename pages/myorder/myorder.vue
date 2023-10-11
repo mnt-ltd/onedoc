@@ -282,7 +282,7 @@
 		margin-top: 10px;
 		padding-top: 5px;
 		line-height: 30px;
-		text-align: center;
+		// text-align: center;
 	}
 
 	.no-more {

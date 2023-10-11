@@ -144,13 +144,26 @@
 							<image src="/static/images/pay-wechatpay.png"></image>
 						</view>
 					</view>
-					<view class="item" :class="paymentType===9 ? 'active':''" @click="changePayment(9)">
+					<view class="item" v-if="download.enable_code_download" :class="paymentType===9 ? 'active':''"
+						@click="changePayment(9)">
 						<view>
 							<view>下载码支付</view>
 							<image src="/static/images/pay-downcode.png"></image>
 						</view>
 					</view>
-
+					<template v-if="paymentType === 9">
+						<view class="downcode-tips">
+							<view v-html="download.code_tip"></view>
+						</view>
+						<view class="row downcode">
+							<view class="col-3">
+								下载码
+							</view>
+							<view class="col-9">
+								<input v-model="downcode" placeholder="请输入下载码"  />
+							</view>
+						</view>
+					</template>
 					<view class="row row-pay">
 						<view class="col-7">
 							<view class="price">
@@ -166,7 +179,7 @@
 							</view>
 						</view>
 						<view class="col-5">
-							<button type="warn">支付订单</button>
+							<button type="warn" @click="payOrder">支付订单</button>
 						</view>
 					</view>
 				</view>
@@ -268,6 +281,7 @@
 	import {
 		getOrder,
 		closeOrder,
+		payOrder,
 	} from '@/api/order.js'
 	import {
 		useSettingStore
@@ -325,7 +339,7 @@
 			}
 		},
 		computed: {
-			...mapGetters(useSettingStore, ['system', 'payment']),
+			...mapGetters(useSettingStore, ['system', 'payment', 'download']),
 			...mapGetters(useUserStore, ['user'])
 		},
 		created() {
@@ -390,6 +404,21 @@
 					uni.navigateBack()
 				}
 			},
+			async payOrder() {
+				const params = {
+					order_no: this.orderNO,
+					payment_type: this.paymentType,
+					downcode: this.downcode,
+				}
+				const res = await payOrder(params)
+				if(res.statusCode===200){
+					this.getOrder()
+					toastSuccess('支付成功')
+				}else{
+					console.log(res)
+					toastError(res.data.message || '支付失败')
+				}
+			}
 		}
 	}
 </script>
@@ -439,6 +468,25 @@
 			.row {
 				padding: 5px 0;
 			}
+		}
+	}
+
+	.downcode-tips {
+		border: 1px dashed #f60;
+		padding: 10px;
+		border-radius: 8px;
+		margin-bottom: 10px;
+		color: $uni-text-color-grey;
+	}
+	
+	.downcode{
+		line-height: 35px;
+		input{
+			border: 1px solid #efefef;
+			border-radius: 5px;
+			padding: 0 10px;
+			line-height: 35px;
+			height: 35px;
 		}
 	}
 
