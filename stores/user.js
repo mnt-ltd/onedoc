@@ -8,6 +8,7 @@ import {
 	updateUserProfile,
 	getUser,
 	register,
+	registerByMobile,
 } from '@/api/user.js'
 import {
 	debug
@@ -50,6 +51,19 @@ export const useUserStore = defineStore('user', {
 		},
 		async register(registerInfo) {
 			const res = await register(registerInfo)
+			if (res.statusCode === 200) {
+				this.$patch(state => {
+					state.itoken = res.data.token || ''
+					state.iuser = {
+						id: 0,
+						...res.data.user
+					}
+				})
+			}
+			return res
+		},
+		async registerByMobile(registerInfo) {
+			const res = await registerByMobile(registerInfo)
 			if (res.statusCode === 200) {
 				this.$patch(state => {
 					state.itoken = res.data.token || ''

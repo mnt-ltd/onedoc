@@ -43,7 +43,7 @@
 				</label>
 			</checkbox-group>
 		</view>
-		<button type="warn" class="btn-block" @click="registerByEmail">注册账号</button>
+		<button type="warn" class="btn-block" @click="register" :loading="loading">注册账号</button>
 	</view>
 </template>
 
@@ -76,9 +76,9 @@
 		data() {
 			return {
 				form: {
-					username: '',
+					mobile: '',
 					password: '',
-					repeat_password: '',
+					code: '',
 					captcha_id: '',
 					captcha: '',
 				},
@@ -89,6 +89,7 @@
 				customPassword: false,
 				leftSeconds: 0,
 				sendSMSLoading: false,
+				loading: false,
 			}
 		},
 		computed: {
@@ -99,7 +100,7 @@
 			this.getUserCaptcha()
 		},
 		methods: {
-			...mapActions(useUserStore, ['register']),
+			...mapActions(useUserStore, ['registerByMobile']),
 			async getUserCaptcha() {
 				const res = await getUserCaptcha({
 					type: 'login'
@@ -117,24 +118,21 @@
 			changeCustomPassword(e) {
 				this.customPassword = e.detail.value.length > 0
 			},
-			async registerByEmail() {
-				const req = {
-					...this.form,
-					captcha_id: this.captcha.id
-				}
-				if (req.password != req.repeat_password) {
-					toastError('两次输入的密码不一致，请重新输入')
-					return
-				}
-
-				delete req.repeat_password
-				const res = await this.register(req)
+			async register() {
+				this.loading = true
+				if (!this.customPassword) this.form.password = ''
+				const res = await this.registerByMobile({
+					code: this.form.code,
+					mobile: this.form.mobile,
+					password: this.form.password,
+				})
 				if (res.statusCode === 200) {
 					toastSuccess('注册成功')
 					this.$emit('success', res)
 				} else {
-					toastError(res.data.message || '登录失败' + res.errMsg)
+					toastError(res.data.message || '注册失败')
 				}
+				this.loading = false
 			},
 			async getUserCaptcha() {
 				const res = await getUserCaptcha({
@@ -172,6 +170,7 @@
 				})
 
 				if (res.statusCode !== 200) {
+					this.getUserCaptcha()
 					toastError(res.data.message || '短信验证码发送失败')
 					return
 				}
@@ -236,8 +235,8 @@
 			display: inline-block;
 		}
 	}
-	
-	checkbox-group{
+
+	checkbox-group {
 		display: inline-block;
 	}
 
