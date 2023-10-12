@@ -19,10 +19,10 @@
 				<input type="text" v-model="form.captcha" placeholder="请输入验证码">
 				<image :src="captcha.captcha" @click="getUserCaptcha" style="height: 50px;width: 150px;"></image>
 			</view>
-			<view class="more">
-				<!-- <navigator hover-class="none" class="font-lv3" url="/pages/register/register">注册账号</navigator> -->
+			<!-- <view class="more">
+				<navigator hover-class="none" class="font-lv3" url="/pages/register/register">注册账号</navigator>
 				<navigator hover-class="none" class="font-lv3 findpwd" url="/pages/findpwd/findpwd">忘记密码？</navigator>
-			</view>
+			</view> -->
 			<button type="warn" class="btn-password-login btn-block" @click="login">密码登录</button>
 			<navigator hover-class="none" class="font-lv3" url="/pages/register/register">
 				<button type="default" class="btn-wechat-login btn-block">注册账号</button>

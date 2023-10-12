@@ -6,12 +6,13 @@
 				<view class="col-3" :class="registerType==='email' ? 'active': ''" @click="changeRegisterType('email')">
 					邮箱注册
 				</view>
-				<view class="col-3" :class="registerType==='mobile' ? 'active': ''" @click="changeRegisterType('mobile')">
+				<view class="col-3" :class="registerType==='mobile' ? 'active': ''"
+					@click="changeRegisterType('mobile')">
 					手机注册
 				</view>
 			</view>
-			<formRegisterEmail v-if="registerType==='email'" @success="registerSuccess"/>
-			<formRegisterMobile v-if="registerType==='mobile'" @success="registerSuccess"/>
+			<formRegisterEmail v-if="registerType==='email'" @success="registerSuccess" />
+			<formRegisterMobile v-if="registerType==='mobile'" @success="registerSuccess" />
 			<navigator hover-class="none" class="font-lv3" url="/pages/login/login">
 				<button type="default" class="btn-wechat-login btn-block">登录已有账号</button>
 			</navigator>
@@ -112,14 +113,14 @@
 					}
 				}
 			},
-			changeRegisterType(typ){
-				this.registerType=typ
+			changeRegisterType(typ) {
+				this.registerType = typ
 			},
 			// 注册成功，直接跳转
-			registerSuccess(){
-				try{
+			registerSuccess() {
+				try {
 					redirectTo(this.redirect)
-				}catch(e){
+				} catch (e) {
 					//TODO handle the exception
 					uni.switchTab({
 						url: this.redirect,
@@ -150,14 +151,18 @@
 </script>
 
 <style lang="scss" scoped>
-	.tabs{
+	.tabs {
 		border-bottom: 1px solid #ddd;
 		line-height: 240%;
-		.col-3{
+		margin-top: 10px;
+		margin-bottom: 10px;
+
+		.col-3 {
 			text-align: center;
 			margin-bottom: -1px;
 			border: 1px solid transparent;
-			&.active{
+
+			&.active {
 				border: 1px solid #ddd;
 				border-bottom: 1px solid $uni-bg-color-grey;
 				border-top-left-radius: 4px;
@@ -165,16 +170,25 @@
 			}
 		}
 	}
+
+	.logo {
+		width: 80px;
+		height: 80px;
+		margin: 20px auto;
+		border-radius: 50%;
+		display: block;
+		border: 2px solid #eee;
+		overflow: hidden;
+
+		image {
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+		}
+	}
+
 	.register {
 		padding: 20px;
-
-		.logo {
-			height: 80px;
-			margin: 20px auto;
-			display: block;
-			border: 2px solid #eee;
-			overflow: hidden;
-		}
 
 		.item {
 			display: flex;
