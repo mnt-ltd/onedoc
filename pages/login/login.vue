@@ -5,25 +5,18 @@
 			<view class="logo">
 				<image src="/static/images/avatar.png"></image>
 			</view>
-			<view class="item">
-				<view class="label">账号</view>
-				<input v-model="form.username" type="text" placeholder="请输入您的用户名、邮箱或手机号码">
+			<view class="row tabs">
+				<view class="col-3" :class="tab==='password' ? 'active': ''" @click="changeTab('password')">
+					密码登录
+				</view>
+				<view class="col-3" :class="tab==='sms' ? 'active': ''" @click="changeTab('sms')">
+					短信登录
+				</view>
 			</view>
-			<view class="item">
-				<view class="label">密码</view>
-				<input v-model="form.password" type="password" placeholder="请输入您的登录密码">
-			</view>
-			<!-- TODO: 实现音视频验证码 -->
-			<view class="item" v-if="captcha.enable">
-				<view class="label">验证码</view>
-				<input type="text" v-model="form.captcha" placeholder="请输入验证码">
-				<image :src="captcha.captcha" @click="getUserCaptcha" style="height: 50px;width: 150px;"></image>
-			</view>
-			<!-- <view class="more">
-				<navigator hover-class="none" class="font-lv3" url="/pages/register/register">注册账号</navigator>
-				<navigator hover-class="none" class="font-lv3 findpwd" url="/pages/findpwd/findpwd">忘记密码？</navigator>
-			</view> -->
-			<button type="warn" class="btn-password-login btn-block" @click="login">密码登录</button>
+			
+			<formLoginPassword v-if="tab==='password'" @success="success"/>
+			<formLoginMobile v-if="tab==='sms'" @success="success"/>
+			
 			<navigator hover-class="none" class="font-lv3" url="/pages/register/register">
 				<button type="default" class="btn-wechat-login btn-block">注册账号</button>
 			</navigator>
@@ -33,6 +26,8 @@
 
 <script>
 	import mHeader from '@/compomnents/header.vue'
+	import formLoginPassword from '@/compomnents/formLoginPassword.vue'
+	import formLoginMobile from '@/compomnents/formLoginMobile.vue'
 	import {
 		useUserStore
 	} from '@/stores/user.js'
@@ -63,14 +58,17 @@
 				captcha: {
 					enable: false
 				},
-				redirect: ''
+				redirect: '',
+				tab: 'password',
 			}
 		},
 		computed: {
 			...mapGetters(useUserStore, ['token', 'user'])
 		},
 		components: {
-			mHeader
+			mHeader,
+			formLoginPassword,
+			formLoginMobile,
 		},
 		onLoad(args) {
 			if (debug) {
@@ -100,6 +98,9 @@
 		},
 		methods: {
 			...mapActions(useUserStore, ['loginByPassword']),
+			changeTab(tab) {
+				this.tab = tab
+			},
 			async getUserCaptcha() {
 				const res = await getUserCaptcha({
 					type: 'login'
@@ -114,28 +115,11 @@
 					}
 				}
 			},
-			async login() {
-				const req = {
-					...this.form,
-					captcha_id: this.captcha.id
-				}
-				const res = await this.loginByPassword(req)
-				if (debug) {
-					console.log('loginByPassword', 'form', this.form, 'req', req, 'res', res, 'redirect', this
-						.redirect)
-				}
-				if (res.statusCode === 200) {
-					toastSuccess('登录成功')
-					setTimeout(() => {
-						redirectTo(this.redirect)
-					}, 2000)
-				} else {
-					toastError(res.data.message || '登录失败' + res.errMsg)
-				}
+			success(){
+				setTimeout(() => {
+					redirectTo(this.redirect)
+				}, 2000)
 			},
-			async loginByWechat() {
-
-			}
 		}
 	}
 </script>
@@ -194,6 +178,26 @@
 
 		button {
 			margin-top: 20px;
+		}
+	}
+
+	.tabs {
+		border-bottom: 1px solid #ddd;
+		line-height: 240%;
+		margin-top: 10px;
+		margin-bottom: 10px;
+
+		.col-3 {
+			text-align: center;
+			margin-bottom: -1px;
+			border: 1px solid transparent;
+
+			&.active {
+				border: 1px solid #ddd;
+				border-bottom: 1px solid $uni-bg-color-grey;
+				border-top-left-radius: 4px;
+				border-top-right-radius: 4px;
+			}
 		}
 	}
 </style>

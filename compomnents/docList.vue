@@ -15,7 +15,7 @@
 					<template v-else>{{doc.title}}</template>
 				</view>
 				<view class="doc-desc font-lv5 ellipsis-1row text-grey">
-					<text v-if="doc.pages>0">{{ doc.pages || '-' }} &nbsp;&nbsp; </text>
+					<text v-if="doc.pages>0">{{ doc.pages || '-' }}页 &nbsp;&nbsp; </text>
 					<text>{{ relativeTime(new Date(doc.created_at)) }} &nbsp;&nbsp; </text>
 					<text>{{ formatBytes(doc.size) }}</text>
 				</view>

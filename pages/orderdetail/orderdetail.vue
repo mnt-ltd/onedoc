@@ -160,7 +160,7 @@
 								下载码
 							</view>
 							<view class="col-9">
-								<input v-model="downcode" placeholder="请输入下载码"  />
+								<input v-model="downcode" placeholder="请输入下载码" />
 							</view>
 						</view>
 					</template>
@@ -405,19 +405,55 @@
 				}
 			},
 			async payOrder() {
+				if (this.paymentType === 1) {
+					// 微信支付
+					this.payOrderByWechat()
+					return
+				}
 				const params = {
 					order_no: this.orderNO,
 					payment_type: this.paymentType,
 					downcode: this.downcode,
 				}
 				const res = await payOrder(params)
-				if(res.statusCode===200){
+				if (res.statusCode === 200) {
 					this.getOrder()
 					toastSuccess('支付成功')
-				}else{
+				} else {
 					console.log(res)
 					toastError(res.data.message || '支付失败')
 				}
+			},
+			async payOrderByWechat() {
+				uni.login({
+					provider: 'weixin',
+					success: async (res) => {
+						console.log(res)
+						const params = {
+							order_no: this.orderNO,
+							payment_type: this.paymentType,
+							minicode: res.code,
+						}
+						console.log(res)
+						const resp = await payOrder(params)
+						if (resp.statusCode !== 200) {
+							toastError(resp.data.message || '发起支付失败')
+							return
+						}
+						console.log(params, resp)
+						uni.requestPayment({
+							provider: 'wxpay',
+							...resp.data.extra,
+							success: (res) => {
+								toastSuccess('支付成功')
+								this.getOrder()
+							},
+							fail: (e)=>{
+								toastError(e.errMsg || '支付失败')
+							}
+						})
+					}
+				})
 			}
 		}
 	}
@@ -478,10 +514,11 @@
 		margin-bottom: 10px;
 		color: $uni-text-color-grey;
 	}
-	
-	.downcode{
+
+	.downcode {
 		line-height: 35px;
-		input{
+
+		input {
 			border: 1px solid #efefef;
 			border-radius: 5px;
 			padding: 0 10px;

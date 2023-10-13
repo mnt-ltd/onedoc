@@ -58,7 +58,7 @@
 				captcha: {
 					enable: false
 				},
-				registerType: 'mobile',
+				registerType: 'email',
 				redirect: ''
 			}
 		},

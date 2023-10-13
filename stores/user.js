@@ -9,6 +9,7 @@ import {
 	getUser,
 	register,
 	registerByMobile,
+	loginByMobile,
 } from '@/api/user.js'
 import {
 	debug
@@ -38,6 +39,19 @@ export const useUserStore = defineStore('user', {
 			if (debug) {
 				console.log('pinia, loginByPassword', res)
 			}
+			if (res.statusCode === 200) {
+				this.$patch(state => {
+					state.itoken = res.data.token || ''
+					state.iuser = {
+						id: 0,
+						...res.data.user
+					}
+				})
+			}
+			return res
+		},
+		async loginByMobile(loginInfo) {
+			const res = await loginByMobile(loginInfo)
 			if (res.statusCode === 200) {
 				this.$patch(state => {
 					state.itoken = res.data.token || ''
