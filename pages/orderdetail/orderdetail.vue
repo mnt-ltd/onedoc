@@ -449,7 +449,7 @@
 								this.getOrder()
 							},
 							fail: (e)=>{
-								toastError(e.errMsg || '支付失败')
+								toastError(resp.data.message || e.errMsg || '支付失败')
 							}
 						})
 					}

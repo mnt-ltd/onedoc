@@ -48,7 +48,7 @@ export const service = (option) => {
 	}
 
 	url = addr.trim() + url
-	if (!header['authorization']) header['authorization'] = 'bearer ' + store.token
+	if (store.token) header['authorization'] = 'bearer ' + store.token
 
 	return new Promise((resolve, reject) => {
 		uni.request({
