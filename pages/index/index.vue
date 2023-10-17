@@ -319,7 +319,7 @@
 	.category {
 		margin-top: 180px;
 		text-align: center;
-		padding: 0 15px;
+		padding: 0 10px;
 		padding-bottom: 0;
 		// border-top-left-radius: 20px;
 		// border-top-right-radius: 20px;
@@ -332,13 +332,13 @@
 	}
 
 	.recommend {
-		padding: 0 15px;
+		padding: 0 10px;
 		border-radius: 8px;
 		line-height: 180%;
 	}
 
 	.banner {
-		padding: 15px 15px 10px;
+		padding: 15px 10px 10px;
 
 		.swiper {
 			border-radius: 8px !important;
@@ -392,6 +392,6 @@
 	}
 
 	.documents {
-		padding: 0 15px;
+		padding: 0 10px;
 	}
 </style>
