@@ -3,7 +3,7 @@
 		<mHeader title="我的VIP" />
 		<template v-if="vips.length>0">
 			<view class="myvip">
-				<view v-for="row in vips" :key="'dy-'+row.id">
+				<view v-for="row in vips" :key="'dy-'+row.id" @click="go2OrderDetail(row.order_no)">
 					<view class="title">月卡VIP</view>
 					<view class="row">
 						<view class="col-6">
@@ -115,6 +115,11 @@
 					}
 					this.vips.push(...vips)
 				}
+			},
+			go2OrderDetail(orderNO){
+				uni.navigateTo({
+					url: '/pages/orderdetail/orderdetail?order_no='+orderNO
+				})
 			}
 		},
 	}

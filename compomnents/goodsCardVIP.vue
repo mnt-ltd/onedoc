@@ -41,7 +41,7 @@
 			// 监听order变化
 			order: {
 				async handler(val) {
-					console.log(this.vip)
+					console.log(this.vip, val)
 					let download = '不限'
 					let discount = '不打折'
 					let frequency = '不限'
@@ -98,8 +98,8 @@
 						if (res.data.download) download = res.data.download
 						if (res.data.discount)
 							discount = `${(res.data.discount / 10).toFixed(1)} 折`
-						if (res.data.joined_at) startTime = formatDatetime(res.data.joined_at)
-						if (res.data.expired_at) endTime = formatDatetime(res.data.expired_at)
+						if (res.data.joined_at) startTime = formatTime(new Date(res.data.joined_at))
+						if (res.data.expired_at) endTime = formatTime(new Date(res.data.expired_at))
 					}
 
 					let descriptions = [{

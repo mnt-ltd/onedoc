@@ -225,14 +225,13 @@
 		.avatar {
 			width: 80px;
 			height: 60px;
-
+			
 			image {
 				width: 60px;
 				height: 60px;
 				border-radius: 50%;
 				box-sizing: border-box;
-				padding: 5px;
-				background-color: #fff;
+				border:2px solid #fff;
 			}
 		}
 

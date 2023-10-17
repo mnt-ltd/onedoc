@@ -52,7 +52,7 @@
 			</swiper>
 		</view>
 		<view class="pdl-15 pdr-15" :class="fixedCategory ? 'fixed-category' : '' "
-			:style="`top: ${searchHeight - 15}px;transition:top 0.2s`">
+			:style="`top: ${searchHeight - 10}px;transition:top 0.2s`">
 			<scroll-view id="scroll-view" class="hor font-lv3" :scroll-left="scrollLeft" scroll-with-animation scroll-x>
 				<view v-for="(doc,idx) in documents" :key="'dc-'+doc.category_id" :data-index="idx" :id="'scroll-'+idx"
 					:class="['scroll-item', idx == activeIndex ? 'active': '']" @click="changeCate">
@@ -309,7 +309,7 @@
 			margin-top: 20px;
 			margin-left: -10px;
 			margin-right: -10px;
-			height: 20px;
+			height: 15px;
 			background-color: $uni-bg-color-grey;
 			border-top-left-radius: 20px;
 			border-top-right-radius: 20px;
@@ -385,6 +385,11 @@
 		width: 100%;
 		box-sizing: border-box;
 		z-index: 999;
+		height: 35px;
+		.scroll-item{
+			height: 35px;
+			line-height: 35px;
+		}
 	}
 
 	.documents-fixed-padding {
