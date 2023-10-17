@@ -3,7 +3,7 @@
 		<view v-for="doc in documents" :key="'dl-' + doc.id" class="row">
 			<navigator class="col-12" hover-class="none" :url="'/pages/document/document?id=' + doc.id">
 				<view class="doc-title font-lv3 font-w400 ellipsis-1row">
-					<image :src="`/static/images/${getIcon(doc.ext)}_24.png`" class="icon-mini" /> {{
+					<image lazy-load :src="`/static/images/${getIcon(doc.ext)}_24.png`" class="icon-mini" /> {{
 					doc.title
 				}}
 				</view>

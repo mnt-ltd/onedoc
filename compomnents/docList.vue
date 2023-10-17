@@ -3,11 +3,11 @@
 		<navigator v-for="doc in documents" :key="'dl-' + doc.id" :url="'/pages/document/document?id=' + doc.id"
 			hover-class="none" class="row">
 			<view class="col-3">
-				<image class="doc-cover" :class="doc.is_vip ? 'doc-cover-vip': ''" :src="doc.cover"></image>
+				<image class="doc-cover" :class="doc.is_vip ? 'doc-cover-vip': ''" :src="doc.cover" lazy-load></image>
 			</view>
 			<view class="col-9">
 				<view class="doc-title font-lv3 font-w400 ellipsis-1row">
-					<image :src="`/static/images/${getIcon(doc.ext)}_24.png`" class="icon-mini" />
+					<image lazy-load :src="`/static/images/${getIcon(doc.ext)}_24.png`" class="icon-mini" />
 					<template v-if="isHtml">
 						<template v-html="doc.title">
 						</template>
@@ -15,7 +15,7 @@
 					<template v-else>{{doc.title}}</template>
 				</view>
 				<view class="doc-desc font-lv5 ellipsis-1row text-grey">
-					<text v-if="doc.pages>0">{{ doc.pages || '-' }}é¡µ &nbsp;&nbsp; </text>
+					<text v-if="doc.pages>0">{{ doc.pages || '-' }}é¡&nbsp;&nbsp; </text>
 					<text>{{ relativeTime(new Date(doc.created_at)) }} &nbsp;&nbsp; </text>
 					<text>{{ formatBytes(doc.size) }}</text>
 				</view>

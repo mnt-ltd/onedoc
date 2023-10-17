@@ -3,7 +3,7 @@
 		<view class='hor'>
 			<block v-for="doc in docs" :key='doc.id'>
 				<navigator :url="'/pages/document/document?id='+ doc.id" hover-class="none">
-					<image class='doc-cover' :src='doc.cover' />
+					<image lazy-load class='doc-cover' :src='doc.cover' />
 					<view class='font-lv4 ellipsis-2row'>{{doc.title}}</view>
 				</navigator>
 			</block>
