@@ -252,7 +252,7 @@
 
 				if (!this.user.id) {
 					uni.navigateTo({
-						url: '/pages/user/login?redirect=' + encodeURIComponent(commentURL)
+						url: '/pages/login/login?redirect=' + encodeURIComponent(commentURL)
 					})
 					return
 				}
@@ -397,10 +397,6 @@
 </script>
 
 <style scoped lang="scss">
-	image {
-		background-color: #fff;
-	}
-
 	.doc-title {
 		padding: 15px;
 		box-sizing: border-box;

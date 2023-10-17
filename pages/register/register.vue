@@ -141,7 +141,7 @@
 					toastSuccess('登录成功')
 					setTimeout(() => {
 						redirectTo(this.redirect)
-					}, 2000)
+					}, 1000)
 				} else {
 					toastError(res.data.message || '登录失败' + res.errMsg)
 				}

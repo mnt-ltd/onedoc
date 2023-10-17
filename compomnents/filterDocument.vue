@@ -45,7 +45,7 @@
 			<docList v-if="documents.length>0" :docs="documents" />
 			<mEmpty v-else/>
 		</view>
-		<view></view>
+		<view>&nbsp;</view>
 	</view>
 </template>
 

@@ -118,7 +118,7 @@
 			success(){
 				setTimeout(() => {
 					redirectTo(this.redirect)
-				}, 2000)
+				}, 1000)
 			},
 		}
 	}
