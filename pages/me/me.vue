@@ -35,21 +35,62 @@
 				</view>
 			</view>
 		</view>
+		<view class="myvip">
+			<view class="card">
+				<view class="card-header">
+					我的VIP
+				</view>
+				<view class="card-body">
+					<view class="row">
+						<view class="col-6">
+							<image src="/static/images/icon/vip-rights-download.png"></image>
+							<view>
+								<view>VIP文档</view>
+								<text>专享免费下载</text>
+							</view>
+						</view>
+						<view class="col-6">
+							<image src="/static/images/icon/vip-rights-identify.png"></image>
+							<view>
+								<view>身份标识</view>
+								<text>彰显尊贵特权</text>
+							</view>
+						</view>
+						<view class="col-6">
+							<image src="/static/images/icon/vip-rights-discount.png"></image>
+							<view>
+								<view>专享折扣</view>
+								<text>非VIP文档优惠下</text>
+							</view>
+						</view>
+						<view class="col-6">
+							<image src="/static/images/icon/vip-rights-ad.png"></image>
+							<view>
+								<view>
+									去广告
+								</view>
+								<text>清爽体验无干扰</text>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
 		<view class="box">
 			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydynamic/mydynamic'">
 				<image src="/static/images/icon/dynamic.png"></image><text>我的动态</text>
 				<image src="/static/images/next.png"></image>
 			</navigator>
-			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myvip/myvip'">
+			<!-- <navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myvip/myvip'">
 				<image src="/static/images/icon/vip.png"></image><text>我的VIP</text>
 				<image src="/static/images/next.png"></image>
-			</navigator>
+			</navigator> -->
 			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myorder/myorder'">
 				<image src="/static/images/icon/order.png"></image><text>我的订单</text>
 				<image src="/static/images/next.png"></image>
 			</navigator>
-		</view>
-		<view class="box">
+	<!-- 	</view>
+		<view class="box"> -->
 			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydoc/mydoc'">
 				<image src="/static/images/icon/document.png"></image><text>我的文档</text>
 				<image src="/static/images/next.png"></image>
@@ -324,6 +365,40 @@
 
 		&:last-of-type {
 			margin-bottom: 0;
+		}
+	}
+	
+	.myvip{
+		padding: 10px;
+		.card{
+			border-radius: 5px;
+			overflow: hidden;
+			.card-header{
+				padding: 10px;
+				background-color: rgb(255, 170, 0);
+				color: #fff;
+			}
+			.card-body{
+				padding: 10px;
+				padding-bottom: 0;
+				background-color: rgb(245,222,194);
+				.col-6{
+					display: flex;
+					margin-bottom: 10px;
+					image{
+						width: 36px;
+						height: 36px;
+						border-radius: 50%;
+					}
+					view{
+						flex: 1;
+						padding-left: 3px;
+					}
+				}
+				text{
+					font-size: 11px;
+				}
+			}
 		}
 	}
 </style>
