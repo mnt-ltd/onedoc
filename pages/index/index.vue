@@ -1,7 +1,7 @@
 <template>
 	<view class="page page-index">
 		<view id="search" class="search" :style="background">
-			<image :src="logo" class="white-image logo" mode="heightFix"></image>
+			<image :src="mpLogo || logo" class="logo" mode="heightFix"></image>
 			<m-search @focus="go2search"></m-search>
 			<view class="radius-block"></view>
 		</view>
@@ -139,6 +139,9 @@
 			...mapGetters(useSettingStore,['system']),
 			logo(){
 				return this.system.logo ? joinImage(this.system.logo) : '/static/images/logo-transparent.png'
+			},
+			mpLogo(){
+				return this.system.mp_logo ? joinImage(this.system.mp_logo) : ''
 			}
 		},
 		mounted() {

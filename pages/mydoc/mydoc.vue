@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<mHeader title="我的文档" />
+		<mHeader title="我的上传" />
 		<view class="box">
 			<template v-if="data.length>0">
 				<doc-list :docs="data"></doc-list>

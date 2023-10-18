@@ -108,7 +108,7 @@
 					<image src="/static/images/icon/order.png"></image><text>我的订单</text>
 				</navigator>
 				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/mydoc/mydoc'">
-					<image src="/static/images/icon/document.png"></image><text>我的文档</text>
+					<image src="/static/images/icon/document.png"></image><text>我的上传</text>
 				</navigator>
 				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/myfavorite/myfavorite'">
 					<image src="/static/images/icon/favorite.png"></image><text>我的收藏</text>
