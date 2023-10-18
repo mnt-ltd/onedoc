@@ -9,7 +9,8 @@
 1. 下载最新的hbuilder
 2. 将 config.example.js 重命名为 config.js，并修改 addr 配置项
 3. 执行 `npm install`，安装相关依赖
-4. 使用hbuilderx开发
+4. 修改`manifest.json`的微信小程序appid为您的微信小程序appid
+5. 使用hbuilderx开发
 
 ## copyright
 
