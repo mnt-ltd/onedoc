@@ -396,6 +396,10 @@ export const isSignedToday = () => {
 // 如果是相对地址，拼接上图片服务器地址
 export const joinImage = (url) => {
 	if (!url) return ''
+	if (url.indexOf('http://')===0 || url.indexOf('https://')===0){
+		return url
+	}
+
 	// 地址中带有 // ，即表示绝对的链接地址
 	if (url.indexOf('//') === 0) {
 		return 'https:'+url
