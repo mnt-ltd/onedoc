@@ -3,7 +3,8 @@
 		<mHeader :title="document.title" />
 		<view class="font-lv2 doc-title">
 			<image :src="`/static/images/${getIcon(document.ext)}_24.png`" class="icon-mini"></image>
-			<text>{{document.title}}</text>
+			<text>{{document.title}}</text> 
+			<image src="/static/images/icon-vip-doc.png" v-if="document.is_vip" class="icon-mini icon-vip" mode="heightFix"></image>
 			<view class="doc-info font-lv4">
 				<view>{{formatBytes(document.size)}}</view>
 				<view>
@@ -82,7 +83,18 @@
 				<view>点评</view>
 			</view>
 			<view class="item item-button">
-				<button type="default" class="btn-download" @click="buyDocument">获取文档</button>
+				<!-- 文档是VIP文档，用户是VIP用户 -->
+				<view class="btns" v-if="user.is_vip && document.is_vip">
+					<view class="row">
+						<view class="col">
+							<button type="warning" class="btn-download" @click="vipDownload">VIP下载</button>
+						</view>
+						<view class="col">
+							<button type="default" class="btn-download" @click="buyDocument">普通下载</button>
+						</view>
+					</view>
+				</view>
+				<button v-else type="default" class="btn-download" @click="buyDocument">获取文档</button>
 			</view>
 		</view>
 	</view>
@@ -240,6 +252,19 @@
 					this.document = document
 				}
 			},
+			async vipDownload(){
+				// VIP用户下载文档
+				  if (!this.user.is_vip) {
+					  toastError('您不是VIP用户，无法使用VIP下载')
+					return
+				  }
+				  const res = await downloadVIPDocument({ id: this.documentId })
+				  if (res.statusCode === 200) {
+					this.copyDownloadURL(res.data.url || '')
+				  } else {
+					toastError(res.data.message || '下载失败')
+				  }
+			},
 			go2comment(comment) {
 				let args = {
 					document_id: this.document.id,
@@ -375,23 +400,25 @@
 				})
 				
 				if (res.statusCode === 200) {
-					let url = res.data.url || ''
-					if (url.indexOf('//')>-1) {
-						url = 'https:' + url
-					}
-					uni.setClipboardData({
-						data: url,
-						success:function(res){
-							uni.showModal({
-								title: '提示',
-								content: '下载链接已复制，请打开浏览器下载'
-							})
-						}
-					})
+					this.copyDownloadURL(res.data.url || '')
 				} else {
 					toastError(res.data.message || '下载失败')
 				}
 			},
+			copyDownloadURL(url){
+				if (url.indexOf('//')>-1) {
+					url = 'https:' + url
+				}
+				uni.setClipboardData({
+					data: url,
+					success:function(res){
+						uni.showModal({
+							title: '提示',
+							content: '下载链接已复制，请打开浏览器下载'
+						})
+					}
+				})
+			}
 		}
 	}
 </script>
@@ -406,6 +433,10 @@
 			margin-right: 5px;
 			height: 20px;
 			width: 20px;
+			&.icon-vip{
+				width: auto;
+				margin-left: 5px;
+			}
 		}
 
 		.doc-info {
@@ -539,6 +570,17 @@
 				border-radius: 8px;
 				color: #fff;
 				font-size: 14px;
+			}
+			.btns{
+				border-radius: 8px;
+				overflow: hidden;
+				.btn-download{
+					border-radius: 0;
+					border: 0;
+					&[type=warning]{
+						background-color: #f60;
+					}
+				}
 			}
 		}
 

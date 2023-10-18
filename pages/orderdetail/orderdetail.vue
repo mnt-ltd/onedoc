@@ -25,6 +25,9 @@
 								class="primary">
 								{{order.product_name}}
 							</navigator>
+							<navigator v-else-if="order.order_type === 2" url="/pages/vip/vip" hover-class="none" class="primary">
+								{{order.product_name}}
+							</navigator>
 							<template v-else>{{ order.product_name }}</template>
 						</view>
 					</view>
@@ -184,92 +187,6 @@
 					</view>
 				</view>
 			</view>
-
-
-			<!-- <el-card shadow="never" class="mgt-20px" v-if="order.status === 1">
-			      <div slot="header">支付方式</div>
-			      <div class="payment-type">
-			        <el-radio
-			          v-model="paymentType"
-			          class="payment-type-radio"
-			          :label="5"
-			          :disabled="order.amount > user.credit_count"
-			          v-if="order.order_type != 2 || settings.vip.enable_credit_pay"
-			          border
-			        >
-			          积分支付
-			          <small class="el-link el-link--info"
-			            >剩余 {{ user.credit_count || 0 }}
-			            {{ settings.system.credit_name }}</small
-			          > </el-radio
-			        ><el-radio
-			          v-model="paymentType"
-			          class="payment-type-radio"
-			          v-for="item in payments"
-			          :key="'pt-' + item.value"
-			          :label="item.value"
-			          :disabled="
-			            !order.amount ||
-			            (item.name === 'downcode' &&
-			              settings.download.enable_code_download &&
-			              settings.download.max_price > 0 &&
-			              order.amount > settings.download.max_price)
-			          "
-			          v-show="
-			            settings.payment['enable_' + item.name] ||
-			            (item.name === 'downcode' &&
-			              settings.download.enable_code_download &&
-			              order.order_type === 1)
-			          "
-			          border
-			        >
-			          <span v-if="item.name === 'xunhupay'">
-			            {{ settings.payment.xunhupay_name || item.label }}
-			          </span>
-			          <span v-else>{{ item.label }}</span>
-			          <img :src="`/static/images/pay-${item.name}.png`" :alt="item.label" />
-			        </el-radio>
-			      </div>
-			      下载码下载
-			      <div v-if="paymentType === 9">
-			        <div class="downcode-tips">
-			          <div v-html="settings.download.code_tip"></div>
-			        </div>
-			      </div>
-			      <div class="text-right">
-			        输入下载码
-			        <el-input
-			          v-model="downcode"
-			          v-if="paymentType === 9"
-			          placeholder="请输入下载码"
-			          class="downcode"
-			        ></el-input>
-			        <el-button type="text" class="btn-disabled" :disabled="true">
-			          {{ order.amount || '0' }} {{ settings.system.credit_name
-			          }}<template v-if="settings.system.show_exchange"
-			            >（
-			            <span class="el-link el-link--danger price"
-			              >{{
-			                (
-			                  (order.amount || 0) / (settings.system.credit_exchange || 1)
-			                ).toFixed(2)
-			              }}
-			              元</span
-			            >）</template
-			          ></el-button
-			        >
-			        <el-button
-			          type="danger"
-			          :disabled="paymentType === 5 && user.credit_count < order.amount"
-			          @click="payOrder"
-			          :loading="paying"
-			          icon="el-icon-position"
-			          >支付订单</el-button
-			        >
-			      </div>
-			    </el-card> -->
-
-
 		</view>
 	</view>
 </template>

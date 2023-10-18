@@ -5,7 +5,10 @@
 				{{item.label}}
 			</view>
 			<view class="col-9 item-content">
-				{{item.value}}
+				<navigator hover-class="none" class="primary" v-if="item.label==='名称'" url="/pages/vip/vip">{{item.value}}</navigator>
+				<template v-else>
+					{{item.value}}
+				</template>
 			</view>
 		</view>
 	</view>

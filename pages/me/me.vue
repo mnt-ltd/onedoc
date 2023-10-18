@@ -4,7 +4,7 @@
 		<view class="user"
 			:style="titleBarHeight>0 && statusBarHeight>0 ? `top: ${titleBarHeight + statusBarHeight}px` : ''">
 			<view @click="login">
-				<view class="avatar">
+				<view class="avatar" :class="user.is_vip ? 'vip-icon': ''">
 					<image :src="joinImage(user.avatar) || '/static/images/avatar.png'"></image>
 				</view>
 				<view class="userinfo">
@@ -36,7 +36,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="myvip">
+		<view class="myvip" v-if="vip.enable">
 			<view class="card" @click="go2vip">
 				<view class="card-header">
 					<template v-if="user.is_vip">
@@ -133,12 +133,6 @@
 				</navigator>
 			</view>
 		</view>
-		
-		<!-- <view class="box">
-			<navigator  class="col-4"  hover-class="none" url="/pages/article/article?identifier=about">
-				<image src="/static/images/icon/info.png"></image><text>关于我们</text>
-			</navigator>
-		</view> -->
 		<view class="logout" v-if="user.id">
 			<view class="row">
 				<view  class="col-12"  @click="execLogout">
@@ -191,13 +185,14 @@
 		},
 		computed: {
 			...mapGetters(useUserStore, ['user']),
-			...mapGetters(useSettingStore, ['system'])
+			...mapGetters(useSettingStore, ['system','vip'])
 		},
-		created() {
-			Promise.all([
-				this.getSignedToday(),
-				this.getActiveUserVIP()
-			])
+		// created() {
+		// 	this.loadData()
+		// },
+		onShow() {
+			// 每次显示时，都要重新加载用户VIP数据和签到数据
+			this.loadData()
 		},
 		onLoad() {
 			console.log('用户信息', this.user)
@@ -215,6 +210,12 @@
 				uni.navigateTo({
 					url: '/pages/login/login'
 				})
+			},
+			loadData(){
+				Promise.all([
+					this.getSignedToday(),
+					this.getActiveUserVIP()
+				])
 			},
 			async execLogout() {
 				const res = await this.logout()
@@ -304,7 +305,21 @@
 		.avatar {
 			width: 80px;
 			height: 60px;
-
+			position: relative;
+			&.vip-icon::after{
+				content: ' ';
+				display: inline-block;
+				width: 16px;
+				height: 16px;
+				box-sizing: border-box;
+				position: absolute;
+				bottom: 0;
+				left: 40px;
+				border-radius: 50%;
+				background-color: #fff;
+				background: url(/static/images/icon-vip.png) no-repeat center center;
+				background-size: cover;
+			}
 			image {
 				width: 60px;
 				height: 60px;
@@ -477,4 +492,5 @@
 			}
 		}
 	}
+	
 </style>
