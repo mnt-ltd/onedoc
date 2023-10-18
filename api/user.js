@@ -149,6 +149,13 @@ export const listUserVIP = (params) => {
   })
 }
 
+export const getActiveUserVIP = () =>{
+	return service({
+	  url: '/api/v1/user/vip/active',
+	  method: 'get',
+	})
+}
+
 export const getUserVIPOrder = (params) => {
   return service({
     url: '/api/v1/user/vip/order',
@@ -188,4 +195,5 @@ export default{
 	getDynamics,
 	listUserVIP,
 	getUserDownloads,
+	getActiveUserVIP,
 }

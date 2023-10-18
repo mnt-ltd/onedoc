@@ -20,7 +20,7 @@
 								<text v-if="row.status===3" class="btn btn-closed">已关闭</text>
 							</view>
 							<view class="col-6">
-								<text class="item">金额(魔豆)</text>
+								<text class="item">金额({{system.credit_name || '积分'}})</text>
 								<text>{{row.price}}</text>
 							</view>
 							<view class="col-12">
@@ -63,6 +63,9 @@
 		useUserStore
 	} from '@/stores/user.js'
 	import {
+		useSettingStore
+	} from '@/stores/settings.js'
+	import {
 		listUserOrder
 	} from '@/api/user.js'
 	import {
@@ -90,7 +93,8 @@
 			}
 		},
 		computed: {
-			...mapGetters(useUserStore, ['user'])
+			...mapGetters(useUserStore, ['user']),
+			...mapGetters(useSettingStore, ['system'])
 		},
 		created() {
 			if (!this.user.id) {

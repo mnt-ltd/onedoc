@@ -397,8 +397,8 @@ export const isSignedToday = () => {
 export const joinImage = (url) => {
 	if (!url) return ''
 	// 地址中带有 // ，即表示绝对的链接地址
-	if (url.indexOf('//') >= 0) {
-		return url
+	if (url.indexOf('//') === 0) {
+		return 'https:'+url
 	}
 	if (url.indexOf('/') === 0) {
 		return addr + url

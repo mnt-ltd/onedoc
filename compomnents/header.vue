@@ -54,7 +54,7 @@
 		props: {
 			title: {
 				type: String,
-				default: '魔豆文库'
+				default: 'loading...'
 			},
 			showIcon: {
 				type: Boolean,

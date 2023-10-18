@@ -6,11 +6,11 @@
 				<image src="/static/images/avatar.png"></image>
 			</view>
 			<view class="row tabs">
-				<view class="col-3" :class="tab==='password' ? 'active': ''" @click="changeTab('password')">
-					密码登录
-				</view>
 				<view class="col-3" :class="tab==='sms' ? 'active': ''" @click="changeTab('sms')">
 					短信登录
+				</view>
+				<view class="col-3" :class="tab==='password' ? 'active': ''" @click="changeTab('password')">
+					密码登录
 				</view>
 			</view>
 			
@@ -59,7 +59,7 @@
 					enable: false
 				},
 				redirect: '',
-				tab: 'password',
+				tab: 'sms',
 			}
 		},
 		computed: {

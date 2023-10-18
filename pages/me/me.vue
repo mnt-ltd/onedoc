@@ -10,7 +10,8 @@
 				<view class="userinfo">
 					<view class="username font-lv1 ellipsis-1row">
 						<view>{{user.username || '游客，请登录'}}</view>
-						<button v-if="user.id>0" size="mini" :class="sign.id>0 ? 'signed': ''" :disabled="sign.id>0" @click="signToday">
+						<button v-if="user.id>0" size="mini" :class="sign.id>0 ? 'signed': ''" :disabled="sign.id>0"
+							@click="signToday">
 							<image v-if="sign.id>0" src="/static/images/signed.png"></image>
 							<image v-else src="/static/images/sign.png"></image>
 							<text v-if="sign.id>0">已签到</text>
@@ -36,42 +37,63 @@
 			</view>
 		</view>
 		<view class="myvip">
-			<view class="card">
+			<view class="card" @click="go2vip">
 				<view class="card-header">
-					我的VIP
+					<template v-if="user.is_vip">
+						<view>我的VIP权益</view>
+					</template>
+					<template v-else>
+						<view>加入VIP会员</view>
+					</template>
 				</view>
 				<view class="card-body">
 					<view class="row">
-						<view class="col-6">
-							<image src="/static/images/icon/vip-rights-download.png"></image>
-							<view>
-								<view>VIP文档</view>
+						<template v-if="user.is_vip && activeVIP.id>0">
+							<view class="col">
+								<view>{{((activeVIP.discount ||0)/10).toFixed(1)}} 折</view>
+								<text>文档折扣</text>
+							</view>
+							<view class="col">
+								<view>{{activeVIP.times || '不限'}} 次/天</view>
+								<text>下载频次</text>
+							</view>
+							<view class="col">
+								<view>{{activeVIP.download || '不限'}}</view>
 								<text>专享免费下载</text>
 							</view>
-						</view>
-						<view class="col-6">
-							<image src="/static/images/icon/vip-rights-identify.png"></image>
-							<view>
-								<view>身份标识</view>
-								<text>彰显尊贵特权</text>
-							</view>
-						</view>
-						<view class="col-6">
-							<image src="/static/images/icon/vip-rights-discount.png"></image>
-							<view>
-								<view>专享折扣</view>
-								<text>非VIP文档优惠下</text>
-							</view>
-						</view>
-						<view class="col-6">
-							<image src="/static/images/icon/vip-rights-ad.png"></image>
-							<view>
+						</template>
+						<template v-else>
+							<view class="col-6">
+								<image src="/static/images/icon/vip-rights-download.png"></image>
 								<view>
-									去广告
+									<view>VIP文档</view>
+									<text>专享免费下载</text>
 								</view>
-								<text>清爽体验无干扰</text>
 							</view>
-						</view>
+							<view class="col-6">
+								<image src="/static/images/icon/vip-rights-identify.png"></image>
+								<view>
+									<view>身份标识</view>
+									<text>彰显尊贵特权</text>
+								</view>
+							</view>
+							<view class="col-6">
+								<image src="/static/images/icon/vip-rights-discount.png"></image>
+								<view>
+									<view>专享折扣</view>
+									<text>非VIP文档优惠下</text>
+								</view>
+							</view>
+							<view class="col-6">
+								<image src="/static/images/icon/vip-rights-ad.png"></image>
+								<view>
+									<view>
+										去广告
+									</view>
+									<text>清爽体验无干扰</text>
+								</view>
+							</view>
+						</template>
 					</view>
 				</view>
 			</view>
@@ -89,7 +111,7 @@
 				<image src="/static/images/icon/order.png"></image><text>我的订单</text>
 				<image src="/static/images/next.png"></image>
 			</navigator>
-	<!-- 	</view>
+			<!-- 	</view>
 		<view class="box"> -->
 			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydoc/mydoc'">
 				<image src="/static/images/icon/document.png"></image><text>我的文档</text>
@@ -148,6 +170,7 @@
 	import {
 		signToday,
 		getSignedToday,
+		getActiveUserVIP,
 	} from '@/api/user.js'
 	import {
 		useUserStore
@@ -167,7 +190,8 @@
 				loginPage: '/pages/login/login',
 				sign: {
 					id: 0
-				}
+				},
+				activeVIP: {},
 			}
 		},
 		components: {
@@ -175,10 +199,13 @@
 		},
 		computed: {
 			...mapGetters(useUserStore, ['user']),
-			...mapGetters(useSettingStore,['system'])
+			...mapGetters(useSettingStore, ['system'])
 		},
 		created() {
-			this.getSignedToday()
+			Promise.all([
+				this.getSignedToday(),
+				this.getActiveUserVIP()
+			])
 		},
 		onLoad() {
 			console.log('用户信息', this.user)
@@ -217,16 +244,18 @@
 					this.sign = res.data || {
 						id: 0
 					}
-				}else{
-					this.sign = {id:0}
+				} else {
+					this.sign = {
+						id: 0
+					}
 				}
 			},
 			async signToday() {
 				console.log('signToday', this.user, this.sign)
-				if(!this.user.id || this.sign.id>0){
+				if (!this.user.id || this.sign.id > 0) {
 					return
 				}
-				
+
 				const res = await signToday()
 				if (res.statusCode === 200) {
 					const sign = res.data || {
@@ -238,9 +267,26 @@
 			            this.settings.system.credit_name || '魔豆'
 			          }奖励`)
 				} else {
-					totastError(res.message || res.data.message)
+					toastError(res.message || res.data.message)
 				}
 			},
+			async getActiveUserVIP() {
+				const res = await getActiveUserVIP()
+				if (res.statusCode === 200) {
+					this.activeVIP = res.data || {}
+				}
+			},
+			go2vip() {
+				if (this.user.is_vip) {
+					uni.navigateTo({
+						url: '/pages/myvip/myvip'
+					})
+				} else {
+					uni.navigateTo({
+						url: '/pages/vip/vip'
+					})
+				}
+			}
 		}
 	}
 </script>
@@ -266,13 +312,13 @@
 		.avatar {
 			width: 80px;
 			height: 60px;
-			
+
 			image {
 				width: 60px;
 				height: 60px;
 				border-radius: 50%;
 				box-sizing: border-box;
-				border:2px solid #fff;
+				border: 2px solid #fff;
 			}
 		}
 
@@ -367,36 +413,56 @@
 			margin-bottom: 0;
 		}
 	}
-	
-	.myvip{
+
+	.myvip {
 		padding: 10px;
-		.card{
+		margin-top: -3px;
+
+		.card {
 			border-radius: 5px;
 			overflow: hidden;
-			.card-header{
+			box-shadow: 0 2px 10px 0 #efefef;
+			.card-header {
 				padding: 10px;
-				background-color: rgb(255, 170, 0);
+				background-color: #f7a46d;
 				color: #fff;
 			}
-			.card-body{
+
+			.card-body {
 				padding: 10px;
 				padding-bottom: 0;
-				background-color: rgb(245,222,194);
-				.col-6{
+				background-color: #fff;
+				
+				.col{
+					text-align: center;
+					margin-bottom: 10px;
+					color: #f60;
+					&:nth-of-type(2){
+						border-left: 1px solid #f1f2f3;
+						border-right: 1px solid #f1f2f3;
+					}
+				}
+
+				.col-6 {
 					display: flex;
 					margin-bottom: 10px;
-					image{
+
+					image {
 						width: 36px;
 						height: 36px;
 						border-radius: 50%;
 					}
-					view{
+
+					view {
 						flex: 1;
 						padding-left: 3px;
+						font-size: 15px;
 					}
 				}
-				text{
+
+				text {
 					font-size: 11px;
+					color: #999;
 				}
 			}
 		}
