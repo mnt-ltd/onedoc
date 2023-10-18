@@ -258,7 +258,7 @@
 					  toastError('您不是VIP用户，无法使用VIP下载')
 					return
 				  }
-				  const res = await downloadVIPDocument({ id: this.documentId })
+				  const res = await downloadVIPDocument({ id: this.args.id })
 				  if (res.statusCode === 200) {
 					this.copyDownloadURL(res.data.url || '')
 				  } else {

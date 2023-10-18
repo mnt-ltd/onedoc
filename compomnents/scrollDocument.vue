@@ -2,8 +2,8 @@
 	<scroll-view scroll-x>
 		<view class='hor'>
 			<block v-for="doc in docs" :key='doc.id'>
-				<navigator :url="'/pages/document/document?id='+ doc.id" hover-class="none">
-					<image lazy-load class='doc-cover' :src='doc.cover' />
+				<navigator :url="'/pages/document/document?id='+ doc.id"  hover-class="none">
+					<image lazy-load class='doc-cover' :src='doc.cover' :class="doc.is_vip ? 'doc-cover-vip': ''" />
 					<view class='font-lv4 ellipsis-2row'>{{doc.title}}</view>
 				</navigator>
 			</block>
