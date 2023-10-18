@@ -98,61 +98,53 @@
 				</view>
 			</view>
 		</view>
-		<view class="box">
-			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydynamic/mydynamic'">
-				<image src="/static/images/icon/dynamic.png"></image><text>我的动态</text>
-				<image src="/static/images/next.png"></image>
-			</navigator>
-			<!-- <navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myvip/myvip'">
-				<image src="/static/images/icon/vip.png"></image><text>我的VIP</text>
-				<image src="/static/images/next.png"></image>
-			</navigator> -->
-			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myorder/myorder'">
-				<image src="/static/images/icon/order.png"></image><text>我的订单</text>
-				<image src="/static/images/next.png"></image>
-			</navigator>
-			<!-- 	</view>
-		<view class="box"> -->
-			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydoc/mydoc'">
-				<image src="/static/images/icon/document.png"></image><text>我的文档</text>
-				<image src="/static/images/next.png"></image>
-			</navigator>
-			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myfavorite/myfavorite'">
-				<image src="/static/images/icon/favorite.png"></image><text>我的收藏</text>
-				<image src="/static/images/next.png"></image>
-			</navigator>
-			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydownload/mydownload'">
-				<image src="/static/images/icon/download.png"></image><text>我的下载</text>
-				<image src="/static/images/next.png"></image>
-			</navigator>
+		
+		<view class="functions">
+			<view class="box row">
+				<navigator class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/mydynamic/mydynamic'">
+					<image src="/static/images/icon/dynamic.png"></image><text>我的动态</text>
+				</navigator>
+				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/myorder/myorder'">
+					<image src="/static/images/icon/order.png"></image><text>我的订单</text>
+				</navigator>
+				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/mydoc/mydoc'">
+					<image src="/static/images/icon/document.png"></image><text>我的文档</text>
+				</navigator>
+				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/myfavorite/myfavorite'">
+					<image src="/static/images/icon/favorite.png"></image><text>我的收藏</text>
+				</navigator>
+				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/mydownload/mydownload'">
+					<image src="/static/images/icon/download.png"></image><text>我的下载</text>
+				</navigator>
+				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/myprofile/myprofile'">
+					<image src="/static/images/user.png"></image>
+					<text>个人资料</text>
+				</navigator>
+				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/editprofile/editprofile'">
+					<image src="/static/images/icon/setting.png"></image>
+					<text>修改资料</text>
+				</navigator>
+				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/editpassword/editpassword'">
+					<image src="/static/images/icon/password.png"></image>
+					<text>修改密码</text>
+				</navigator>
+				<navigator  class="col-4"  hover-class="none" url="/pages/article/article?identifier=about">
+					<image src="/static/images/icon/info.png"></image><text>关于我们</text>
+				</navigator>
+			</view>
 		</view>
-		<view class="box">
-			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myprofile/myprofile'">
-				<image src="/static/images/user.png"></image>
-				<text>个人资料</text>
-				<image src="/static/images/next.png"></image>
-			</navigator>
-			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/editprofile/editprofile'">
-				<image src="/static/images/icon/setting.png"></image>
-				<text>修改资料</text>
-				<image src="/static/images/next.png"></image>
-			</navigator>
-			<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/editpassword/editpassword'">
-				<image src="/static/images/icon/password.png"></image>
-				<text>修改密码</text>
-				<image src="/static/images/next.png"></image>
-			</navigator>
-		</view>
-		<view class="box">
-			<navigator hover-class="none" url="/pages/article/article?identifier=about">
+		
+		<!-- <view class="box">
+			<navigator  class="col-4"  hover-class="none" url="/pages/article/article?identifier=about">
 				<image src="/static/images/icon/info.png"></image><text>关于我们</text>
-				<image src="/static/images/next.png"></image>
 			</navigator>
-		</view>
-		<view class="box" v-if="user.id">
-			<view @click="execLogout">
-				<image src="/static/images/icon/logout.png"></image><text>退出登录</text>
-				<image src="/static/images/next.png"></image>
+		</view> -->
+		<view class="logout" v-if="user.id">
+			<view class="row">
+				<view  class="col-12"  @click="execLogout">
+					<text>退出登录</text>
+					<image src="/static/images/icon/logout.png"></image>
+				</view>
 			</view>
 		</view>
 		<view>&nbsp;</view>
@@ -264,7 +256,7 @@
 					this.sign = sign
 					this.getUser()
 					toastSuccess(`签到成功，获得 ${sign.award || 0} ${
-			            this.settings.system.credit_name || '魔豆'
+			            this.system.credit_name || '魔豆'
 			          }奖励`)
 				} else {
 					toastError(res.message || res.data.message)
@@ -373,50 +365,49 @@
 		}
 	}
 
+	.functions{
+		padding: 10px;
+		.row{
+			box-shadow: 0 2px 10px 0 #efefef;
+			background-color: #fff;
+			border-radius: 5px;
+			overflow: hidden;
+			.col-4{
+				padding: 5px 0;
+				image{
+					display: block;
+				}
+			}
+		}
+	}
+
 	.box {
-		margin-top: 10px;
 		background-color: #fff;
-		padding: 0 15px;
-		font-size: 15px;
-		line-height: 50px;
+		font-size: 14px;
+		line-height: 40px;
 		color: $uni-color-subtitle;
 
 		&>view,
 		&>navigator {
 			border-bottom: 1px solid $uni-bg-color-hover;
-			display: flex;
-			justify-content: space-between;
-
-			text {
-				flex: 1;
-			}
-
+			border-right: 1px solid $uni-bg-color-hover;
+			box-sizing: border-box;
+			display: block;
+			text-align: center;
 			image {
-				width: 20px;
-				height: 20px;
+				width: 35px;
+				height: 35px;
 				vertical-align: middle;
-				margin-right: 0;
 				line-height: 50px;
+				margin: 0 auto;
 				margin-top: 15px;
-
-				&:first-of-type {
-					margin-right: 10px;
-				}
 			}
-
-			&:last-of-type {
-				border-bottom: 0;
-			}
-		}
-
-		&:last-of-type {
-			margin-bottom: 0;
 		}
 	}
 
 	.myvip {
 		padding: 10px;
-		margin-top: -3px;
+		margin-top: 7px;
 
 		.card {
 			border-radius: 5px;
@@ -446,6 +437,7 @@
 				.col-6 {
 					display: flex;
 					margin-bottom: 10px;
+					padding: 5px 0;
 
 					image {
 						width: 36px;
@@ -464,6 +456,24 @@
 					font-size: 11px;
 					color: #999;
 				}
+			}
+		}
+	}
+	.logout{
+		padding: 10px;
+		font-size: 15px;
+		.row{
+			background-color: #fff;
+			padding: 10px;
+			border-radius: 5px;
+			overflow: hidden;
+			box-shadow: 0 2px 10px 0 #efefef;
+			color: #666;
+			image{
+				height: 20px;
+				width: 20px;
+				vertical-align: middle;
+				float: right;
 			}
 		}
 	}

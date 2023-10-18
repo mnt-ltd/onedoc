@@ -2,17 +2,20 @@
 	<view>
 		<mHeader title="注册" />
 		<view class="register">
-			<view class="row tabs" v-if="system.enable_sms">
-				<view class="col-3" :class="registerType==='email' ? 'active': ''" @click="changeRegisterType('email')">
-					邮箱注册
+			<template  v-if="system.enable_sms">
+				<view class="row tabs">
+					<view class="col-3" :class="registerType==='mobile' ? 'active': ''"
+						@click="changeRegisterType('mobile')">
+						手机注册
+					</view>
+					<view class="col-3" :class="registerType==='email' ? 'active': ''" @click="changeRegisterType('email')">
+						邮箱注册
+					</view>
 				</view>
-				<view class="col-3" :class="registerType==='mobile' ? 'active': ''"
-					@click="changeRegisterType('mobile')">
-					手机注册
-				</view>
-			</view>
-			<formRegisterEmail v-if="registerType==='email'" @success="registerSuccess" />
-			<formRegisterMobile v-if="registerType==='mobile'" @success="registerSuccess" />
+				<formRegisterEmail v-if="registerType==='email'" @success="registerSuccess" />
+				<formRegisterMobile v-if="registerType==='mobile'" @success="registerSuccess" />
+			</template>
+			<formRegisterEmail v-else @success="registerSuccess" />
 			<navigator hover-class="none" class="font-lv3" url="/pages/login/login">
 				<button type="default" class="btn-wechat-login btn-block">登录已有账号</button>
 			</navigator>
@@ -58,7 +61,7 @@
 				captcha: {
 					enable: false
 				},
-				registerType: 'email',
+				registerType: 'mobile',
 				redirect: ''
 			}
 		},

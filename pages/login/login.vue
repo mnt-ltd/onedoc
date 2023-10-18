@@ -5,18 +5,19 @@
 			<view class="logo">
 				<image src="/static/images/avatar.png"></image>
 			</view>
-			<view class="row tabs">
-				<view class="col-3" :class="tab==='sms' ? 'active': ''" @click="changeTab('sms')">
-					短信登录
+			<template v-if="system.enable_sms">
+				<view class="row tabs">
+					<view class="col-3" :class="tab==='sms' ? 'active': ''" @click="changeTab('sms')">
+						短信登录
+					</view>
+					<view class="col-3" :class="tab==='password' ? 'active': ''" @click="changeTab('password')">
+						密码登录
+					</view>
 				</view>
-				<view class="col-3" :class="tab==='password' ? 'active': ''" @click="changeTab('password')">
-					密码登录
-				</view>
-			</view>
-			
-			<formLoginPassword v-if="tab==='password'" @success="success"/>
-			<formLoginMobile v-if="tab==='sms'" @success="success"/>
-			
+				<formLoginPassword v-if="tab==='password'" @success="success"/>
+				<formLoginMobile v-if="tab==='sms'" @success="success"/>
+			</template>
+			<formLoginPassword v-else @success="success"/>
 			<navigator hover-class="none" class="font-lv3" url="/pages/register/register">
 				<button type="default" class="btn-wechat-login btn-block">注册账号</button>
 			</navigator>
@@ -46,6 +47,7 @@
 		toastSuccess,
 		redirectTo,
 	} from '@/utils/util.js'
+	import { useSettingStore } from '@/stores/settings'
 	export default {
 		data() {
 			return {
@@ -63,7 +65,8 @@
 			}
 		},
 		computed: {
-			...mapGetters(useUserStore, ['token', 'user'])
+			...mapGetters(useUserStore, ['token', 'user']),
+			...mapGetters(useSettingStore, ['system'])
 		},
 		components: {
 			mHeader,
@@ -191,7 +194,7 @@
 			text-align: center;
 			margin-bottom: -1px;
 			border: 1px solid transparent;
-
+		
 			&.active {
 				border: 1px solid #ddd;
 				border-bottom: 1px solid $uni-bg-color-grey;

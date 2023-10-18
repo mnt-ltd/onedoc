@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<filterDocument :args="args" />
+		<filterDocument :args="args" :base-height="30" />
 	</view>
 </template>
 <script>
