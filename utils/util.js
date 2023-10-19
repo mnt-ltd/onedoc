@@ -396,13 +396,13 @@ export const isSignedToday = () => {
 // 如果是相对地址，拼接上图片服务器地址
 export const joinImage = (url) => {
 	if (!url) return ''
-	if (url.indexOf('http://')===0 || url.indexOf('https://')===0){
+	if (url.indexOf('http://') === 0 || url.indexOf('https://') === 0) {
 		return url
 	}
 
 	// 地址中带有 // ，即表示绝对的链接地址
 	if (url.indexOf('//') === 0) {
-		return 'https:'+url
+		return 'https:' + url
 	}
 	if (url.indexOf('/') === 0) {
 		return addr + url
@@ -529,6 +529,43 @@ export const isValidMobile = (mobile) => {
 }
 
 
+export const downloadFile = (url, filename) => {
+	if (url.indexOf('//')===0) {
+		url = 'https:' + url
+	}
+
+	uni.showLoading({
+		title: '下载中...'
+	})
+
+
+	let downloadTask = uni.downloadFile({
+		url: url,
+		success(res) {
+			uni.shareFileMessage({
+				filePath: res.tempFilePath,
+				fileName: filename
+			})
+		},
+		fail(e) {
+			toastError(e.errMsg || '下载失败')
+		},
+		complete() {
+			uni.hideLoading()
+		}
+	})
+	downloadTask.onProgressUpdate((res) => {
+		uni.showLoading({
+			title: `下载 ${res.progress}%`
+		})
+		if (res.progress >= 100) {
+			uni.hideLoading()
+		}
+	});
+	return downloadTask
+}
+
+
 export default {
 	formatTime,
 	now,
@@ -567,4 +604,5 @@ export default {
 	setLatestSearchKeywords,
 	genTimeDuration,
 	isValidMobile,
+	downloadFile,
 }

@@ -76,6 +76,7 @@
 	import {
 		formatBytes,
 		formatTime,
+		downloadFile,
 	} from '@/utils/util.js'
 	import {
 		getDocument,
@@ -113,10 +114,18 @@
 			return {
 				document: {},
 				loading: false,
+				downloadTask: null,
 			}
 		},
 		computed: {
 			...mapGetters(useSettingStore, ['download'])
+		},
+		onUnload() {
+			try{
+				this.downloadTask.abort()
+			}catch(e){
+				//TODO handle the exception
+			}
 		},
 		methods: {
 			formatBytes,
@@ -160,18 +169,10 @@
 
 				if (res.statusCode === 200) {
 					let url = res.data.url || ''
-					if (url.indexOf('//') > -1) {
+					if (url.indexOf('//') ===0) {
 						url = 'https:' + url
 					}
-					uni.setClipboardData({
-						data: url,
-						success: function(res) {
-							uni.showModal({
-								title: '提示',
-								content: '下载链接已复制，请打开浏览器下载'
-							})
-						}
-					})
+					this.downloadTask = downloadFile(url, this.document.title+this.document.ext)
 				} else {
 					toastError(res.data.message || '下载失败')
 				}

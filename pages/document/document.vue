@@ -3,8 +3,9 @@
 		<mHeader :title="document.title" />
 		<view class="font-lv2 doc-title">
 			<image :src="`/static/images/${getIcon(document.ext)}_24.png`" class="icon-mini"></image>
-			<text>{{document.title}}</text> 
-			<image src="/static/images/icon-vip-doc.png" v-if="document.is_vip" class="icon-mini icon-vip" mode="heightFix"></image>
+			<text>{{document.title}}</text>
+			<image src="/static/images/icon-vip-doc.png" v-if="document.is_vip" class="icon-mini icon-vip"
+				mode="heightFix"></image>
 			<view class="doc-info font-lv4">
 				<view>{{formatBytes(document.size)}}</view>
 				<view>
@@ -19,8 +20,8 @@
 				</view> -->
 				<view class="author" v-if="document.user">
 					<!-- <navigator hover-class="none" :url="'/pages/user/user?id='+document.user.id"> -->
-						<image src="/static/images/user.png"></image> 
-						<text>{{document.user.username || '-'}}</text>
+					<image src="/static/images/user.png"></image>
+					<text>{{document.user.username || '-'}}</text>
 					<!-- </navigator> -->
 				</view>
 			</view>
@@ -123,6 +124,7 @@
 		toastError,
 		toastSuccess,
 		getIcon,
+		downloadFile,
 	} from '@/utils/util.js'
 	import {
 		useSettingStore,
@@ -160,6 +162,7 @@
 					id: 0
 				},
 				comment: {},
+				downloadTask: null,
 			}
 		},
 		components: {
@@ -189,6 +192,14 @@
 			} catch (e) {
 				//TODO handle the exception
 				console.log(e)
+			}
+		},
+		onUnload() {
+			try {
+				// 取消下载
+				this.downloadTask.abort()
+			} catch (e) {
+				//TODO handle the exception
 			}
 		},
 		onShareAppMessage() {
@@ -252,18 +263,29 @@
 					this.document = document
 				}
 			},
-			async vipDownload(){
+			async vipDownload() {
 				// VIP用户下载文档
-				  if (!this.user.is_vip) {
-					  toastError('您不是VIP用户，无法使用VIP下载')
+				if (!this.user.is_vip) {
+					toastError('您不是VIP用户，无法使用VIP下载')
 					return
-				  }
-				  const res = await downloadVIPDocument({ id: this.args.id })
-				  if (res.statusCode === 200) {
-					this.copyDownloadURL(res.data.url || '')
-				  } else {
-					toastError(res.data.message || '下载失败')
-				  }
+				}
+
+				uni.showModal({
+					title: '温馨提示',
+					content: '使用VIP下载将会消耗您的免费下载额度，您确定要使用VIP下载吗？',
+					success: async (res)=> {
+						if (res.confirm) {
+							const res = await downloadVIPDocument({
+								id: this.args.id
+							})
+							if (res.statusCode === 200) {
+								this.downloadTask = downloadFile(res.data.url, this.document.title + this.document.ext)
+							} else {
+								toastError(res.data.message || '下载失败')
+							}
+						}
+					}
+				})
 			},
 			go2comment(comment) {
 				let args = {
@@ -398,27 +420,12 @@
 				const res = await downloadDocument({
 					id: this.document.id
 				})
-				
 				if (res.statusCode === 200) {
-					this.copyDownloadURL(res.data.url || '')
+					this.downloadTask = downloadFile(res.data.url, this.document.title + this.document.ext)
 				} else {
 					toastError(res.data.message || '下载失败')
 				}
 			},
-			copyDownloadURL(url){
-				if (url.indexOf('//')>-1) {
-					url = 'https:' + url
-				}
-				uni.setClipboardData({
-					data: url,
-					success:function(res){
-						uni.showModal({
-							title: '提示',
-							content: '下载链接已复制，请打开浏览器下载'
-						})
-					}
-				})
-			}
 		}
 	}
 </script>
@@ -433,7 +440,8 @@
 			margin-right: 5px;
 			height: 20px;
 			width: 20px;
-			&.icon-vip{
+
+			&.icon-vip {
 				width: auto;
 				margin-left: 5px;
 			}
@@ -571,13 +579,16 @@
 				color: #fff;
 				font-size: 14px;
 			}
-			.btns{
+
+			.btns {
 				border-radius: 8px;
 				overflow: hidden;
-				.btn-download{
+
+				.btn-download {
 					border-radius: 0;
 					border: 0;
-					&[type=warning]{
+
+					&[type=warning] {
 						background-color: #f60;
 					}
 				}
