@@ -4,7 +4,11 @@
 		<template v-if="vips.length>0">
 			<view class="myvip">
 				<view v-for="row in vips" :key="'dy-'+row.id" @click="go2OrderDetail(row.order_no)">
-					<view class="title">月卡VIP</view>
+					<view class="title">
+						<text v-if="row.type===2">月卡</text>
+						<text v-else-if="row.type===1">季卡</text>
+						<text v-else>年卡</text>
+					</view>
 					<view class="row">
 						<view class="col-6">
 							<text class="item">专享下载</text>

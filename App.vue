@@ -3,18 +3,32 @@
 		useSettingStore
 	} from '@/stores/settings.js'
 	import {
-		mapActions
+		useUserStore
+	} from '@/stores/user.js'
+	import {
+		mapActions,
+		mapGetters,
 	} from 'pinia'
 	export default {
 		async onLaunch() {
 			const res = await this.getSettings()
-			console.log('App Launch', res)
+			console.log('App Launch', res, this.security)
+			// 需要登录才能访问，且没登录，则跳转到登录页面
+			if(this.security.login_required && !this.user.id){
+				uni.redirectTo({
+					url: '/pages/login/login'
+				})
+			}
 		},
 		onShow: function() {
 			console.log('App Show')
 		},
 		onHide: function() {
 			console.log('App Hide')
+		},
+		computed:{
+			...mapGetters(useSettingStore, ['security']),
+			...mapGetters(useUserStore, ['user'])
 		},
 		methods:{
 			...mapActions(useSettingStore,['getSettings'])

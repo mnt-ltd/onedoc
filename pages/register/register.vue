@@ -16,7 +16,7 @@
 				<formRegisterMobile v-if="registerType==='mobile'" @success="registerSuccess" />
 			</template>
 			<formRegisterEmail v-else @success="registerSuccess" />
-			<navigator hover-class="none" class="font-lv3" url="/pages/login/login">
+			<navigator hover-class="none" class="font-lv3" :url="`/pages/login/login?redirect=${redirect}`">
 				<button type="default" class="btn-wechat-login btn-block">登录已有账号</button>
 			</navigator>
 		</view>
@@ -67,7 +67,7 @@
 		},
 		computed: {
 			...mapGetters(useUserStore, ['token', 'user']),
-			...mapGetters(useSettingStore, ['system']),
+			...mapGetters(useSettingStore, ['system', 'security']),
 		},
 		components: {
 			mHeader,
@@ -87,8 +87,13 @@
 					//TODO handle the exception
 				}
 			}
-			if (this.token || this.user.id !== 0) {
-				// 用户已登录
+			
+			if(!this.security.enable_register){
+				toastError('站点未开放注册')
+				return
+			}
+			
+			if (this.token || this.user.id !== 0) { // 用户已登录
 				redirectTo(this.redirect)
 				return
 			}

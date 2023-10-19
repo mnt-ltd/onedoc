@@ -41,6 +41,12 @@
 <script>
 	import util from '@/utils/util.js'
 	import config from '@/config.js'
+	import {
+		useSettingStore
+	} from '@/stores/settings.js'
+	import {
+		mapGetters
+	} from 'pinia'
 	export default {
 		data() {
 			return {
@@ -96,10 +102,6 @@
 			let bottom = titleBarHeight - 16 - top
 			that.iconPadding = `padding-top: ${top}px;padding-bottom: ${bottom}px;`
 			that.lineMargin = `margin-top: ${top}px`
-
-			// #ifdef APP-PLUS
-			that.showShare = true
-			// #endif
 		},
 		watch:{
 			title: {
@@ -111,6 +113,12 @@
 				immediate: true,
 				deep: true,
 			}
+		},
+		computed:{
+			...mapGetters(useSettingStore, ['security'])
+		},
+		onShow() {
+			console.log('header onshow')
 		},
 		methods: {
 			headerBack() {

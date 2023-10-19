@@ -18,7 +18,8 @@
 				<formLoginMobile v-if="tab==='sms'" @success="success"/>
 			</template>
 			<formLoginPassword v-else @success="success"/>
-			<navigator hover-class="none" class="font-lv3" url="/pages/register/register">
+			<!-- 开放注册才显示注册按钮 -->
+			<navigator hover-class="none" class="font-lv3" v-if="security.enable_register" :url="`/pages/register/register?redirect=${redirect}`">
 				<button type="default" class="btn-wechat-login btn-block">注册账号</button>
 			</navigator>
 		</view>
@@ -66,7 +67,7 @@
 		},
 		computed: {
 			...mapGetters(useUserStore, ['token', 'user']),
-			...mapGetters(useSettingStore, ['system'])
+			...mapGetters(useSettingStore, ['system', 'security'])
 		},
 		components: {
 			mHeader,

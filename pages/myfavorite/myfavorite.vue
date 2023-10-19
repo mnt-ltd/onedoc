@@ -80,7 +80,8 @@
 				const res = await listFavorite(query)
 				if (res.statusCode === 200) {
 					const data = (res.data.favorite || []).map(item => {
-						// item.cover = `/view/cover/${item.attachment.hash}`;
+						// 使用的是文档组件，所以这里要将document_id赋值给favorite.id
+						item.id = item.document_id
 						return item;
 					})
 					if (this.query.page === 1) {
