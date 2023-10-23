@@ -107,6 +107,9 @@
 				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/myorder/myorder'">
 					<image src="/static/images/icon/order.png"></image><text>我的订单</text>
 				</navigator>
+				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/bought/bought'">
+					<image src="/static/images/icon/bought.png"></image><text>已购文档</text>
+				</navigator>
 				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/mydoc/mydoc'">
 					<image src="/static/images/icon/document.png"></image><text>我的上传</text>
 				</navigator>
@@ -128,19 +131,25 @@
 					<image src="/static/images/icon/password.png"></image>
 					<text>修改密码</text>
 				</navigator>
+				<navigator  class="col-4"  hover-class="none" url="/pages/article/article?identifier=agreement">
+					<image src="/static/images/icon/agreement.png"></image><text>文库协议</text>
+				</navigator>
 				<navigator  class="col-4"  hover-class="none" url="/pages/article/article?identifier=about">
 					<image src="/static/images/icon/info.png"></image><text>关于我们</text>
 				</navigator>
+				<view  class="col-4" @click="execLogout" v-if="user.id">
+					<image src="/static/images/icon/logout.png"></image><text>退出登录</text>
+				</view>
 			</view>
 		</view>
-		<view class="logout" v-if="user.id">
+		<!-- <view class="logout" v-if="user.id">
 			<view class="row">
 				<view  class="col-12"  @click="execLogout">
 					<text>退出登录</text>
 					<image src="/static/images/icon/logout.png"></image>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		<view>&nbsp;</view>
 	</view>
 </template>
@@ -256,9 +265,10 @@
 					}
 					this.sign = sign
 					this.getUser()
-					toastSuccess(`签到成功，获得 ${sign.award || 0} ${
-			            this.system.credit_name || '魔豆'
-			          }奖励`)
+					toastSuccess(`签到成功`)
+					//toastSuccess(`签到成功，获得 ${sign.award || 0} ${
+					//		this.system.credit_name || '魔豆'
+					//}奖励`)
 				} else {
 					toastError(res.message || res.data.message)
 				}

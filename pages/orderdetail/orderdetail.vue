@@ -134,17 +134,17 @@
 					支付方式
 				</view>
 				<view class="card-body">
+					<view class="item" :class="paymentType===1 ? 'active':''" v-if="payment.enable_mp_wechatpay" @click="changePayment(1)">
+						<view>
+							<view>微信支付</view>
+							<image src="/static/images/pay-wechatpay.png"></image>
+						</view>
+					</view>
 					<view class="item" :class="paymentType===5 ? 'active':''" @click="changePayment(5)">
 						<view>
 							<view>积分支付</view>
 							<text class="small">剩余 {{ user.credit_count || 0 }}
 								{{ system.credit_name }}</text>
-						</view>
-					</view>
-					<view class="item" :class="paymentType===1 ? 'active':''" @click="changePayment(1)">
-						<view>
-							<view>微信支付</view>
-							<image src="/static/images/pay-wechatpay.png"></image>
 						</view>
 					</view>
 					<view class="item" v-if="download.enable_code_download" :class="paymentType===9 ? 'active':''"
@@ -276,6 +276,9 @@
 			this.title = `订单: ${args.order_no}`
 			this.orderNO = args.order_no
 			Promise.all([this.getUser(), this.getOrder()])
+			if(this.payment.enable_mp_wechatpay){ // 微信支付
+				this.paymentType = 1
+			}
 		},
 		methods: {
 			formatTime,

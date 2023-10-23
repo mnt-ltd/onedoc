@@ -8,73 +8,73 @@
 		},{
 			"path": "pages/me/me",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "个人中心",
 				"enablePullDownRefresh": false
 			}
 		},{
 			"path": "pages/login/login",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "用户登录",
 				"enablePullDownRefresh": false
 			}
 		}, {
 			"path": "pages/register/register",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "用户注册",
 				"enablePullDownRefresh": false
 			}
 		
 		}, {
 			"path": "pages/myorder/myorder",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "我的订单",
 				"enablePullDownRefresh": false
 			}
 		}, {
 			"path": "pages/vip/vip",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "加入VIP",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/search/search",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "搜索",
 				"enablePullDownRefresh": false
 			}
 		}, {
 			"path": "pages/myprofile/myprofile",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "个人资料",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/mydownload/mydownload",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "我的下载",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/myfavorite/myfavorite",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "我的收藏",
 				"enablePullDownRefresh": false
 			}
 
 		},  {
 			"path": "pages/myvip/myvip",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "我的VIP",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/mydynamic/mydynamic",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "我的动态",
 				"enablePullDownRefresh": false
 			}
 
@@ -88,14 +88,14 @@
 		}, {
 			"path": "pages/upload/upload",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "上传文档",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/findpassword/findpassword",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "找回密码",
 				"enablePullDownRefresh": false
 			}
 		}, {
@@ -108,74 +108,83 @@
 		}, {
 			"path": "pages/user/user",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "用户",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/findpwd/findpwd",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "找回密码",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/mydoc/mydoc",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "我的上传",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/article/article",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "文章",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/editprofile/editprofile",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "修改资料",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/editpassword/editpassword",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "修改密码",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/orderdetail/orderdetail",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "订单详情",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/category/category",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "文档分类",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/comment/comment",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "文档点评",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/result/result",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "搜索结果",
 				"enablePullDownRefresh": false
 			}
 
 		}
+        ,{
+            "path" : "pages/bought/bought",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "已购文档",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
