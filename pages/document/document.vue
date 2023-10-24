@@ -176,9 +176,11 @@
 			if (debug) {
 				console.log('onLoad args', args)
 			}
+			const id = args.id || args.scene
 			this.args = {
 				...this.args,
-				...args
+				...args,
+				id,
 			}
 			Promise.all([
 				this.getDocument(),

@@ -21,6 +21,7 @@
 			</template>
 			<mEmpty v-else />
 		</view>
+		<view>&nbsp;</view>
 	</view>
 </template>
 
@@ -62,8 +63,8 @@
 				query: {
 					page: 1,
 					size: 20,
-					status: 2, // 购买成功
-					order_type: 1, // 购买文档
+					status: [2], // 购买成功
+					order_type: [1], // 购买文档
 				},
 				orders: []
 			}
@@ -172,7 +173,8 @@
 
 		.body {
 			line-height: 24px;
-			color: #777
+			color: #777;
+			font-size: 12px;
 		}
 	}
 

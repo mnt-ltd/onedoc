@@ -6,15 +6,11 @@
 
 ## 二次开发
 
-### 文件结构
-
-### 开发流程
-
-1. 下载最新的hbuilder
-2. 将 config.example.js 重命名为 config.js，并修改 addr 配置项
+1. 下载最新的hbuilderx
+2. 将 `config.example.js` 重命名为 `config.js`，并修改 `addr` 配置项
 3. 执行 `npm install`，安装相关依赖
 4. 修改`manifest.json`的微信小程序appid为您的微信小程序appid
-5. 使用hbuilderx开发
+5. 使用`hbuilderx`开发
 
 ### 程序发布
 
@@ -24,13 +20,13 @@
 
 ## 页面预览
 
-## TODO
-
 ## 开源协议
 
-## 赞助我们
+- Apache 2.0
 
-## copyright
+## Author
 
-深圳市摩枫网络科技有限公司 Morefun Network Technology Co., Ltd (https://mnt.ltd)
+- 企业：深圳市摩枫网络科技有限公司 
+- Enterprise：Morefun Network Technology Co., Ltd 
+- 官网：[https://mnt.ltd](https://mnt.ltd)
 
