@@ -9,7 +9,7 @@
 						<view class="row body" @click="go2detail(row)">
 							<view class="col-4">
 								<text class="item">金额({{system.credit_name || '积分'}})</text>
-								<text>{{row.price}}</text>
+								<text>{{row.price || 0}}</text>
 							</view>
 							<view class="col-8">
 								<text class="item">购买时间</text>
