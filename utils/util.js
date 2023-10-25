@@ -562,7 +562,10 @@ export const downloadFile = (url, filename) => {
 			})
 		},
 		fail(e) {
-			toastError(e.errMsg || '下载失败')
+			// 取消下载，自动隐藏loading
+			uni.hideLoading()
+			console.log('下载失败', e)
+			// toastError(e.errMsg || '下载失败')
 		},
 		complete() {
 			uni.hideLoading()
@@ -570,7 +573,8 @@ export const downloadFile = (url, filename) => {
 	})
 	downloadTask.onProgressUpdate((res) => {
 		uni.showLoading({
-			title: `下载 ${res.progress}%`
+			title: `下载 ${res.progress}%`,
+			
 		})
 		if (res.progress >= 100) {
 			uni.hideLoading()

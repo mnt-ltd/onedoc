@@ -105,6 +105,7 @@
 </template>
 
 <script>
+	let downloadTask = null
 	import {
 		debug
 	} from '@/config.js'
@@ -165,7 +166,6 @@
 					id: 0
 				},
 				comment: {},
-				downloadTask: null,
 			}
 		},
 		components: {
@@ -205,10 +205,9 @@
 			])
 		},
 		onUnload() {
-			uni.hideLoading()
 			try {
 				// 取消下载
-				this.downloadTask.abort()
+				downloadTask.abort()
 			} catch (e) {
 				//TODO handle the exception
 			}
@@ -290,7 +289,7 @@
 								id: this.args.id
 							})
 							if (res.statusCode === 200) {
-								this.downloadTask = downloadFile(res.data.url, this.document.title + this.document.ext)
+								downloadTask = downloadFile(res.data.url, this.document.title + this.document.ext)
 							} else {
 								toastError(res.data.message || '下载失败')
 							}
@@ -432,7 +431,7 @@
 					id: this.document.id
 				})
 				if (res.statusCode === 200) {
-					this.downloadTask = downloadFile(res.data.url, this.document.title + this.document.ext)
+					downloadTask = downloadFile(res.data.url, this.document.title + this.document.ext)
 				} else {
 					toastError(res.data.message || '下载失败')
 				}

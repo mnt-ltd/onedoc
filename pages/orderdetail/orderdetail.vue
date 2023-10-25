@@ -123,7 +123,7 @@
 				</view>
 				<view class="card-body">
 					<!-- 商品卡片 -->
-					<goodsCard :order="order" v-if="order.order_type === 1" />
+					<goodsCard ref="document" :order="order" v-if="order.order_type === 1" />
 					<!-- VIP卡片 -->
 					<goodsCardVIP :order="order" v-else-if="order.order_type === 2" />
 				</view>
@@ -278,6 +278,16 @@
 			Promise.all([this.getUser(), this.getOrder()])
 			if(this.payment.enable_mp_wechatpay){ // 微信支付
 				this.paymentType = 1
+			}
+		},
+		onUnload() {
+			try{
+				// 停止下载
+				console.log('abort', this.$refs.document)
+				this.$refs.document.abortDownloadTask()
+			}catch(e){
+				//TODO handle the exception
+				console.log(e)
 			}
 		},
 		methods: {

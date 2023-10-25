@@ -73,6 +73,7 @@
 </template>
 
 <script>
+	let downloadTask = null
 	import {
 		formatBytes,
 		formatTime,
@@ -116,22 +117,22 @@
 			return {
 				document: {},
 				loading: false,
-				downloadTask: null,
+				// downloadTask: null, // 注意！！！不能将downloadTask赋值到data中，否则没法正常使用 abort 取消下载
 			}
 		},
 		computed: {
 			...mapGetters(useSettingStore, ['download'])
 		},
-		onUnload() {
-			try{
-				this.downloadTask.abort()
-			}catch(e){
-				//TODO handle the exception
-			}
-		},
 		methods: {
 			formatBytes,
 			formatTime,
+			abortDownloadTask(){
+				try{
+					downloadTask.abort()
+				}catch(e){
+					//TODO handle the exception
+				}
+			},
 			async getGoods() {
 				if (!this.order.product_id) return
 				this.getDocument()
@@ -174,11 +175,11 @@
 					if (url.indexOf('//') ===0) {
 						url = 'https:' + url
 					}
-					this.downloadTask = downloadFile(url, this.document.title+this.document.ext)
+					downloadTask = downloadFile(url, this.document.title+this.document.ext)
 				} else {
 					toastError(res.data.message || '下载失败')
 				}
-			}
+			},
 		}
 	}
 </script>
