@@ -163,9 +163,8 @@
 					</navigator>
 				</view>
 				<view class="col-4">
-					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/editpassword/editpassword'">
-						<image src="/static/images/icon/password.png"></image>
-						<text>修改密码</text>
+					<navigator hover-class="none" url="/pages/article/article?identifier=agreement">
+						<image src="/static/images/icon/agreement.png"></image><text>文库协议</text>
 					</navigator>
 				</view>
 				<view class="col-4">
