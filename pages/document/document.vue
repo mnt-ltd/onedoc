@@ -190,12 +190,6 @@
 				toastError('文档ID不能为空')
 				return
 			}
-
-			Promise.all([
-				this.getDocument(),
-				this.getRelatedDocuments(),
-				this.getFavorite(),
-			])
 		},
 		onShow() {
 			try {
@@ -204,6 +198,11 @@
 				//TODO handle the exception
 				console.log(e)
 			}
+			Promise.all([
+				this.getDocument(),
+				this.getRelatedDocuments(),
+				this.getFavorite(),
+			])
 		},
 		onUnload() {
 			uni.hideLoading()
