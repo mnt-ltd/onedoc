@@ -62,7 +62,8 @@
 					enable: false
 				},
 				registerType: 'mobile',
-				redirect: ''
+				redirect: '',
+				timeouter: null,
 			}
 		},
 		computed: {
@@ -104,6 +105,9 @@
 		},
 		onShareTimeline() {
 
+		},
+		onUnload() {
+			clearTimeout(this.timeouter)
 		},
 		methods: {
 			...mapActions(useUserStore, ['loginByPassword']),
@@ -150,6 +154,12 @@
 					setTimeout(() => {
 						redirectTo(this.redirect)
 					}, 1000)
+					// 兼容跳转失败的情况
+					this.timeouter = setTimeout(()=>{
+						uni.switchTab({
+							url: '/pages/me/me'
+						})
+					},2500)
 				} else {
 					toastError(res.data.message || '登录失败' + res.errMsg)
 				}

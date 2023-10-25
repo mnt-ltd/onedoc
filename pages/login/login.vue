@@ -63,6 +63,7 @@
 				},
 				redirect: '',
 				tab: 'sms',
+				timeouter: null,
 			}
 		},
 		computed: {
@@ -100,6 +101,9 @@
 		onShareTimeline() {
 
 		},
+		onUnload() {
+			clearTimeout(this.timeouter)
+		},
 		methods: {
 			...mapActions(useUserStore, ['loginByPassword']),
 			changeTab(tab) {
@@ -123,6 +127,12 @@
 				setTimeout(() => {
 					redirectTo(this.redirect)
 				}, 1000)
+				// 兼容跳转失败的情况
+				this.timeouter = setTimeout(()=>{
+					uni.switchTab({
+						url: '/pages/me/me'
+					})
+				},2500)
 			},
 		}
 	}
