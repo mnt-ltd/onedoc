@@ -541,6 +541,12 @@ export const downloadFile = (url, filename) => {
 	if (url.indexOf('//')===0) {
 		url = 'https:' + url
 	}
+	
+	// #ifdef APP-PLUS
+		// 打开浏览器下载
+		plus.runtime.openURL(url);
+		return
+	// #endif
 
 	uni.showLoading({
 		title: '下载中...'
@@ -550,18 +556,10 @@ export const downloadFile = (url, filename) => {
 	let downloadTask = uni.downloadFile({
 		url: url,
 		success(res) {
-			// #ifdef APP-PLUS
-				// 打开浏览器下载
-				plus.runtime.openURL(url);
-			// #endif
-			
-			// 如果是小程序
-			// #ifdef MP
-				uni.shareFileMessage({
-					filePath: res.tempFilePath,
-					fileName: filename
-				})
-			// #endif
+			uni.shareFileMessage({
+				filePath: res.tempFilePath,
+				fileName: filename
+			})
 		},
 		fail(e) {
 			toastError(e.errMsg || '下载失败')
