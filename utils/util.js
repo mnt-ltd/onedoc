@@ -542,16 +542,9 @@ export const downloadFile = (url, filename) => {
 		url = 'https:' + url
 	}
 	
-	// #ifdef APP-PLUS
-		// 打开浏览器下载
-		plus.runtime.openURL(url);
-		return
-	// #endif
-
 	uni.showLoading({
 		title: '下载中...'
 	})
-
 
 	let downloadTask = uni.downloadFile({
 		url: url,

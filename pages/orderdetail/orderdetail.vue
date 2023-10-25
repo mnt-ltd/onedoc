@@ -379,7 +379,8 @@
 								this.getOrder()
 							},
 							fail: (e)=>{
-								toastError(resp.data.message || e.errMsg || '支付失败')
+								// toastError(resp.data.message || e.errMsg || '支付失败')
+								console.log('支付失败', e)
 							}
 						})
 					}
