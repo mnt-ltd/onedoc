@@ -8,8 +8,11 @@
 				mode="heightFix"></image>
 			<view class="doc-info font-lv4">
 				<view>{{formatBytes(document.size)}}</view>
-				<view>
+				<!-- <view>
 					<image src="/static/images/eye.png"></image> {{formatView(document.view_count)}} 浏览
+				</view> -->
+				<view>
+					<image src="/static/images/document.png"></image> {{ document.pages || '-' }} 页
 				</view>
 				<view>
 					<image src="/static/images/credit.png"></image> {{document.price || '0'}}
@@ -182,6 +185,12 @@
 				...args,
 				id,
 			}
+
+			if(!id) {
+				toastError('文档ID不能为空')
+				return
+			}
+
 			Promise.all([
 				this.getDocument(),
 				this.getRelatedDocuments(),
@@ -197,6 +206,7 @@
 			}
 		},
 		onUnload() {
+			uni.hideLoading()
 			try {
 				// 取消下载
 				this.downloadTask.abort()

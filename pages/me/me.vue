@@ -24,7 +24,7 @@
 			<view class="stat font-lv2">
 				<view>
 					<text>{{user.credit_count || 0}}</text>
-					<view class="font-lv5">积分</view>
+					<view class="font-lv5">{{system.credit_name || '积分'}}</view>
 				</view>
 				<view>
 					<text>{{user.doc_count || 0}}</text>
@@ -37,16 +37,29 @@
 			</view>
 		</view>
 		<view class="myvip" v-if="vip.enable">
-			<view class="card" @click="go2vip">
+			<view class="card">
 				<view class="card-header">
 					<template v-if="user.is_vip">
-						<view>我的VIP权益</view>
+						<view class="row">
+							<view class="col-5">我的VIP权益</view>
+							<view class="col-7 renew">
+								<view>
+									<text class="expired">到期</text>
+									<text>{{formatDate(new Date(activeVIP.expired_at))}}</text>
+								</view>
+								<view>
+									<button @click="renew" size="mini">
+										<text>续费</text>
+									</button>
+								</view>
+							</view>
+						</view>
 					</template>
 					<template v-else>
 						<view>加入VIP会员</view>
 					</template>
 				</view>
-				<view class="card-body">
+				<view class="card-body" @click="go2vip">
 					<view class="row">
 						<template v-if="user.is_vip && activeVIP.id>0">
 							<view class="col">
@@ -161,6 +174,7 @@
 		toastSuccess,
 		toastError,
 		joinImage,
+		formatDate,
 	} from '@/utils/util.js'
 	import {
 		signToday,
@@ -211,7 +225,7 @@
 		},
 		methods: {
 			...mapActions(useUserStore, ['logout', 'getUser']),
-			joinImage,
+			joinImage,formatDate,
 			login() {
 				if (this.user.id) {
 					return
@@ -251,6 +265,12 @@
 						id: 0
 					}
 				}
+			},
+			async renew(){
+				// 续费与加入VIP
+				uni.navigateTo({
+					url: '/pages/vip/vip'
+				})
 			},
 			async signToday() {
 				console.log('signToday', this.user, this.sign)
@@ -442,6 +462,23 @@
 				padding: 10px;
 				background-color: #f7a46d;
 				color: #fff;
+				.renew{
+					display: flex;
+					justify-content: space-around;
+					font-size: 13px;
+					line-height: 200%;
+					button{
+						float: right;
+						margin-right: -15px;
+						line-height: 200%;
+						font-size: 12px;
+						color: #555;
+					}
+					.expired{
+						color: #eee;
+						margin-right: 5px;
+					}
+				}
 			}
 
 			.card-body {

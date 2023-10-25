@@ -8,7 +8,7 @@
 				}}</text>
 				过期，已无法继续免费下载，请重新购买。
 			</view>
-			<view v-else class="tips">
+			<view v-else-if="document.expired_at" class="tips">
 				您购买的文档有效期截止
 				<text class="danger">{{
 				  formatTime(new Date(document.expired_at))

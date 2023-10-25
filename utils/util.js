@@ -19,6 +19,14 @@ export const formatTime = date => {
 	return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')
 }
 
+export const formatDate = date => {
+	const year = date.getFullYear()
+	const month = date.getMonth() + 1
+	const day = date.getDate()
+
+	return [year, month, day].map(formatNumber).join('-')
+}
+
 export const timestampToDate = (timestamp) => {
 	let date = new Date(timestamp * 1000)
 	const year = date.getFullYear()
@@ -568,6 +576,7 @@ export const downloadFile = (url, filename) => {
 
 export default {
 	formatTime,
+	formatDate,
 	now,
 	toTimestamp,
 	relativeTime,

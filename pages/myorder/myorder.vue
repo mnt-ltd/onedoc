@@ -120,7 +120,12 @@
 				this.loadOrders()
 			},
 			async loadOrders() {
-				const res = await listUserOrder(this.query)
+				let query = {...this.query}
+				if(query.status===0){
+					delete query.status
+				}
+				
+				const res = await listUserOrder(query)
 				if (res.statusCode === 200) {
 					const orders = res.data.order || []
 					if (this.query.page === 1) {

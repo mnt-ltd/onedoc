@@ -44,7 +44,7 @@
 		<view class="banner" v-if="banners.length>0">
 			<swiper class="swiper" style="height:120px" circular :indicator-dots="indicatorDots" :autoplay="autoplay"
 				:interval="interval" :duration="duration">
-				<swiper-item v-for="banner in banners" :key="'banner-'+banner.id">
+				<swiper-item v-for="banner in banners" :key="'banner-'+banner.id" @click="go2(banner.url)">
 					<view class="swiper-item">
 						<image :src="banner.path" mode="scaleToFill"></image>
 					</view>
@@ -89,7 +89,8 @@
 	import {
 		relativeTime,
 		joinImage,
-		formatBytes
+		formatBytes,
+		redirectTo,
 	} from '@/utils/util.js'
 	import {
 		useSettingStore
@@ -190,6 +191,11 @@
 			iswitch(url) {
 				uni.switchTab({
 					url: url
+				})
+			},
+			go2(url){
+				uni.navigateTo({
+					url
 				})
 			},
 			async getStats() {
