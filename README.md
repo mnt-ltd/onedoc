@@ -9,7 +9,11 @@
 ## 二次开发
 
 1. 下载最新的hbuilderx
-2. 将 `config.example.js` 重命名为 `config.js`，并修改 `addr` 配置项
+2. 将 `config.example.js` 重命名为 `config.js`，并修改 `addr` 配置项。
+    - **如暂时没有魔豆文库专业版的后端服务，可以配置魔豆文库演示站点地址，如：`https://moredoc.mnt.ltd`**
+    - 登录账号可以用管理员账号登录
+        - 账号： admin
+        - 密码： mnt.ltd
 3. 执行 `npm install`，安装相关依赖
 4. 修改`manifest.json`的微信小程序appid为您的微信小程序appid
 5. 使用`hbuilderx`开发
