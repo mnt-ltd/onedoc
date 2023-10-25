@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<filterDocument :args="args" :base-height="30" />
+		<filterDocument ref="filter" :args="args" :base-height="30" />
 	</view>
 </template>
 <script>
@@ -8,6 +8,13 @@
 	export default {
 		components: {
 			filterDocument
+		},
+		onReachBottom() {
+			try{
+				this.$refs.filter.loadNext()
+			}catch(e){
+				//TODO handle the exception
+			}
 		},
 		data() {
 			return {

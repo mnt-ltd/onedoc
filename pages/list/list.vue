@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<filterDocument :args="args" />
+		<filterDocument ref="filter" :args="args" />
 	</view>
 </template>
 <script>
@@ -12,6 +12,13 @@
 		data() {
 			return {
 				args: {}
+			}
+		},
+		onReachBottom() {
+			try{
+				this.$refs.filter.loadNext()
+			}catch(e){
+				//TODO handle the exception
 			}
 		},
 		onLoad(args) {

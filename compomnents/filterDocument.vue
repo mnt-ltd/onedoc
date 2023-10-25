@@ -5,18 +5,29 @@
 			<view class="item">
 				<view class="item-title">分类</view>
 				<view class="item-value">
-					<view :class="query.category_id>0 ? '':'active'" @click="changeCategory(null)">不限</view>
-					<view v-for="cate in categories" :key="'cate-' + cate.id" @click="changeCategory(cate.id)"
-						:class="query.category_id===cate.id ? 'active':''">{{
-						cate.title
-					}}</view>
+					<view
+						:class="query.category_id > 0 ? '' : 'active'"
+						@click="changeCategory(null)"
+						>不限</view
+					>
+					<view
+						v-for="cate in categories"
+						:key="'cate-' + cate.id"
+						@click="changeCategory(cate.id)"
+						:class="query.category_id === cate.id ? 'active' : ''"
+						>{{ cate.title }}</view
+					>
 				</view>
 			</view>
 			<view class="item">
 				<view class="item-title">类型</view>
 				<view class="item-value">
-					<view v-for="(ext, idx) in extOptions" :class="query.ext === ext.value ? 'active' : ''"
-						:key="'ext-' + ext.value" @click="changeExt(ext.value)">
+					<view
+						v-for="(ext, idx) in extOptions"
+						:class="query.ext === ext.value ? 'active' : ''"
+						:key="'ext-' + ext.value"
+						@click="changeExt(ext.value)"
+					>
 						{{ ext.label }}
 					</view>
 				</view>
@@ -24,9 +35,12 @@
 			<view class="item">
 				<view class="item-title">费用</view>
 				<view class="item-value">
-					<view v-for="(feeType, idx) in feeTypeOptions"
-						:class="query.fee_type===feeType.value ? 'active' : ''" :key="'feeType-' + feeType.value"
-						@click="changeFeeType(feeType.value)">
+					<view
+						v-for="(feeType, idx) in feeTypeOptions"
+						:class="query.fee_type === feeType.value ? 'active' : ''"
+						:key="'feeType-' + feeType.value"
+						@click="changeFeeType(feeType.value)"
+					>
 						{{ feeType.label }}
 					</view>
 				</view>
@@ -34,16 +48,20 @@
 			<view class="item">
 				<view class="item-title">排序</view>
 				<view class="item-value">
-					<view v-for="(sort, idx) in sortOptions" :class="query.sort===sort.value ? 'active' : ''"
-						:key="'sort-' + sort.value" @click="changeSort(sort.value)">
+					<view
+						v-for="(sort, idx) in sortOptions"
+						:class="query.sort === sort.value ? 'active' : ''"
+						:key="'sort-' + sort.value"
+						@click="changeSort(sort.value)"
+					>
 						{{ sort.label }}
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="list" :style="`margin-top: ${filterHeight + baseHeight}px`">
-			<docList v-if="documents.length>0" :docs="documents" />
-			<mEmpty v-else/>
+			<docList v-if="documents.length > 0" :docs="documents" />
+			<mEmpty v-else />
 		</view>
 		<view>&nbsp;</view>
 	</view>
@@ -51,36 +69,25 @@
 
 <script>
 	import mHeaderSearch from "@/compomnents/headerSearch.vue";
-	import mEmpty from '@/compomnents/empty.vue'
+	import mEmpty from "@/compomnents/empty.vue";
 	import docList from "@/compomnents/docList";
-	import {
-		listDocument
-	} from "@/api/document.js";
-	import {
-		listCategory
-	} from "@/api/category.js";
-	import {
-		categoryToTree,
-		getHeaderHeight
-	} from "@/utils/util.js";
-	import {
-		feeTypeOptions,
-		extOptions,
-		sortOptions
-	} from "@/utils/enum.js";
+	import { listDocument } from "@/api/document.js";
+	import { listCategory } from "@/api/category.js";
+	import { categoryToTree, getHeaderHeight } from "@/utils/util.js";
+	import { feeTypeOptions, extOptions, sortOptions } from "@/utils/enum.js";
 	export default {
-		name:'filterDocument',
-		props:{
+		name: "filterDocument",
+		props: {
 			args: {
 				type: Object,
-				default: ()=>{
-					return {}
-				}
+				default: () => {
+					return {};
+				},
 			},
-			baseHeight:{
+			baseHeight: {
 				type: Number,
 				default: 0,
-			}
+			},
 		},
 		data() {
 			return {
@@ -93,39 +100,43 @@
 				query: {
 					order: "",
 					sort: "default",
-					ext: '',
+					ext: "",
 					category_id: null,
-					fee_type: '',
+					fee_type: "",
 					page: 1,
 					size: 10,
 				},
 				headerHeight: getHeaderHeight(),
 				filterHeight: 0,
+				loading: false,
 			};
 		},
 		components: {
 			mHeaderSearch,
 			docList,
-			mEmpty
+			mEmpty,
 		},
-		watch:{
+		watch: {
 			args: {
-				handler: function(val) {
-					this.loadData(val)
+				handler: function (val) {
+					this.loadData(val);
 				},
 				immediate: true,
 			},
 		},
 		methods: {
-			loadData(args){
-				this.query.category_id = parseInt(args.category_id) || null
-				Promise.all([
-					this.getCategories(),
-					this.getDocuments()
-				])
+			loadNext() {
+				if (this.query.page > 0) {
+					if (this.loading) return;
+					this.query.page++;
+					this.getDocuments();
+				}
+			},
+			loadData(args) {
+				this.query.category_id = parseInt(args.category_id) || null;
+				Promise.all([this.getCategories(), this.getDocuments()]);
 			},
 			go2search() {
-				console.log("go2search");
 				uni.navigateTo({
 					url: "/pages/search/search",
 				});
@@ -137,32 +148,41 @@
 					let tree = categoryToTree(categories) || [];
 					this.categories = tree;
 					const query = uni.createSelectorQuery().in(this);
-					query
-						.select("#filter")
-						.boundingClientRect((res) => {
-							// console.log('search', res)
-							this.filterHeight = res.height;
-						})
-						.exec();
+					try {
+						query
+							.select("#filter")
+							.boundingClientRect((res) => {
+								// console.log('search', res)
+								this.filterHeight = res.height;
+							})
+							.exec();
+					} catch (e) {
+						//TODO handle the exception
+					}
 				}
 			},
 			changeCategory(categoryId) {
-				this.query.category_id = categoryId
-				this.getDocuments()
+				this.query.category_id = categoryId;
+				this.query.page = 1;
+				this.getDocuments();
 			},
 			changeSort(sort) {
-				this.query.sort = sort
-				this.getDocuments()
+				this.query.page = 1;
+				this.query.sort = sort;
+				this.getDocuments();
 			},
 			changeFeeType(ft) {
-				this.query.fee_type = ft
-				this.getDocuments()
+				this.query.page = 1;
+				this.query.fee_type = ft;
+				this.getDocuments();
 			},
 			changeExt(ext) {
-				this.query.ext = ext
-				this.getDocuments()
+				this.query.page = 1;
+				this.query.ext = ext;
+				this.getDocuments();
 			},
 			async getDocuments() {
+				this.loading = true;
 				let order = "id desc";
 				let status = [];
 				switch (this.query.sort) {
@@ -219,15 +239,26 @@
 				});
 				if (res.statusCode === 200) {
 					this.total = res.data.total;
-					this.documents = (res.data.document || []).map((item) => {
-						item.cover = `/view/cover/${item.attachment.hash}`;
-						return item;
-					});
+					let documents = [...this.documents]
+					if (this.query.page === 1) {
+						documents = [];
+						this.documents = [];
+					}
+					documents.push(
+						...(res.data.document || []).map((item) => {
+							item.cover = `/view/cover/${item.attachment.hash}`;
+							return item;
+						})
+					);
+					this.documents = documents;
+					if (this.total === documents.length) {
+						this.query.page = 0;
+					}
 				}
-				console.log(this.documents);
 				if (this.query.page === 1 && this.documents.length === 0) {
 					this.empty = true;
 				}
+				this.loading = false;
 			},
 		},
 	};
@@ -258,7 +289,7 @@
 			.item-value {
 				flex: 1;
 
-				&>view {
+				& > view {
 					display: inline-block;
 					margin-left: 15px;
 				}

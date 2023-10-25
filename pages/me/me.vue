@@ -125,8 +125,8 @@
 					</navigator>
 				</view>
 				<view class="col-4">
-					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myorder/myorder'">
-						<image src="/static/images/icon/order.png"></image><text>我的订单</text>
+					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/bought/bought'">
+						<image src="/static/images/icon/bought.png"></image><text>已购文档</text>
 					</navigator>
 				</view>
 				<view class="col-4">
