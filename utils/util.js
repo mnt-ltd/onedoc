@@ -550,10 +550,18 @@ export const downloadFile = (url, filename) => {
 	let downloadTask = uni.downloadFile({
 		url: url,
 		success(res) {
-			uni.shareFileMessage({
-				filePath: res.tempFilePath,
-				fileName: filename
-			})
+			// #ifdef APP-PLUS
+				// 打开浏览器下载
+				plus.runtime.openURL(url);
+			// #endif
+			
+			// 如果是小程序
+			// #ifdef MP
+				uni.shareFileMessage({
+					filePath: res.tempFilePath,
+					fileName: filename
+				})
+			// #endif
 		},
 		fail(e) {
 			toastError(e.errMsg || '下载失败')

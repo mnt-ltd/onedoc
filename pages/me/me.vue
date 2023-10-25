@@ -114,42 +114,65 @@
 		
 		<view class="functions">
 			<view class="box row">
-				<navigator class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/mydynamic/mydynamic'">
-					<image src="/static/images/icon/dynamic.png"></image><text>我的动态</text>
-				</navigator>
-				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/myorder/myorder'">
-					<image src="/static/images/icon/order.png"></image><text>我的订单</text>
-				</navigator>
-				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/bought/bought'">
-					<image src="/static/images/icon/bought.png"></image><text>已购文档</text>
-				</navigator>
-				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/mydoc/mydoc'">
-					<image src="/static/images/icon/document.png"></image><text>我的上传</text>
-				</navigator>
-				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/myfavorite/myfavorite'">
-					<image src="/static/images/icon/favorite.png"></image><text>我的收藏</text>
-				</navigator>
-				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/mydownload/mydownload'">
-					<image src="/static/images/icon/download.png"></image><text>我的下载</text>
-				</navigator>
-				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/myprofile/myprofile'">
-					<image src="/static/images/user.png"></image>
-					<text>个人资料</text>
-				</navigator>
-				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/editprofile/editprofile'">
-					<image src="/static/images/icon/setting.png"></image>
-					<text>修改资料</text>
-				</navigator>
-				<navigator  class="col-4" hover-class="none" :url="!user.id ? loginPage : '/pages/editpassword/editpassword'">
-					<image src="/static/images/icon/password.png"></image>
-					<text>修改密码</text>
-				</navigator>
-				<navigator  class="col-4"  hover-class="none" url="/pages/article/article?identifier=agreement">
-					<image src="/static/images/icon/agreement.png"></image><text>文库协议</text>
-				</navigator>
-				<navigator  class="col-4"  hover-class="none" url="/pages/article/article?identifier=about">
-					<image src="/static/images/icon/info.png"></image><text>关于我们</text>
-				</navigator>
+				<view class="col-4">
+					<navigator  hover-class="none" :url="!user.id ? loginPage : '/pages/mydynamic/mydynamic'">
+						<image src="/static/images/icon/dynamic.png"></image><text>我的动态</text>
+					</navigator>
+				</view>
+				<view class="col-4">
+					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myorder/myorder'">
+						<image src="/static/images/icon/order.png"></image><text>我的订单</text>
+					</navigator>
+				</view>
+				<view class="col-4">
+					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myorder/myorder'">
+						<image src="/static/images/icon/order.png"></image><text>我的订单</text>
+					</navigator>
+				</view>
+				<view class="col-4">
+					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydoc/mydoc'">
+						<image src="/static/images/icon/document.png"></image><text>我的上传</text>
+					</navigator>
+				</view>
+				<view class="col-4">
+					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myfavorite/myfavorite'">
+						<image src="/static/images/icon/favorite.png"></image><text>我的收藏</text>
+					</navigator>
+				</view>
+				<view class="col-4">
+					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/mydownload/mydownload'">
+						<image src="/static/images/icon/download.png"></image><text>我的下载</text>
+					</navigator>
+				</view>
+				<view class="col-4">
+					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/myprofile/myprofile'">
+						<image src="/static/images/user.png"></image>
+						<text>个人资料</text>
+					</navigator>
+				</view>
+				<view class="col-4">
+					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/editprofile/editprofile'">
+						<image src="/static/images/icon/setting.png"></image>
+						<text>修改资料</text>
+					</navigator>
+				</view>
+				<view class="col-4">
+					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/editpassword/editpassword'">
+						<image src="/static/images/icon/password.png"></image>
+						<text>修改密码</text>
+					</navigator>
+				</view>
+				<view class="col-4">
+					<navigator hover-class="none" :url="!user.id ? loginPage : '/pages/editpassword/editpassword'">
+						<image src="/static/images/icon/password.png"></image>
+						<text>修改密码</text>
+					</navigator>
+				</view>
+				<view class="col-4">
+					<navigator hover-class="none" url="/pages/article/article?identifier=about">
+						<image src="/static/images/icon/info.png"></image><text>关于我们</text>
+					</navigator>
+				</view>
 				<view  class="col-4" @click="execLogout" v-if="user.id">
 					<image src="/static/images/icon/logout.png"></image><text>退出登录</text>
 				</view>

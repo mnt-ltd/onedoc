@@ -194,9 +194,25 @@
 				})
 			},
 			go2(url){
-				uni.navigateTo({
-					url
-				})
+
+				// #ifdef MP
+					uni.navigateTo({
+						url
+					})
+				// #endif
+				
+				// APP or H5
+				// #ifndef MP
+				const lowerUrl = String(url).toLowerCase()
+				if (lowerUrl.indexOf("http://") ===0 || lowerUrl.indexOf("https://") === 0) {
+					plus.runtime.openURL(url) // 调用外部浏览器打开
+					// plus.runtime.openWeb(url) // app 内打开
+				} else {
+					uni.navigateTo({
+						url
+					})
+				}
+				// #endif
 			},
 			async getStats() {
 				const res = await getStats()
