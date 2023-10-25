@@ -241,16 +241,16 @@
 				let productId = 0 // 0 年卡，1 季卡，2 月卡
 				switch (this.vipType) {
 					case 'year':
-						this.productId = 0
+						productId = 0
 						break;
 					case 'quarter':
-						this.productId = 1
+						productId = 1
 						break;
 					case 'month':
-						this.productId = 2
+						productId = 2
 						break;
 					default:
-						this.productId = 0
+						productId = 0
 						break;
 				}
 				// 创建购买VIP订单
