@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<filterDocument ref="filter" :args="args" />
+		<filterDocument v-if="visible" ref="filter" :args="args"/>
 	</view>
 </template>
 <script>
@@ -11,7 +11,8 @@
 		},
 		data() {
 			return {
-				args: {}
+				args: {},
+				visible: false
 			}
 		},
 		onReachBottom() {
@@ -23,6 +24,7 @@
 		},
 		onLoad(args) {
 			this.args = args
+			this.visible=true
 		},
 		onShareAppMessage() {
 			

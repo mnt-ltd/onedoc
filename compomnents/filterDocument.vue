@@ -86,7 +86,7 @@
 			},
 			baseHeight: {
 				type: Number,
-				default: 0,
+				default: 30,
 			},
 		},
 		data() {
@@ -119,6 +119,8 @@
 		watch: {
 			args: {
 				handler: function (val) {
+					console.log('filter document args', val)
+					this.query = {...this.query, ...val}
 					this.loadData(val);
 				},
 				immediate: true,
@@ -182,6 +184,7 @@
 				this.getDocuments();
 			},
 			async getDocuments() {
+				console.log('getDocuments', this.query)
 				this.loading = true;
 				let order = "id desc";
 				let status = [];
