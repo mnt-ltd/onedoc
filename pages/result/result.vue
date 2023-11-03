@@ -217,7 +217,7 @@
 		},
 		onReachBottom() {
 			console.log('onReachBottom', this.query)
-			if(this.query.page>0){
+			if (this.query.page > 0) {
 				this.query.page++
 				this.searchDocuments()
 			}
@@ -235,8 +235,8 @@
 			this.searchDocuments()
 		},
 		methods: {
-			search(e){
-				if(e.wd){
+			search(e) {
+				if (e.wd) {
 					this.query = {
 						...defaultQuery,
 						wd: e.wd,
@@ -289,7 +289,7 @@
 				if (this.query.page === 0) {
 					return
 				}
-				
+
 				setLatestSearchKeywords(this.query.wd)
 
 				this.loading = true
@@ -312,9 +312,9 @@
 						doc.score = doc.score || 300
 						doc.score = doc.score / 100
 						doc.icon = getIcon(doc.ext)
-						try{
+						try {
 							doc.cover = joinImage(`/view/cover/${doc.attachment.hash}`)
-						}catch(e){
+						} catch (e) {
 							//TODO handle the exception
 						}
 						try {
@@ -331,14 +331,14 @@
 					})
 
 					if (this.query.page > 1) {
-						this.documents.push(...documents)
+						this.documents = [...this.documents, ...documents]
 					} else {
 						this.documents = documents
 						uni.pageScrollTo({
 							scrollTop: 0
 						})
 					}
-					
+
 					if (documents.length === 0) {
 						this.query.page = 0
 					}
