@@ -148,7 +148,7 @@
 				if (res.statusCode === 200) {
 					let categories = res.data.category || [];
 					let tree = categoryToTree(categories) || [];
-					this.categories = tree;
+					this.categories = tree.filter(item=>item.enable);// 只显示启用的分类
 					const query = uni.createSelectorQuery().in(this);
 					try {
 						query

@@ -287,6 +287,10 @@
 						id: 0
 					}
 				}
+				if(res.statusCode===401){
+					// 清除可能存在的登录信息
+					await this.logout()
+				}
 			},
 			async renew(){
 				// 续费与加入VIP

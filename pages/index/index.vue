@@ -239,7 +239,7 @@
 				if (res.statusCode === 200) {
 					let categories = res.data.category || []
 					this.categories = categories
-					let parentCategories = categories.filter(item => !item.parent_id) || []
+					let parentCategories = categories.filter(item => !item.parent_id && item.enable) || []
 					parentCategories = parentCategories.map((item) => {
 						item.icon =
 							joinImage(item.icon || '')
