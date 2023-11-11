@@ -188,6 +188,15 @@ export const findPasswordByMobile = (data) => {
   })
 }
 
+
+export const sendEmailCode = (data) => {
+  return service({
+    url: '/api/v1/user/email/code',
+    method: 'post',
+    data,
+  })
+}
+
 export default{
 	getUserCaptcha,
 	login,
@@ -196,4 +205,5 @@ export default{
 	listUserVIP,
 	getUserDownloads,
 	getActiveUserVIP,
+	sendEmailCode,
 }

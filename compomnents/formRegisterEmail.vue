@@ -1,12 +1,6 @@
 <template>
 	<view>
 		<view class="row">
-			<view class="col-3">邮箱</view>
-			<view class="col-9">
-				<input type="text" v-model="form.email" placeholder="请输入您的邮箱">
-			</view>
-		</view>
-		<view class="row">
 			<view class="col-3">用户名</view>
 			<view class="col-9">
 				<input type="text" v-model="form.username" placeholder="请输入用户名">
@@ -28,12 +22,35 @@
 			<view class="col-3">
 				验证码
 			</view>
-			<view class="col-9">
-				<image :src="captcha.captcha" class="captcha" @click="getUserCaptcha" style="height: 35px;" mode="heightFix"></image>
-			</view>
-			<view class="col-3 no-required"></view>
-			<view class="col-9">
+			<view class="col-4">
 				<input type="text" v-model="form.captcha" placeholder="请输入验证码">
+			</view>
+			<view class="col-5">
+				<image :src="captcha.captcha" class="captcha" @click="getUserCaptcha"
+					mode="heightFix"></image>
+			</view>
+			<!-- <view class="col-3 no-required"></view>
+			<view class="col-4">
+				<input type="text" v-model="form.captcha" placeholder="请输入验证码">
+			</view> -->
+		</view>
+		<view class="row">
+			<view class="col-3">电子邮箱</view>
+			<view class="col-9">
+				<input type="text" v-model="form.email" placeholder="请输入您的邮箱">
+			</view>
+		</view>
+		<view class="row" v-if="security.enable_verify_register_email">
+			<view class="col-3">邮箱验证码</view>
+			<view class="col-5">
+				<input type="text" v-model="form.code" placeholder="请输入邮箱验证码">
+			</view>
+			<view class="col-4" v-if="security.enable_verify_register_email">
+				<button size="mini" class="btn-send-email-code" :disabled="leftSeconds>0" @click="sendEmailCode"
+					type="default">
+					<text v-if="leftSeconds>0">剩余{{leftSeconds}}秒</text>
+					<text v-else>获取验证码</text>
+				</button>
 			</view>
 		</view>
 		<button type="warn" class="btn-block" @click="registerByEmail">注册账号</button>
@@ -54,6 +71,7 @@
 	} from 'pinia'
 	import {
 		getUserCaptcha,
+		sendEmailCode,
 	} from '@/api/user.js'
 	import {
 		toastError,
@@ -70,7 +88,9 @@
 					repeat_password: '',
 					captcha_id: '',
 					captcha: '',
+					code: ''
 				},
+				leftSeconds: 0,
 				captcha: {
 					enable: false
 				},
@@ -104,11 +124,11 @@
 					...this.form,
 					captcha_id: this.captcha.id
 				}
-				if(req.password!=req.repeat_password){
+				if (req.password != req.repeat_password) {
 					toastError('两次输入的密码不一致，请重新输入')
 					return
 				}
-				
+
 				delete req.repeat_password
 				const res = await this.register(req)
 				if (res.statusCode === 200) {
@@ -129,6 +149,31 @@
 					}
 				}
 			},
+			async sendEmailCode() {
+				const req = {
+					captcha: this.form.captcha,
+					captcha_id: this.captcha.id,
+					email: this.form.email,
+				}
+				if(req.captcha=="" || req.email==""){
+					toastError('请输入邮箱或上方验证码')
+					return
+				}
+				
+				const res = await sendEmailCode(req)
+				if (res.statusCode === 200) {
+					toastSuccess('验证码发送成功')
+					this.leftSeconds = 60
+					const timer = setInterval(() => {
+						this.leftSeconds--
+						if (this.leftSeconds <= 0) {
+							clearInterval(timer)
+						}
+					}, 1000)
+				} else {
+					toastError(res.data.massage || '获取验证码失败')
+				}
+			}
 		}
 	}
 </script>
@@ -159,11 +204,20 @@
 			}
 		}
 	}
-	.captcha{
-		margin-top: 10px;
-		margin-bottom: -20px;
+
+	.captcha {
+		margin: 0;
+		height: 40px;
+		margin-bottom: -15px;
 	}
-	button{
+
+	button {
 		margin-top: 20px;
+
+		&.btn-send-email-code {
+			margin-top: 0;
+			position: relative;
+			top: 10px;
+		}
 	}
 </style>

@@ -5,25 +5,24 @@
 			"style": {
 				"navigationBarTitleText": "首页"
 			}
-		},{
-			"path": "pages/me/me",
-			"style": {
-				"navigationBarTitleText": "个人中心",
-				"enablePullDownRefresh": false
-			}
-		},{
-			"path": "pages/login/login",
-			"style": {
-				"navigationBarTitleText": "用户登录",
-				"enablePullDownRefresh": false
-			}
 		}, {
 			"path": "pages/register/register",
 			"style": {
 				"navigationBarTitleText": "用户注册",
 				"enablePullDownRefresh": false
 			}
-		
+		}, {
+			"path": "pages/me/me",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "用户登录",
+				"enablePullDownRefresh": false
+			}
 		}, {
 			"path": "pages/myorder/myorder",
 			"style": {
@@ -64,7 +63,7 @@
 				"enablePullDownRefresh": false
 			}
 
-		},  {
+		}, {
 			"path": "pages/myvip/myvip",
 			"style": {
 				"navigationBarTitleText": "我的VIP",
@@ -175,17 +174,15 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/bought/bought",
+			"style": {
+				"navigationBarTitleText": "已购文档",
+				"enablePullDownRefresh": false
+			}
+
 		}
-        ,{
-            "path" : "pages/bought/bought",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "已购文档",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "moredoc",
