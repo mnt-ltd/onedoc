@@ -576,6 +576,16 @@ export const downloadFile = (url, filename) => {
 	return downloadTask
 }
 
+export const genPreviewPage = (hash, pageNO, ext, enableGZIP) => {
+  if (!ext){
+    ext=".svg"
+  }
+  if (ext===".svg" && enableGZIP){
+    ext=".gzip.svg"
+  }
+  return  `/view/page/${hash}/${pageNO}${ext}`
+}
+
 
 export default {
 	formatTime,
@@ -617,4 +627,5 @@ export default {
 	genTimeDuration,
 	isValidMobile,
 	downloadFile,
+	genPreviewPage,
 }

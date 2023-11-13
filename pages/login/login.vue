@@ -18,6 +18,7 @@
 				<formLoginMobile v-if="tab==='sms'" @success="success"/>
 			</template>
 			<formLoginPassword v-else @success="success"/>
+			<wechat-login></wechat-login>
 			<!-- 开放注册才显示注册按钮 -->
 			<navigator hover-class="none" class="font-lv3" v-if="security.enable_register" :url="`/pages/register/register?redirect=${redirect}`">
 				<button type="default" class="btn-wechat-login btn-block">注册账号</button>
@@ -28,6 +29,7 @@
 
 <script>
 	import mHeader from '@/compomnents/header.vue'
+	import wechatLogin from '@/compomnents/wechatLogin.vue'
 	import formLoginPassword from '@/compomnents/formLoginPassword.vue'
 	import formLoginMobile from '@/compomnents/formLoginMobile.vue'
 	import {
@@ -74,6 +76,7 @@
 			mHeader,
 			formLoginPassword,
 			formLoginMobile,
+			wechatLogin,
 		},
 		onLoad(args) {
 			if (debug) {

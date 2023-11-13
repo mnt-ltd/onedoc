@@ -129,6 +129,7 @@
 		toastSuccess,
 		getIcon,
 		downloadFile,
+		genPreviewPage,
 	} from '@/utils/util.js'
 	import {
 		useSettingStore,
@@ -186,7 +187,7 @@
 				id,
 			}
 
-			if(!id) {
+			if (!id) {
 				toastError('文档ID不能为空')
 				return
 			}
@@ -264,9 +265,8 @@
 					// 限定预览页数，拼装图片链接
 					const pages = []
 					for (let i = 1; i <= preview; i++) {
-						const src = document.enable_gzip ?
-							`/view/page/${document.attachment.hash}/${i}.gzip.svg` :
-							`/view/page/${document.attachment.hash}/${i}.svg`
+						const src = genPreviewPage(document.attachment.hash, i, document.preview_ext, document
+							.enable_gzip)
 						pages.push(joinImage(src))
 					}
 					this.pages = pages
@@ -283,13 +283,14 @@
 				uni.showModal({
 					title: '温馨提示',
 					content: '使用VIP下载将会消耗您的免费下载额度，您确定要使用VIP下载吗？',
-					success: async (res)=> {
+					success: async (res) => {
 						if (res.confirm) {
 							const res = await downloadVIPDocument({
 								id: this.args.id
 							})
 							if (res.statusCode === 200) {
-								downloadTask = downloadFile(res.data.url, this.document.title + this.document.ext)
+								downloadTask = downloadFile(res.data.url, this.document.title + this
+									.document.ext)
 							} else {
 								toastError(res.data.message || '下载失败')
 							}
@@ -342,9 +343,7 @@
 				let startLazyLoad = 2
 				for (let i = this.pages.length + 1; i <= end; i++) {
 					j += 1
-					const src = this.document.enable_gzip ?
-						`/view/page/${this.document.attachment.hash}/${i}.gzip.svg` :
-						`/view/page/${this.document.attachment.hash}/${i}.svg`
+					const src = genPreviewPage(document.attachment.hash, i, document.preview_ext, document.enable_gzip)
 					this.pages.push(joinImage(src))
 				}
 			},
