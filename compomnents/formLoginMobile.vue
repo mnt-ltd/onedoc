@@ -32,7 +32,10 @@
 		<view class="tips" v-if="!isRegistered">
 			<text>检测到到您手机号码未注册，将为您自动注册。初始密码默认为您当前的短信验证码，您可在个人中心修改密码。</text>
 		</view>
-		<button type="warn" class="btn-block" @click="login" :loading="loading">登录账号</button>
+		<button type="warn" class="btn-block" @click="login" :loading="loading">
+			<text v-if="isBind">登录并绑定</text>
+			<text v-else>登录账号</text>
+		</button>
 	</view>
 </template>
 
@@ -62,6 +65,12 @@
 		isValidMobile,
 	} from '@/utils/util.js'
 	export default {
+		props:{
+			isBind:{
+				type: Boolean,
+				default: false,
+			}
+		},
 		data() {
 			return {
 				form: {
@@ -111,7 +120,9 @@
 					mobile: this.form.mobile,
 				})
 				if (res.statusCode === 200) {
-					toastSuccess('登录成功')
+					if(!this.isBind){
+						toastSuccess('登录成功')
+					}
 					this.$emit('success', res)
 				} else {
 					toastError(res.data.message || '登录失败')

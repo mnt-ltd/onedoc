@@ -18,7 +18,7 @@
 				<formLoginMobile v-if="tab==='sms'" @success="success"/>
 			</template>
 			<formLoginPassword v-else @success="success"/>
-			<wechat-login></wechat-login>
+			<wechat-login :redirect="redirect"></wechat-login>
 			<!-- 开放注册才显示注册按钮 -->
 			<navigator hover-class="none" class="font-lv3" v-if="security.enable_register" :url="`/pages/register/register?redirect=${redirect}`">
 				<button type="default" class="btn-wechat-login btn-block">注册账号</button>

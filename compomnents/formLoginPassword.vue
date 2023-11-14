@@ -13,7 +13,10 @@
 			<input type="text" v-model="form.captcha" placeholder="请输入验证码">
 			<image :src="captcha.captcha" @click="getUserCaptcha" style="height: 50px;width: 150px;"></image>
 		</view>
-		<button type="warn" class="btn-password-login btn-block" @click="login">登录账号</button>
+		<button type="warn" class="btn-password-login btn-block" @click="login">
+			<text v-if="isBind">登录并绑定</text>
+			<text v-else>登录账号</text>
+		</button>
 	</view>
 </template>
 
@@ -37,6 +40,12 @@
 		redirectTo,
 	} from '@/utils/util.js'
 	export default {
+		props:{
+			isBind: {
+				type: Boolean,
+				default: false,
+			}
+		},
 		data() {
 			return {
 				form: {
@@ -55,24 +64,7 @@
 		computed: {
 			...mapGetters(useUserStore, ['token', 'user'])
 		},
-		onLoad(args) {
-			if (debug) {
-				console.log('onLoad', 'args', args, 'token', this.token, 'user', this.user)
-			}
-			this.redirect = '/pages/me/me'
-			if (args.redirect) {
-				try {
-					this.redirect = decodeURIComponent(args.redirect)
-				} catch (e) {
-					console.log(e)
-					//TODO handle the exception
-				}
-			}
-			if (this.token || this.user.id !== 0) {
-				// 用户已登录
-				redirectTo(this.redirect)
-				return
-			}
+		created() {
 			this.getUserCaptcha()
 		},
 		onShareAppMessage() {
@@ -111,14 +103,13 @@
 						.redirect)
 				}
 				if (res.statusCode === 200) {
-					toastSuccess('登录成功')
+					if(!this.isBind){
+						toastSuccess('登录成功')
+					}
 					this.$emit('success', res)
 				} else {
 					toastError(res.data.message || '登录失败' + res.errMsg)
 				}
-			},
-			async loginByWechat() {
-
 			}
 		}
 	}

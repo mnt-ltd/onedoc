@@ -21,8 +21,8 @@
 				<view class="m-card-header">
 					<text class="font-lv2">最新推荐</text>
 					<text class="font-lv5 float-right text-grey stats">
-						<text>{{stats.document_count || '-'}} 文档</text>
-						<text>{{stats.user_count || '-'}} 用户</text>
+						<text v-if="stats.document_count">{{stats.document_count || '-'}} 文档</text>
+						<text v-if="stats.user_count">{{stats.user_count || '-'}} 用户</text>
 					</text>
 				</view>
 				<view class="m-card-body">

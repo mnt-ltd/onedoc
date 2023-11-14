@@ -10,6 +10,7 @@ import {
 	register,
 	registerByMobile,
 	loginByMobile,
+	loginWechatmp,
 } from '@/api/user.js'
 import {
 	debug
@@ -120,6 +121,24 @@ export const useUserStore = defineStore('user', {
 				this.$patch(state => {
 					state.iuser = res.data
 				})
+			}
+			return res
+		},
+		async loginByWechatMini(req){
+			const res = await loginWechatmp(req)
+			console.log(res)
+			if(res.statusCode!==200){
+				return res
+			}
+			if(res.data.token && res.data.user){
+				 // 如果返回信息中有token和用户信息，则表示登录成功。否则表示需要对用户信息进行绑定
+				 this.$patch(state=>{
+					 state.itoken = res.data.token
+					 state.iuser = {
+						 ...state.user,
+						 ...res.data.user,
+					 }
+				 })
 			}
 			return res
 		}

@@ -230,7 +230,7 @@
 		},
 		computed: {
 			...mapGetters(useUserStore, ['user']),
-			...mapGetters(useSettingStore, ['system','vip'])
+			...mapGetters(useSettingStore, ['system','vip','security'])
 		},
 		// created() {
 		// 	this.loadData()
@@ -266,6 +266,12 @@
 				const res = await this.logout()
 				if (res.statusCode === 200) {
 					toastSuccess('退出登录成功')
+					// 登录才能访问的话，跳转到登录页面
+					if(this.security.login_required){
+						uni.redirectTo({
+							url: '/pages/login/login'
+						})
+					}
 				} else {
 					console.log(res)
 					toastError(res.data.message || '退出登录失败')

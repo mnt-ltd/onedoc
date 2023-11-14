@@ -8,9 +8,12 @@
 							<view class="back" @click="headerBack" :style="iconPadding">
 								<image src="/static/images/back-white.png"></image>
 							</view>
-							<view class="line" :style="lineMargin"></view>
 						</block>
-						<view class="home" @click="headerHome" :style="iconPadding">
+						<view v-if="currentPagesLength>1 && !(security.login_required && user.id==0)" class="line"
+							:style="lineMargin"></view>
+						<!-- 必须要登录，并且未登录的，则隐藏 -->
+						<view class="home" v-if="!(security.login_required && user.id==0)" @click="headerHome"
+							:style="iconPadding">
 							<image src="/static/images/home-white.png"></image>
 						</view>
 					</view>
@@ -47,6 +50,9 @@
 	import {
 		mapGetters
 	} from 'pinia'
+	import {
+		useUserStore
+	} from '../stores/user'
 	export default {
 		data() {
 			return {
@@ -103,9 +109,9 @@
 			that.iconPadding = `padding-top: ${top}px;padding-bottom: ${bottom}px;`
 			that.lineMargin = `margin-top: ${top}px`
 		},
-		watch:{
+		watch: {
 			title: {
-				handler: function(val){
+				handler: function(val) {
 					uni.setNavigationBarTitle({
 						title: val
 					})
@@ -114,8 +120,9 @@
 				deep: true,
 			}
 		},
-		computed:{
-			...mapGetters(useSettingStore, ['security'])
+		computed: {
+			...mapGetters(useSettingStore, ['security']),
+			...mapGetters(useUserStore, ['user'])
 		},
 		onShow() {
 			console.log('header onshow')
@@ -195,9 +202,9 @@
 			display: block;
 			background: transparent;
 		}
-		
-		.home{
-			image{
+
+		.home {
+			image {
 				width: 20px;
 				height: 20px;
 				position: relative;

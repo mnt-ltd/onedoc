@@ -43,7 +43,10 @@
 				</label>
 			</checkbox-group>
 		</view>
-		<button type="warn" class="btn-block" @click="register" :loading="loading">注册账号</button>
+		<button type="warn" class="btn-block" @click="register" :loading="loading">
+			<text v-if="isBind">注册并绑定</text>
+			<text v-else>注册账号</text>
+		</button>
 	</view>
 </template>
 
@@ -73,6 +76,12 @@
 		isValidMobile,
 	} from '@/utils/util.js'
 	export default {
+		props:{
+			isBind:{
+				type: Boolean,
+				default: false,
+			}
+		},
 		data() {
 			return {
 				form: {
@@ -127,7 +136,9 @@
 					password: this.form.password,
 				})
 				if (res.statusCode === 200) {
-					toastSuccess('注册成功')
+					if(!this.isBind){
+						toastSuccess('注册成功')
+					}
 					this.$emit('success', res)
 				} else {
 					toastError(res.data.message || '注册失败')
