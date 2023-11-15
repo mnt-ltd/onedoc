@@ -16,7 +16,7 @@
 				<formRegisterMobile v-if="registerType==='mobile'" @success="registerSuccess" />
 			</template>
 			<formRegisterEmail v-else @success="registerSuccess" />
-			<wechat-login :redirect="redirect"></wechat-login>
+			<wechat-login v-if="security.enable_wechatmp_login" :redirect="redirect"></wechat-login>
 			<navigator hover-class="none" class="font-lv3" :url="`/pages/login/login?redirect=${redirect}`">
 				<button type="default" class="btn-wechat-login btn-block">登录已有账号</button>
 			</navigator>
