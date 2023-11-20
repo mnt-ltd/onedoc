@@ -343,7 +343,7 @@
 				let startLazyLoad = 2
 				for (let i = this.pages.length + 1; i <= end; i++) {
 					j += 1
-					const src = genPreviewPage(document.attachment.hash, i, document.preview_ext, document.enable_gzip)
+					const src = genPreviewPage(this.document.attachment.hash, i, this.document.preview_ext, this.document.enable_gzip)
 					this.pages.push(joinImage(src))
 				}
 			},

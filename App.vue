@@ -56,7 +56,7 @@
 		}
 	}
 	
-	// 因此滚动条
+	// 隐藏滚动条
 	::-webkit-scrollbar{
 		display: none !important;
 		width: 0 !important;
