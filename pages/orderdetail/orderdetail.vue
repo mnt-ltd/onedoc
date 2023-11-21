@@ -314,6 +314,9 @@
 				})
 				if (res.statusCode === 200) {
 					let order = res.data || {}
+					if((order.amount || 0)===0){
+						this.paymentType = 5 // 金额为0，使用积分支付
+					}
 					this.order = order
 					// if (order.status === 1) {
 					// 	this.paymentType = order.payment_type || this.paymentType
@@ -329,6 +332,7 @@
 					// 		}
 					// 	}, 1000)
 					// }
+					
 				} else {
 					toastError(res.data.message || '获取订单详情失败')
 					uni.navigateBack()
