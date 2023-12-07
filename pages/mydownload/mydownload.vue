@@ -79,7 +79,10 @@
 				}
 				const res = await getUserDownloads(query)
 				if (res.statusCode === 200) {
-					const data = res.data.download || []
+					const data = (res.data.download || []).map(item=>{
+						item.id = item.document_id // 赋值文档id覆盖下载记录的id，以便组件能正确跳转文档
+						return item
+					})
 					if (this.query.page === 1) {
 						this.data = data
 					} else {
