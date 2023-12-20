@@ -25,7 +25,8 @@
 								class="primary">
 								{{order.product_name}}
 							</navigator>
-							<navigator v-else-if="order.order_type === 2" url="/pages/vip/vip" hover-class="none" class="primary">
+							<navigator v-else-if="order.order_type === 2" url="/pages/vip/vip" hover-class="none"
+								class="primary">
 								{{order.product_name}}
 							</navigator>
 							<template v-else>{{ order.product_name }}</template>
@@ -100,21 +101,6 @@
 							</text>
 						</view>
 					</view>
-					<view class="row" v-if="order.payment_type > 0 && order.status === 2">
-						<view class="col-3 item-title">支付方式</view>
-						<view class="col-9 item-content">
-							<span v-if="order.payment_type === 8">
-								{{
-							    payment.xunhupay_name ||
-							    paymentTypeMap[order.payment_type].label ||
-							    '-'
-							  }}
-							</span>
-							<span v-else>{{
-							  paymentTypeMap[order.payment_type].label || '-'
-							}}</span>
-						</view>
-					</view>
 				</view>
 			</view>
 			<view class="card goods-info">
@@ -134,27 +120,34 @@
 					支付方式
 				</view>
 				<view class="card-body">
-					<view class="item" :class="paymentType===1 ? 'active':''" v-if="payment.enable_mp_wechatpay" @click="changePayment(1)">
+					<view class="item" :class="paymentType===paymentTypeWechatpay ? 'active':''" v-if="payment.enable_mp_wechatpay"
+						@click="changePayment(paymentTypeWechatpay)">
 						<view>
 							<view>微信支付</view>
 							<image src="/static/images/pay-wechatpay.png"></image>
 						</view>
 					</view>
-					<view class="item" :class="paymentType===5 ? 'active':''" @click="changePayment(5)">
+					<view class="item" :class="paymentType===paymentTypeRewardedAd ? 'active':''" @click="changePayment(paymentTypeRewardedAd)">
+						<view>
+							<view class="text-danger">看广告，享免单，免费下载</view>
+							<image src="/static/images/icon/gift.png"></image>
+						</view>
+					</view>
+					<view class="item" :class="paymentType===paymentTypeCreditPay ? 'active':''" @click="changePayment(paymentTypeCreditPay)">
 						<view>
 							<view>积分支付</view>
 							<text class="small">剩余 {{ user.credit_count || 0 }}
 								{{ system.credit_name }}</text>
 						</view>
 					</view>
-					<view class="item" v-if="download.enable_code_download" :class="paymentType===9 ? 'active':''"
-						@click="changePayment(9)">
+					<view class="item" v-if="download.enable_code_download" :class="paymentType===paymentTypeDowncode ? 'active':''"
+						@click="changePayment(paymentTypeDowncode)">
 						<view>
 							<view>下载码支付</view>
 							<image src="/static/images/pay-downcode.png"></image>
 						</view>
 					</view>
-					<template v-if="paymentType === 9">
+					<template v-if="paymentType === paymentTypeDowncode">
 						<view class="downcode-tips">
 							<view v-html="download.code_tip"></view>
 						</view>
@@ -169,7 +162,7 @@
 					</template>
 					<view class="row row-pay">
 						<view class="col-7">
-							<view class="price">
+							<view class="price" v-if="paymentType!=paymentTypeRewardedAd">
 								{{ order.amount || '0' }} {{ system.credit_name
 							          }}
 								<template v-if="system.show_exchange">（
@@ -182,7 +175,9 @@
 							</view>
 						</view>
 						<view class="col-5">
-							<button type="warn" @click="payOrder">支付订单</button>
+							<button type="primary" v-if="paymentType==paymentTypeRewardedAd"
+								@click="showRewardedVideoAd">立即观看</button>
+							<button type="warn" v-else @click="payOrder">支付订单</button>
 						</view>
 					</view>
 				</view>
@@ -192,6 +187,7 @@
 </template>
 
 <script>
+	let videoAd = null
 	import mHeader from '@/compomnents/header.vue'
 	import goodsCard from '@/compomnents/goodsCard.vue'
 	import goodsCardVIP from '@/compomnents/goodsCardVIP.vue'
@@ -218,6 +214,9 @@
 	import {
 		paymentTypeOptions,
 	} from '@/utils/enum.js'
+	import {
+		rewardedVideoAdUnitId
+	} from '@/config.js'
 	export default {
 		components: {
 			mHeader,
@@ -232,27 +231,11 @@
 				paymentType: 5, // 5, 积分支付， 9， 下载码支付，1 微信支付
 				paymentTypeOptions,
 				paymentTypeMap: {},
-				payments: [{
-						label: '微信支付',
-						value: 1,
-						name: 'wechatpay'
-					},
-					{
-						label: '支付宝支付',
-						value: 2,
-						name: 'alipay'
-					},
-					{
-						label: '虎皮椒支付',
-						value: 8,
-						name: 'xunhupay'
-					},
-					{
-						label: '下载码支付',
-						value: 9,
-						name: 'downcode'
-					},
-				],
+				paymentTypeWechatpay: 1,
+				paymentTypeCreditPay: 5,
+				paymentTypeDowncode: 9,
+				paymentTypeRewardedAd: 10,
+				enableRewardedVideoAd: false,
 			}
 		},
 		computed: {
@@ -266,7 +249,6 @@
 			}, {})
 		},
 		onLoad(args) {
-			console.log(args)
 			if (!args.order_no) {
 				uni.navigateTo({
 					url: '/pages/myorder/myorder'
@@ -276,16 +258,43 @@
 			this.title = `订单: ${args.order_no}`
 			this.orderNO = args.order_no
 			Promise.all([this.getUser(), this.getOrder()])
-			if(this.payment.enable_mp_wechatpay){ // 微信支付
+			if (this.payment.enable_mp_wechatpay) { // 微信支付
 				this.paymentType = 1
 			}
+
+			// 在配置文件中查询广告id，如果没配置广告ID，则不显示激励广告
+			// 在后台查询是否启用了激励广告id，如果没启用，则不显示
+			console.log(videoAd, rewardedVideoAdUnitId)
+			if (rewardedVideoAdUnitId && uni.createRewardedVideoAd) {
+				this.enableRewardedVideoAd=true
+				videoAd = uni.createRewardedVideoAd({
+					adUnitId: rewardedVideoAdUnitId
+				})
+				videoAd.onLoad((res) => {
+					console.log('onLoad', res)
+				})
+				videoAd.onError((err) => {
+					console.error('激励视频光告加载失败', err)
+					utils.toastError("激励视频光告加载失败")
+				})
+				videoAd.onClose((res) => {
+					console.log('onClose', res)
+					// 用户点击了【关闭广告】按钮
+					if (res && res.isEnded) {
+						// 正常播放结束，提交文档购买
+					} else {
+						// 播放中途退出，不下发游戏奖励
+					}
+				})
+			}
+			console.log(videoAd, rewardedVideoAdUnitId)
 		},
 		onUnload() {
-			try{
+			try {
 				// 停止下载
 				console.log('abort', this.$refs.document)
 				this.$refs.document.abortDownloadTask()
-			}catch(e){
+			} catch (e) {
 				//TODO handle the exception
 				console.log(e)
 			}
@@ -314,25 +323,10 @@
 				})
 				if (res.statusCode === 200) {
 					let order = res.data || {}
-					if((order.amount || 0)===0){
+					if ((order.amount || 0) === 0) {
 						this.paymentType = 5 // 金额为0，使用积分支付
 					}
 					this.order = order
-					// if (order.status === 1) {
-					// 	this.paymentType = order.payment_type || this.paymentType
-					// 	// 待支付的订单，根据closed_at字段来计算还有多长时间关闭订单
-					// 	this.intervaler = setInterval(async () => {
-					// 		let left = countDownTime(order.closed_at)
-					// 		if (left.seconds <= 0) {
-					// 			clearInterval(this.intervaler)
-					// 			await this.closeOrder()
-					// 			await this.getOrder()
-					// 		} else {
-					// 			this.countdown = left.format
-					// 		}
-					// 	}, 1000)
-					// }
-					
 				} else {
 					toastError(res.data.message || '获取订单详情失败')
 					uni.navigateBack()
@@ -382,13 +376,26 @@
 								toastSuccess('支付成功')
 								this.getOrder()
 							},
-							fail: (e)=>{
+							fail: (e) => {
 								// toastError(resp.data.message || e.errMsg || '支付失败')
 								console.log('支付失败', e)
 							}
 						})
 					}
 				})
+			},
+			showRewardedVideoAd() {
+				// 用户触发广告后，显示激励视频广告
+				if (videoAd) {
+					videoAd.show().catch(() => {
+						// 失败重试
+						videoAd.load()
+							.then(() => videoAd.show())
+							.catch(err => {
+								console.error('激励视频 广告显示失败', err)
+							})
+					})
+				}
 			}
 		}
 	}

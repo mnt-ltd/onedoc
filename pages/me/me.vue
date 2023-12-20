@@ -112,8 +112,28 @@
 			</view>
 		</view>
 		
+		<view class="functions rewarded-ad" v-if="rewardedVideoAdUnitId && user.id>0 && opportunities.credit_times>0">
+			<view @click="showRewaredAd" class="row">
+				<view class="col-3">
+					<image src="/static/images/icon/gift.png"></image>
+				</view>
+				<view class="col-9">
+					<view>观看广告，领取积分奖励！</view>
+					<view class="tips">
+						您还有 <text>{{opportunities.credit_times}}</text> 次机会，每次奖励 <text>{{opportunities.credit_count}}</text> {{system.credit_name}}
+					</view>
+				</view>
+			</view>
+		</view>
+		
+		
 		<view class="functions">
 			<view class="box row">
+				<view v-if="!user.id && rewardedVideoAdUnitId" class="col-4">
+					<navigator hover-class="none" :url="loginPage">
+						<image src="/static/images/icon/gift.png"></image><text>看广告领积分</text>
+					</navigator>
+				</view>
 				<view class="col-4">
 					<navigator  hover-class="none" :url="!user.id ? loginPage : '/pages/mydynamic/mydynamic'">
 						<image src="/static/images/icon/dynamic.png"></image><text>我的动态</text>
@@ -177,14 +197,6 @@
 				</view>
 			</view>
 		</view>
-		<!-- <view class="logout" v-if="user.id">
-			<view class="row">
-				<view  class="col-12"  @click="execLogout">
-					<text>退出登录</text>
-					<image src="/static/images/icon/logout.png"></image>
-				</view>
-			</view>
-		</view> -->
 		<view>&nbsp;</view>
 	</view>
 </template>
@@ -202,6 +214,8 @@
 		signToday,
 		getSignedToday,
 		getActiveUserVIP,
+		getRewardedAdOpportunities,
+		setRewardedAdCreditAward,
 	} from '@/api/user.js'
 	import {
 		useUserStore
@@ -210,9 +224,13 @@
 		useSettingStore
 	} from '@/stores/settings.js'
 	import {
+		rewardedVideoAdUnitId,
+	} from '@/config.js'
+	import {
 		mapGetters,
 		mapActions
 	} from 'pinia'
+	let videoAd = null
 	export default {
 		data() {
 			return {
@@ -223,6 +241,11 @@
 					id: 0
 				},
 				activeVIP: {},
+				opportunities: {
+					enable: false,
+					credit_count: 0,
+				},
+				rewardedVideoAdUnitId,
 			}
 		},
 		components: {
@@ -232,18 +255,41 @@
 			...mapGetters(useUserStore, ['user']),
 			...mapGetters(useSettingStore, ['system','vip','security'])
 		},
-		// created() {
-		// 	this.loadData()
-		// },
 		onShow() {
-			// 每次显示时，都要重新加载用户VIP数据和签到数据
+			console.log('onShow')
 			this.loadData()
+			this.getRewardedAdOpportunities()
 		},
 		onLoad() {
 			console.log('用户信息', this.user)
 			const sysInfo = getSysInfo()
 			this.statusBarHeight = sysInfo.statusBarHeight
 			this.titleBarHeight = sysInfo.titleBarHeight
+			
+			if (rewardedVideoAdUnitId && uni.createRewardedVideoAd) {
+				this.enableRewardedVideoAd=true
+				videoAd = uni.createRewardedVideoAd({
+					adUnitId: rewardedVideoAdUnitId
+				})
+				videoAd.onLoad((res) => {
+					console.log('onLoad', res)
+				})
+				videoAd.onError((err) => {
+					console.error('激励视频光告加载失败', err)
+					toastError("激励视频光告加载失败")
+				})
+				videoAd.onClose(async (res) => {
+					console.log('onClose', res)
+					if (res && res.isEnded) {
+						await Promise.all([
+							setRewardedAdCreditAward({adunit_id: rewardedVideoAdUnitId}),
+							this.getRewardedAdOpportunities(), // 重新刷新广告奖励机会
+							this.getUser(), // 重新获取用户资料和积分信息
+						])
+						toastSuccess('领取成功')
+					}
+				})
+			}
 		},
 		methods: {
 			...mapActions(useUserStore, ['logout', 'getUser']),
@@ -261,6 +307,16 @@
 					this.getSignedToday(),
 					this.getActiveUserVIP()
 				])
+			},
+			async getRewardedAdOpportunities(){
+				const res = await getRewardedAdOpportunities()
+				if(res.statusCode===200){
+					this.opportunities = {
+						enable: false,
+						credit_count: 0,
+						...res.data,
+					}
+				}
 			},
 			async execLogout() {
 				const res = await this.logout()
@@ -339,6 +395,19 @@
 				} else {
 					uni.navigateTo({
 						url: '/pages/vip/vip'
+					})
+				}
+			},
+			showRewaredAd(){
+				// 用户触发广告后，显示激励视频广告
+				if (videoAd) {
+					videoAd.show().catch(() => {
+						// 失败重试
+						videoAd.load()
+							.then(() => videoAd.show())
+							.catch(err => {
+								console.error('激励视频 广告显示失败', err)
+							})
 					})
 				}
 			}
@@ -439,6 +508,26 @@
 
 		.userinfo {
 			flex: 1;
+		}
+	}
+	
+	.rewarded-ad{
+		.col-3{
+			padding: 20px 0 20px 20px;
+			box-sizing: border-box;
+			image{
+				width: 40px;
+				height: 40px;
+			}
+		}
+		.col-9{
+			padding: 15px 0 10px;
+			line-height: 160%;
+			color: red;
+			.tips{
+				font-size: 14px;
+				color: #999;
+			}
 		}
 	}
 

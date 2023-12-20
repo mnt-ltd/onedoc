@@ -41,6 +41,11 @@
 	page{
 		background-color: $uni-bg-color-grey;
 	}
+	
+	.text-danger{
+		color:  red;
+	}
+	
 	.m-card{
 		background-color: #ffffff;
 		border-radius: $uni-border-radius-lg !important;
