@@ -120,27 +120,32 @@
 					支付方式
 				</view>
 				<view class="card-body">
-					<view class="item" :class="paymentType===paymentTypeWechatpay ? 'active':''" v-if="payment.enable_mp_wechatpay"
-						@click="changePayment(paymentTypeWechatpay)">
+					<view class="item" :class="paymentType===paymentTypeWechatpay ? 'active':''"
+						v-if="payment.enable_mp_wechatpay" @click="changePayment(paymentTypeWechatpay)">
 						<view>
 							<view>微信支付</view>
 							<image src="/static/images/pay-wechatpay.png"></image>
 						</view>
 					</view>
-					<view class="item" :class="paymentType===paymentTypeRewardedAd ? 'active':''" @click="changePayment(paymentTypeRewardedAd)">
+					<!-- 文档价格大于0，且观看视频下载次数大于0 -->
+					<view class="item" v-if="(order.amount || 0)>0 && opportunities.download_times>0"
+						:class="paymentType===paymentTypeRewardedAd ? 'active':''"
+						@click="changePayment(paymentTypeRewardedAd)">
 						<view>
-							<view class="text-danger">看广告，享免单，免费下载</view>
+							<view class="text-danger">看广告享免单，免费下载(还有{{opportunities.download_times}}次机会)</view>
 							<image src="/static/images/icon/gift.png"></image>
 						</view>
 					</view>
-					<view class="item" :class="paymentType===paymentTypeCreditPay ? 'active':''" @click="changePayment(paymentTypeCreditPay)">
+					<view class="item" :class="paymentType===paymentTypeCreditPay ? 'active':''"
+						@click="changePayment(paymentTypeCreditPay)">
 						<view>
 							<view>积分支付</view>
 							<text class="small">剩余 {{ user.credit_count || 0 }}
 								{{ system.credit_name }}</text>
 						</view>
 					</view>
-					<view class="item" v-if="download.enable_code_download" :class="paymentType===paymentTypeDowncode ? 'active':''"
+					<view class="item" v-if="download.enable_code_download"
+						:class="paymentType===paymentTypeDowncode ? 'active':''"
 						@click="changePayment(paymentTypeDowncode)">
 						<view>
 							<view>下载码支付</view>
@@ -203,6 +208,9 @@
 		useUserStore,
 	} from '@/stores/user.js'
 	import {
+		getRewardedAdOpportunities
+	} from '@/api/user.js'
+	import {
 		mapGetters,
 		mapActions,
 	} from 'pinia'
@@ -236,6 +244,10 @@
 				paymentTypeDowncode: 9,
 				paymentTypeRewardedAd: 10,
 				enableRewardedVideoAd: false,
+				opportunities: {
+					enable: false,
+					download_times: 0,
+				}
 			}
 		},
 		computed: {
@@ -248,7 +260,7 @@
 				return obj
 			}, {})
 		},
-		onLoad(args) {
+		async onLoad(args) {
 			if (!args.order_no) {
 				uni.navigateTo({
 					url: '/pages/myorder/myorder'
@@ -257,7 +269,11 @@
 			}
 			this.title = `订单: ${args.order_no}`
 			this.orderNO = args.order_no
-			Promise.all([this.getUser(), this.getOrder()])
+			await Promise.all([
+				this.getUser(),
+				this.getOrder(),
+				this.getRewardedAdOpportunities(),
+			])
 			if (this.payment.enable_mp_wechatpay) { // 微信支付
 				this.paymentType = 1
 			}
@@ -266,7 +282,7 @@
 			// 在后台查询是否启用了激励广告id，如果没启用，则不显示
 			console.log(videoAd, rewardedVideoAdUnitId)
 			if (rewardedVideoAdUnitId && uni.createRewardedVideoAd) {
-				this.enableRewardedVideoAd=true
+				this.enableRewardedVideoAd = true
 				videoAd = uni.createRewardedVideoAd({
 					adUnitId: rewardedVideoAdUnitId
 				})
@@ -277,17 +293,24 @@
 					console.error('激励视频光告加载失败', err)
 					utils.toastError("激励视频光告加载失败")
 				})
-				videoAd.onClose((res) => {
-					console.log('onClose', res)
-					// 用户点击了【关闭广告】按钮
+				videoAd.onClose(async (res) => {
 					if (res && res.isEnded) {
 						// 正常播放结束，提交文档购买
-					} else {
-						// 播放中途退出，不下发游戏奖励
+						const params = {
+							order_no: this.orderNO,
+							payment_type: this.paymentType,
+							downcode: rewardedVideoAdUnitId,
+						}
+						res = await payOrder(params)
+						if (res.statusCode === 200) {
+							this.getOrder()
+							toastSuccess('领取成功')
+						} else {
+							toastError(res.data.message || '领取失败')
+						}
 					}
 				})
 			}
-			console.log(videoAd, rewardedVideoAdUnitId)
 		},
 		onUnload() {
 			try {
@@ -395,6 +418,16 @@
 								console.error('激励视频 广告显示失败', err)
 							})
 					})
+				}
+			},
+			async getRewardedAdOpportunities() {
+				const res = await getRewardedAdOpportunities()
+				if (res.statusCode === 200) {
+					this.opportunities = {
+						enable: false,
+						download_times: 0,
+						...res.data
+					}
 				}
 			}
 		}
