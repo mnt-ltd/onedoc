@@ -253,6 +253,10 @@ export const paymentTypeOptions = [{
 		label: '下载码支付',
 		value: 9
 	},
+	{
+		label: '广告支付',
+		value: 10,
+	}
 ]
 
 export const orderTypeOptions = [{
