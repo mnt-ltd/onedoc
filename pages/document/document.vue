@@ -367,6 +367,13 @@
 				}
 			},
 			async createFavorite() {
+				const documentURL = `/pages/document/document?id=${this.document.id}`
+				if (!this.user.id) {
+					uni.navigateTo({
+						url: '/pages/login/login?redirect=' + encodeURIComponent(documentURL)
+					})
+					return
+				}
 				const res = await createFavorite({
 					document_id: this.document.id,
 				})
