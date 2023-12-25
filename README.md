@@ -6,6 +6,12 @@ ONEDOC - 壹道文库，基于`uni-app`开发的魔豆文库配套小程序和AP
 
 > 原`moredoc-app`更名为`onedoc`，以作为一款正式的产品进行维护和迭代，后续将会有更多的功能和优化。社区版魔豆文库的小程序也在适配中。
 
+**当前版本需要魔豆文库专业版v2.2或以上版本**
+
+
+魔豆文库程序下载：[https://gitee.com/mnt-ltd/moredoc/releases](https://gitee.com/mnt-ltd/moredoc/releases)
+
+
 ## 二次开发
 
 1. 下载最新的hbuilderx
@@ -43,6 +49,7 @@ ONEDOC - 壹道文库，基于`uni-app`开发的魔豆文库配套小程序和AP
     - 资料、密码修改
 - 用户登录注册
 - 手机号码登录注册
+- 观看视频激励广告，获得积分和免费下载文档
 
 
 
