@@ -2,8 +2,11 @@
 	<view>
 		<mHeaderSearch @focus="go2search" />
 		<view class="filter font-lv3" id="filter" :style="`top: ${headerHeight}px`">
-				<scroll-category :activeId="query.category_id" :categories="categories" @change="changeCategory"/>
-<!-- 			<view class="item">
+			<scroll-category :activeId="query.category_id" :categories="categories" @change="changeCategory" />
+			<view class="menu">
+				<image src="/static/images/menu2.png"></image>
+			</view>
+			<!-- 			<view class="item">
 				<view class="item-title">分类</view>
 				<view class="item-value">
 					<view
@@ -73,10 +76,21 @@
 	import scrollCategory from '@/compomnents/scrollCategory.vue'
 	import mEmpty from "@/compomnents/empty.vue";
 	import docList from "@/compomnents/docList";
-	import { listDocument } from "@/api/document.js";
-	import { listCategory } from "@/api/category.js";
-	import { categoryToTree, getHeaderHeight } from "@/utils/util.js";
-	import { feeTypeOptions, extOptions, sortOptions } from "@/utils/enum.js";
+	import {
+		listDocument
+	} from "@/api/document.js";
+	import {
+		listCategory
+	} from "@/api/category.js";
+	import {
+		categoryToTree,
+		getHeaderHeight
+	} from "@/utils/util.js";
+	import {
+		feeTypeOptions,
+		extOptions,
+		sortOptions
+	} from "@/utils/enum.js";
 	export default {
 		name: "filterDocument",
 		props: {
@@ -117,9 +131,12 @@
 		},
 		watch: {
 			args: {
-				handler: function (val) {
+				handler: function(val) {
 					console.log('filter document args', val)
-					this.query = {...this.query, ...val}
+					this.query = {
+						...this.query,
+						...val
+					}
 					this.loadData(val);
 				},
 				immediate: true,
@@ -147,7 +164,7 @@
 				if (res.statusCode === 200) {
 					let categories = res.data.category || [];
 					let tree = categoryToTree(categories) || [];
-					this.categories = tree.filter(item=>item.enable);// 只显示启用的分类
+					this.categories = tree.filter(item => item.enable); // 只显示启用的分类
 					// const query = uni.createSelectorQuery().in(this);
 					// try {
 					// 	query
@@ -293,11 +310,27 @@
 			.item-value {
 				flex: 1;
 
-				& > view {
+				&>view {
 					display: inline-block;
 					margin-left: 15px;
 				}
 			}
+		}
+	}
+
+	.menu {
+		position: absolute;
+		right: 5px;
+		height: 40px;
+		width: 30px;
+		line-height: 40px;
+		text-align: center;
+		top: 0;
+
+		image {
+			margin-top: 10px;
+			width: 20px;
+			height: 20px;
 		}
 	}
 
