@@ -3,65 +3,66 @@
 		<mHeaderSearch @focus="go2search" />
 		<view class="filter font-lv3" id="filter" :style="`top: ${headerHeight}px`">
 			<scroll-category :activeId="query.category_id" :categories="categories" @change="changeCategory" />
-			<view class="menu">
+			<view class="menu" @click="openDrawer">
 				<image src="/static/images/menu2.png"></image>
 			</view>
-			<!-- 			<view class="item">
-				<view class="item-title">分类</view>
-				<view class="item-value">
-					<view
-						:class="query.category_id > 0 ? '' : 'active'"
-						@click="changeCategory(null)"
-						>不限</view
-					>
-					<view
-						v-for="cate in categories"
-						:key="'cate-' + cate.id"
-						@click="changeCategory(cate.id)"
-						:class="query.category_id === cate.id ? 'active' : ''"
-						>{{ cate.title }}</view
-					>
+		</view>
+		<view class="drawer" :class="visibleDrawer?'open':''" id="drawer"
+			:style="`top: ${headerHeight}px;height: calc(100vh - ${headerHeight}px)`" @click="closeDrawer">
+			<view class="drawer-main" id="drawer-main" :style="`height: calc(100vh - ${headerHeight}px)`">
+				<view class="item">
+					<view class="item-title">分类</view>
+					<view class="item-value">
+						<view :class="!query.category_id ? 'active' : ''" @click="changeCategory(null)">
+							不限
+						</view>
+						<view v-for="(cate, idx) in categories" :class="cate.id === query.category_id ? 'active' : ''"
+							:key="'cate' + cate.id" @click="changeCategory(cate.id)">
+							{{ cate.title }}
+						</view>
+					</view>
 				</view>
-			</view>
-			<view class="item">
-				<view class="item-title">类型</view>
-				<view class="item-value">
-					<view
-						v-for="(ext, idx) in extOptions"
-						:class="query.ext === ext.value ? 'active' : ''"
-						:key="'ext-' + ext.value"
-						@click="changeExt(ext.value)"
-					>
-						{{ ext.label }}
+				<view class="item">
+					<view class="item-title">类型</view>
+					<view class="item-value">
+						<view v-for="(ext, idx) in extOptions" :class="query.ext === ext.value ? 'active' : ''"
+							:key="'ext-' + ext.value" @click="changeExt(ext.value)">
+							{{ ext.label }}
+						</view>
+					</view>
+				</view>
+				<view class="item">
+					<view class="item-title">费用</view>
+					<view class="item-value">
+						<view v-for="(feeType, idx) in feeTypeOptions"
+							:class="query.fee_type === feeType.value ? 'active' : ''" :key="'feeType-' + feeType.value"
+							@click="changeFeeType(feeType.value)">
+							{{ feeType.label }}
+						</view>
+					</view>
+				</view>
+				<view class="item">
+					<view class="item-title">排序</view>
+					<view class="item-value">
+						<view v-for="(sort, idx) in sortOptions" :class="query.sort === sort.value ? 'active' : ''"
+							:key="'sort-' + sort.value" @click="changeSort(sort.value)">
+							{{ sort.label }}
+						</view>
+					</view>
+				</view>
+				<view class="item" v-if="(language || []).length>0">
+					<view class="item-title">语言</view>
+					<view class="item-value">
+						<view :class="!query.language ? 'active' : ''" @click="changeLanguage(null)">
+							不限
+						</view>
+						<view v-for="(lang, idx) in language" :class="query.language === lang.code ? 'active' : ''"
+							:key="'lang-' + lang.code" @click="changeLanguage(lang.code)">
+							{{ lang.language }}
+						</view>
 					</view>
 				</view>
 			</view>
-			<view class="item">
-				<view class="item-title">费用</view>
-				<view class="item-value">
-					<view
-						v-for="(feeType, idx) in feeTypeOptions"
-						:class="query.fee_type === feeType.value ? 'active' : ''"
-						:key="'feeType-' + feeType.value"
-						@click="changeFeeType(feeType.value)"
-					>
-						{{ feeType.label }}
-					</view>
-				</view>
-			</view>
-			<view class="item">
-				<view class="item-title">排序</view>
-				<view class="item-value">
-					<view
-						v-for="(sort, idx) in sortOptions"
-						:class="query.sort === sort.value ? 'active' : ''"
-						:key="'sort-' + sort.value"
-						@click="changeSort(sort.value)"
-					>
-						{{ sort.label }}
-					</view>
-				</view>
-			</view> -->
 		</view>
 		<view class="list" :style="`margin-top: ${filterHeight + 40}px`">
 			<docList v-if="documents.length > 0" :docs="documents" />
@@ -91,6 +92,12 @@
 		extOptions,
 		sortOptions
 	} from "@/utils/enum.js";
+	import {
+		useSettingStore
+	} from '@/stores/settings.js';
+	import {
+		mapGetters
+	} from 'pinia'
 	export default {
 		name: "filterDocument",
 		props: {
@@ -117,11 +124,16 @@
 					fee_type: "",
 					page: 1,
 					size: 10,
+					language: null,
 				},
 				headerHeight: getHeaderHeight(),
 				filterHeight: 0,
 				loading: false,
+				visibleDrawer: false,
 			};
+		},
+		computed: {
+			...mapGetters(useSettingStore, ['language'])
 		},
 		components: {
 			mHeaderSearch,
@@ -165,25 +177,19 @@
 					let categories = res.data.category || [];
 					let tree = categoryToTree(categories) || [];
 					this.categories = tree.filter(item => item.enable); // 只显示启用的分类
-					// const query = uni.createSelectorQuery().in(this);
-					// try {
-					// 	query
-					// 		.select("#filter")
-					// 		.boundingClientRect((res) => {
-					// 			// console.log('search', res)
-					// 			this.filterHeight = res.height;
-					// 		})
-					// 		.exec();
-					// } catch (e) {
-					// 	//TODO handle the exception
-					// }
 				}
 			},
 			changeCategory(categoryId) {
 				console.log(categoryId)
 				this.query.category_id = categoryId;
 				this.query.page = 1;
+				this.query.language=null
 				this.getDocuments();
+			},
+			changeLanguage(lang) {
+				this.query.page=1
+				this.query.language = lang
+				this.getDocuments()
 			},
 			changeSort(sort) {
 				this.query.page = 1;
@@ -199,6 +205,14 @@
 				this.query.page = 1;
 				this.query.ext = ext;
 				this.getDocuments();
+			},
+			closeDrawer(e) {
+				if (e.target.id === 'drawer') {
+					this.visibleDrawer = false
+				}
+			},
+			openDrawer() {
+				this.visibleDrawer = true
 			},
 			async getDocuments() {
 				console.log('getDocuments', this.query)
@@ -240,6 +254,7 @@
 					category_id: this.query.category_id,
 					ext: this.query.ext,
 					fee_type: this.query.fee_type,
+					language: this.query.language,
 					field: [
 						"id",
 						"title",
@@ -292,30 +307,6 @@
 		z-index: 99;
 		width: 100%;
 		box-sizing: border-box;
-
-		.active {
-			color: $uni-color-success;
-		}
-
-		.item {
-			display: flex;
-			font-size: 14px;
-			line-height: 30px;
-
-			.item-title {
-				width: 30px;
-				color: $uni-bg-color-mask;
-			}
-
-			.item-value {
-				flex: 1;
-
-				&>view {
-					display: inline-block;
-					margin-left: 15px;
-				}
-			}
-		}
 	}
 
 	.menu {
@@ -336,5 +327,58 @@
 
 	.list {
 		padding: 0 10px;
+	}
+
+	.drawer {
+		position: fixed;
+		right: -130%;
+		top: 0;
+		width: 100%;
+		background-color: rgba(0, 0, 0, 0.1);
+		z-index: 99;
+		transition: right 0.5s;
+
+		&.open {
+			right: 0;
+		}
+
+		.drawer-main {
+			width: 60%;
+			background-color: #fff;
+			box-sizing: border-box;
+			padding: 10px;
+			border-top-left-radius: 8px;
+			border-bottom-left-radius: 8px;
+			box-shadow: -5px 0 5px 0px #eee;
+			border-left: 1px solid #eee;
+			overflow-y: auto;
+			position: absolute;
+			right: 0;
+
+			.active {
+				color: $uni-color-success;
+			}
+
+			.item {
+				// display: flex;
+				font-size: 14px;
+				line-height: 27px;
+				margin-bottom: 10px;
+
+				.item-title {
+					width: 30px;
+					color: $uni-bg-color-mask;
+				}
+
+				.item-value {
+					flex: 1;
+
+					&>view {
+						display: inline-block;
+						margin-right: 15px;
+					}
+				}
+			}
+		}
 	}
 </style>

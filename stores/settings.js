@@ -22,6 +22,7 @@ export const useSettingStore = defineStore('settings', {
 			iVip:{
 				enable: false
 			},
+			iLanguage: [],
 		};
 	},
 	getters: {
@@ -45,6 +46,9 @@ export const useSettingStore = defineStore('settings', {
 		},
 		vip(state){
 			return state.iVip
+		},
+		language(state){
+			return state.iLanguage || []
 		}
 	},
 	actions: {
@@ -63,6 +67,7 @@ export const useSettingStore = defineStore('settings', {
 					state.iSecurity = res.data.security || {}
 					state.iVip = res.data.vip || {}
 					state.iSystem = res.data.system || {}
+					state.iLanguage = res.data.language || []
 				})
 			}
 			return res
