@@ -9,25 +9,33 @@
 				<view class="col filter-cate">
 					<picker mode="selector" :range="categories.map(item=>item.title)" :value="filter.cateIndex"
 						@change="changeCategory">
-						<view>{{categories[filter.cateIndex].title}}</view>
+						<view class="picker-text">{{categories[filter.cateIndex].title}}</view>
+					</picker>
+				</view>
+				<!-- 条件判断用language而不是languages -->
+				<view class="col filter-language" v-if="(language || []).length>0">
+					<picker mode="selector" :range="languages.map(lang=>lang.language)" :value="filter.langIndex"
+						@change="changeLanguage">
+						<view class="picker-text">{{languages[filter.langIndex].language}}</view>
 					</picker>
 				</view>
 				<view class="col filter-ext">
 					<picker mode="selector" :range="searchExts.map(item=>item.label)" :value="filter.extIndex"
 						@change="changeExt">
-						<view>{{searchExts[filter.extIndex].label}}</view>
+						<view class="picker-text">{{searchExts[filter.extIndex].label}}</view>
 					</picker>
 				</view>
 				<view class="col filter-sort">
 					<picker mode="selector" :range="searchSorts.map(item=>item.label)" :value="filter.sortIndex"
 						@change="changeSort">
-						<view>{{searchSorts[filter.sortIndex].label}}</view>
+						<view class="picker-text">{{searchSorts[filter.sortIndex].label}}</view>
 					</picker>
 				</view>
-				<view class="col filter-duration">
+				<!-- 条件判断用language而不是languages -->
+				<view class="col filter-duration" v-if="(language || []).length==0">
 					<picker mode="selector" :range="durationOptions.map(item=>item.label)" :value="filter.durationIndex"
 						@change="changeDuration">
-						<view>{{durationOptions[filter.durationIndex].label}}</view>
+						<view class="picker-text">{{durationOptions[filter.durationIndex].label}}</view>
 					</picker>
 				</view>
 			</view>
@@ -51,12 +59,14 @@
 		sort: 'default', // 排序
 		category_id: 0,
 		duration: 'all',
+		language: '',
 	}
 	const defaultFilter = {
 		extIndex: 0,
 		sortIndex: 0,
 		durationIndex: 0,
 		cateIndex: 0,
+		langIndex: 0,
 	}
 	import {
 		useSettingStore
@@ -201,9 +211,15 @@
 			}
 		},
 		computed: {
-			...mapGetters(useSettingStore, ['system']),
+			...mapGetters(useSettingStore, ['system', 'language']),
 			headerHeight() {
 				return getHeaderHeight()
+			},
+			languages() {
+				return [{
+					language: '不限语言',
+					code: ''
+				}, ...this.language]
 			}
 		},
 		created() {
@@ -277,6 +293,12 @@
 				this.filter.cateIndex = e.detail.value || 0
 				this.query.page = 1
 				this.query.category_id = this.categories[this.filter.cateIndex].id
+				this.searchDocuments()
+			},
+			changeLanguage(e) {
+				this.filter.langIndex = e.detail.value || 0
+				this.query.page = 1
+				this.query.language = this.languages[this.filter.langIndex].code
 				this.searchDocuments()
 			},
 			changeDuration(e) {
@@ -380,6 +402,20 @@
 			position: absolute;
 			color: $uni-text-color-grey;
 		}
+		
+		.col{
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			box-sizing: border-box;
+		}
+		
+		.picker-text{
+			width: 90%;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
 
 		.filter-cate::before {
 			content: '分类:';
@@ -390,7 +426,11 @@
 		}
 
 		.filter-ext::before {
-			content: '格式:';
+			content: ' 格式:';
+		}
+
+		.filter-language::before {
+			content: '语言:';
 		}
 
 		.filter-duration::before {
