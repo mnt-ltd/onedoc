@@ -64,7 +64,8 @@
 				</view>
 			</view>
 		</view>
-		<view class="list" :style="`margin-top: ${filterHeight + 40}px`">
+		<view class="list" :style="`margin-top: ${filterHeight + 40}px`" @touchstart="touchStart" @touchend="touchEnd"
+			@touchmove="touchMove">
 			<docList v-if="documents.length > 0" :docs="documents" />
 			<mEmpty v-else />
 		</view>
@@ -130,6 +131,11 @@
 				filterHeight: 0,
 				loading: false,
 				visibleDrawer: false,
+				moveData: {
+					startX: 0,
+					startY: 0,
+					moved: false,
+				},
 			};
 		},
 		computed: {
@@ -183,11 +189,11 @@
 				console.log(categoryId)
 				this.query.category_id = categoryId;
 				this.query.page = 1;
-				this.query.language=null
+				this.query.language = null
 				this.getDocuments();
 			},
 			changeLanguage(lang) {
-				this.query.page=1
+				this.query.page = 1
 				this.query.language = lang
 				this.getDocuments()
 			},
@@ -213,6 +219,56 @@
 			},
 			openDrawer() {
 				this.visibleDrawer = true
+			},
+			touchStart(e) {
+				if (e.changedTouches.length > 0) {
+					this.moveData.startX = e.changedTouches[0].clientX; //手指按下时的X坐标
+					this.moveData.startY = e.changedTouches[0].clientY; //手指按下时的Y坐标
+				}
+			},
+			touchMove(e) {
+				this.moveData.moved = true
+			},
+			touchEnd(e) {
+				if (this.moveData.moved && e.changedTouches.length > 0) {
+					const deltaX = e.changedTouches[0].clientX - this.moveData.startX
+					const deltaY = Math.abs(e.changedTouches[0].clientY - this.moveData.startY)
+					if (Math.abs(deltaX) > deltaY) { // 移动了
+						let currentIndex = this.categories.findIndex(cate=>cate.id==this.query.category_id)
+						if (deltaX > 0) { // 左
+							if (!this.query.category_id) {
+								return
+							}
+							currentIndex--
+							if (currentIndex <= -1) {
+								this.query.category_id = null
+								this.query.language = null
+								this.query.page = 1
+								this.getDocuments()
+								return
+							}
+							if (this.categories.length > currentIndex) {
+								this.query.category_id = this.categories[currentIndex].id
+								this.query.language = null
+								this.query.page = 1
+								this.getDocuments()
+								return
+							}
+						} else { // 右
+							currentIndex++
+							if (this.categories.length > currentIndex) {
+								this.query.category_id = this.categories[currentIndex].id
+								this.query.page = 1
+								this.query.language = null
+								this.getDocuments()
+								return
+							}
+						}
+					}
+				}
+				this.moveData.moved = false
+				this.moveData.startX = 0
+				this.moveData.startY = 0
 			},
 			async getDocuments() {
 				console.log('getDocuments', this.query)

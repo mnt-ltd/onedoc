@@ -18,6 +18,7 @@
 		data() {
 			return {
 				scrollLeft: 0,
+				index: 0,
 			};
 		},
 		props: {
@@ -36,11 +37,32 @@
 				}
 			}
 		},
+		watch: {
+			activeId: {
+				handler: function(newVal) {
+					this.index = this.categories.findIndex(cate => cate.id == newVal)
+					this.resetScroll()
+				},
+				immediate: true,
+			}
+		},
 		methods: {
 			changeCategory(e) {
-				this.scrollLeft = e.currentTarget.offsetLeft - (uni.getSystemInfoSync().screenWidth / 2 - 50)
 				this.$emit('change', e.target.dataset.id)
 			},
+			resetScroll() {
+				this.$nextTick(() => {
+					const query = uni.createSelectorQuery().in(this);
+					query
+						.selectAll(".scroll-item").boundingClientRect(res => {
+							let scrollLeft = 0
+							for (let idx = 0; idx < this.index; idx++) {
+								scrollLeft += res[idx].width
+							}
+							this.scrollLeft = scrollLeft - 50
+						}).exec()
+				})
+			}
 		}
 	}
 </script>
@@ -59,6 +81,7 @@
 		padding: 0 10px;
 		height: auto;
 		overflow: hidden;
+
 		.scroll-item {
 			text-overflow: ellipsis;
 			white-space: nowrap;
