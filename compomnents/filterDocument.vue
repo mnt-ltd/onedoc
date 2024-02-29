@@ -2,7 +2,8 @@
 	<view>
 		<mHeaderSearch @focus="go2search" />
 		<view class="filter font-lv3" id="filter" :style="`top: ${headerHeight}px`">
-			<view class="item">
+				<scroll-category :activeId="query.category_id" :categories="categories" @change="changeCategory"/>
+<!-- 			<view class="item">
 				<view class="item-title">分类</view>
 				<view class="item-value">
 					<view
@@ -57,9 +58,9 @@
 						{{ sort.label }}
 					</view>
 				</view>
-			</view>
+			</view> -->
 		</view>
-		<view class="list" :style="`margin-top: ${filterHeight + baseHeight}px`">
+		<view class="list" :style="`margin-top: ${filterHeight + 40}px`">
 			<docList v-if="documents.length > 0" :docs="documents" />
 			<mEmpty v-else />
 		</view>
@@ -69,6 +70,7 @@
 
 <script>
 	import mHeaderSearch from "@/compomnents/headerSearch.vue";
+	import scrollCategory from '@/compomnents/scrollCategory.vue'
 	import mEmpty from "@/compomnents/empty.vue";
 	import docList from "@/compomnents/docList";
 	import { listDocument } from "@/api/document.js";
@@ -84,10 +86,6 @@
 					return {};
 				},
 			},
-			baseHeight: {
-				type: Number,
-				default: 30,
-			},
 		},
 		data() {
 			return {
@@ -101,7 +99,7 @@
 					order: "",
 					sort: "default",
 					ext: "",
-					category_id: null,
+					category_id: 0,
 					fee_type: "",
 					page: 1,
 					size: 10,
@@ -115,6 +113,7 @@
 			mHeaderSearch,
 			docList,
 			mEmpty,
+			scrollCategory,
 		},
 		watch: {
 			args: {
@@ -149,21 +148,22 @@
 					let categories = res.data.category || [];
 					let tree = categoryToTree(categories) || [];
 					this.categories = tree.filter(item=>item.enable);// 只显示启用的分类
-					const query = uni.createSelectorQuery().in(this);
-					try {
-						query
-							.select("#filter")
-							.boundingClientRect((res) => {
-								// console.log('search', res)
-								this.filterHeight = res.height;
-							})
-							.exec();
-					} catch (e) {
-						//TODO handle the exception
-					}
+					// const query = uni.createSelectorQuery().in(this);
+					// try {
+					// 	query
+					// 		.select("#filter")
+					// 		.boundingClientRect((res) => {
+					// 			// console.log('search', res)
+					// 			this.filterHeight = res.height;
+					// 		})
+					// 		.exec();
+					// } catch (e) {
+					// 	//TODO handle the exception
+					// }
 				}
 			},
 			changeCategory(categoryId) {
+				console.log(categoryId)
 				this.query.category_id = categoryId;
 				this.query.page = 1;
 				this.getDocuments();
@@ -269,11 +269,12 @@
 
 <style lang="scss" scoped>
 	.filter {
-		padding: 10px 15px 10px;
+		padding: 0 30px 0 0;
 		position: fixed;
 		background-color: $uni-bg-color-grey;
 		z-index: 99;
 		width: 100%;
+		box-sizing: border-box;
 
 		.active {
 			color: $uni-color-success;
@@ -301,6 +302,6 @@
 	}
 
 	.list {
-		padding: 0 15px;
+		padding: 0 10px;
 	}
 </style>
