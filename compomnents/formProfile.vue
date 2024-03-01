@@ -121,7 +121,7 @@
 		name: "formProfile",
 		props: {
 			disabled: {
-				type: String,
+				type: Boolean,
 				default: false,
 			},
 			user: {
