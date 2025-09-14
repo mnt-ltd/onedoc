@@ -30,8 +30,43 @@
 			</view>
 		</view>
 		<view class="doc-pages">
-			<image class="doc-page" :src="page" v-for="page in pages" :key="page" lazy-load
-				:style="`width: ${document.width}px;height: ${document.height}px`"></image>
+			<!-- 预览控制工具栏 -->
+			<view class="preview-controls" v-if="pages.length > 0">
+				<view class="control-btn" @click="zoomOut">
+					<text class="control-icon">－</text>
+					<text>缩小</text>
+				</view>
+				<view class="control-btn" @click="zoomIn">
+					<text class="control-icon">＋</text>
+					<text>放大</text>
+				</view>
+				<view class="control-btn" @click="resetZoom">
+					<text class="control-icon">○</text>
+					<text>重置</text>
+				</view>
+				<view class="zoom-info">
+					<text>{{Math.round(scaleValue * 100)}}%</text>
+				</view>
+			</view>
+			
+			<!-- 文档预览区域 -->
+			<view class="preview-container">
+				<view class="doc-pages-wrapper">
+					<view 
+						class="doc-pages-content" 
+						:style="`transform: scale(${scaleValue}); transform-origin: center top;`">
+						<image 
+							class="doc-page" 
+							:src="page" 
+							v-for="(page, index) in pages" 
+							:key="page" 
+							lazy-load
+							@click="previewImage(page)"
+							:style="`width: ${document.width}px;height: ${document.height}px; margin-bottom: 10px;`">
+						</image>
+					</view>
+				</view>
+			</view>
 			<view v-if="document.preview - pages.length > 0" class="text-muted">
 				共 <text>{{ document.pages }}</text> 页，还有 <text>{{ document.preview - pages.length }}</text> 页可预览
 			</view>
@@ -167,6 +202,8 @@
 					id: 0
 				},
 				comment: {},
+				// 预览相关状态
+				scaleValue: 1,
 			}
 		},
 		components: {
@@ -348,10 +385,11 @@
 				}
 			},
 			previewImage(page) {
-				uni.previewImage({
-					urls: this.pages,
-					current: page,
-				})
+				// 已有放大缩小功能，不再提供自带的prevewImage的方式，反而影响体验
+				// uni.previewImage({
+				// 	urls: this.pages,
+				// 	current: page,
+				// })
 			},
 			async deleteFavorite() {
 				const res = await deleteFavorite({
@@ -442,6 +480,23 @@
 					toastError(res.data.message || '下载失败')
 				}
 			},
+			// 缩放控制方法
+			zoomIn() {
+				if (this.scaleValue < 3) {
+					this.scaleValue = Math.min(3, parseFloat((this.scaleValue + 0.05).toFixed(2)))
+				}
+			},
+			zoomOut() {
+				if (this.scaleValue > 0.5) {
+					let newScale = Math.max(0.5, this.scaleValue - 0.05)
+					newScale = parseFloat(newScale.toFixed(2))
+					// 如果缩放到接近1，直接设置为1以触发正常滚动模式
+					this.scaleValue = Math.abs(newScale - 1) < 0.03 ? 1 : newScale
+				}
+			},
+			resetZoom() {
+				this.scaleValue = 1
+			},
 		}
 	}
 </script>
@@ -489,14 +544,100 @@
 
 	.doc-pages {
 		padding: 5px;
+		position: relative;
+
+		// 预览控制工具栏样式
+		.preview-controls {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 6px;
+			background-color: rgba(255, 255, 255, 0.95);
+			border-radius: 6px;
+			margin: 8px;
+			gap: 8px;
+			position: fixed;
+			bottom: 80px;
+			left: 50%;
+			transform: translateX(-50%);
+			z-index: 999;
+			box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+			border: 1px solid rgba(0, 0, 0, 0.08);
+
+			.control-btn {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				padding: 6px;
+				background-color: #fff;
+				border-radius: 4px;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+				min-width: 36px;
+				transition: all 0.2s;
+
+				&:active {
+					transform: scale(0.95);
+					box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+				}
+
+				.control-icon {
+					font-size: 14px;
+					font-weight: bold;
+					color: #333;
+					margin-bottom: 2px;
+					line-height: 1;
+				}
+
+				text {
+					font-size: 10px;
+					color: #333;
+				}
+			}
+
+			.zoom-info {
+				padding: 6px 8px;
+				background-color: rgba(0, 0, 0, 0.7);
+				border-radius: 4px;
+				text {
+					color: #fff;
+					font-size: 10px;
+					font-weight: bold;
+				}
+			}
+		}
+
+		// 预览容器样式
+		.preview-container {
+			position: relative;
+			overflow-x: auto;
+			overflow-y: auto;
+
+			.doc-pages-wrapper {
+				width: 100%;
+				padding: 5px;
+				display: flex;
+				justify-content: center;
+				align-items: flex-start;
+
+				.doc-pages-content {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					transition: transform 0.2s ease;
+				}
+			}
+		}
 
 		.doc-page {
 			background-color: #fff;
 			border-radius: 8px;
-			margin-bottom: 5px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			cursor: pointer;
+			transition: all 0.2s;
 
-			image {
-				width: 100%;
+			&:hover {
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 			}
 		}
 
