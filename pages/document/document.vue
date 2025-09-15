@@ -51,9 +51,12 @@
 			
 			<!-- 文档预览区域 -->
 			<view class="preview-container">
-				<view class="doc-pages-wrapper">
+				<view 
+					class="doc-pages-wrapper" 
+					:style="`min-width: ${contentWidth*scaleValue}px`">
 					<view 
 						class="doc-pages-content" 
+						ref="docPagesContent"
 						:style="`transform: scale(${scaleValue}); transform-origin: center top;`">
 						<image 
 							class="doc-page" 
@@ -204,6 +207,9 @@
 				comment: {},
 				// 预览相关状态
 				scaleValue: 1,
+				// 内容区域尺寸
+				contentWidth: 0,
+				contentHeight: 0,
 			}
 		},
 		components: {
@@ -308,6 +314,8 @@
 					}
 					this.pages = pages
 					this.document = document
+					// 初始化时获取内容尺寸
+					this.getContentDimensions()
 				}
 			},
 			async vipDownload() {
@@ -480,6 +488,22 @@
 					toastError(res.data.message || '下载失败')
 				}
 			},
+			// 获取内容区域的实际尺寸
+			getContentDimensions() {
+				this.$nextTick(() => {
+					try {
+						const query = uni.createSelectorQuery().in(this)
+						query.select('.doc-pages-content').boundingClientRect((rect) => {
+							if (rect) {
+								this.contentWidth = rect.width
+								this.contentHeight = rect.height
+							}
+						}).exec()
+					} catch (e) {
+						console.log('获取内容尺寸失败:', e)
+					}
+				})
+			},
 			// 缩放控制方法
 			zoomIn() {
 				if (this.scaleValue < 3) {
@@ -490,8 +514,8 @@
 				if (this.scaleValue > 0.5) {
 					let newScale = Math.max(0.5, this.scaleValue - 0.05)
 					newScale = parseFloat(newScale.toFixed(2))
-					// 如果缩放到接近1，直接设置为1以触发正常滚动模式
-					this.scaleValue = Math.abs(newScale - 1) < 0.03 ? 1 : newScale
+					if (newScale < 1) newScale=1
+					this.scaleValue = newScale
 				}
 			},
 			resetZoom() {
