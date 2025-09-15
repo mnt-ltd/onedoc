@@ -570,66 +570,71 @@
 		padding: 5px;
 		position: relative;
 
-		// 预览控制工具栏样式
-		.preview-controls {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			padding: 6px;
-			background-color: rgba(255, 255, 255, 0.95);
-			border-radius: 6px;
-			margin: 8px;
-			gap: 8px;
-			position: fixed;
-			bottom: 80px;
-			left: 50%;
-			transform: translateX(-50%);
-			z-index: 999;
-			box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
-			border: 1px solid rgba(0, 0, 0, 0.08);
+        // 预览控制工具栏样式
+        .preview-controls {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 6px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 6px;
+            margin: 8px;
+            gap: 8px;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            transform: translateY(-50%);
+            z-index: 999;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            min-width: 30px;
 
-			.control-btn {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				padding: 6px;
-				background-color: #fff;
-				border-radius: 4px;
-				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-				min-width: 36px;
-				transition: all 0.2s;
+            .control-btn {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 2px;
+                background-color: #fff;
+                border-radius: 4px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                min-height: 30px;
+                transition: all 0.2s;
 
-				&:active {
-					transform: scale(0.95);
-					box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-				}
+                &:active {
+                    transform: scale(0.95);
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                }
 
-				.control-icon {
-					font-size: 14px;
-					font-weight: bold;
-					color: #333;
-					margin-bottom: 2px;
-					line-height: 1;
-				}
+                .control-icon {
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #333;
+                    margin-bottom: 2px;
+                    line-height: 1;
+                }
 
-				text {
-					font-size: 10px;
-					color: #333;
-				}
-			}
+                text {
+                    font-size: 10px;
+                    color: #333;
+                }
+            }
 
-			.zoom-info {
-				padding: 6px 8px;
-				background-color: rgba(0, 0, 0, 0.7);
-				border-radius: 4px;
-				text {
-					color: #fff;
-					font-size: 10px;
-					font-weight: bold;
-				}
-			}
-		}
+            .zoom-info {
+                padding: 8px 6px;
+                background-color: rgba(0, 0, 0, 0.7);
+                border-radius: 4px;
+                width: 100%;
+                text-align: center;
+                text {
+                    color: #fff;
+                    font-size: 10px;
+                    font-weight: bold;
+                }
+            }
+        }
 
 		// 预览容器样式
 		.preview-container {
