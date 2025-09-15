@@ -619,6 +619,7 @@
 				display: flex;
 				justify-content: center;
 				align-items: flex-start;
+				box-sizing: border-box;
 
 				.doc-pages-content {
 					display: flex;
