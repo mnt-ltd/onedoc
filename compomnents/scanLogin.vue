@@ -1,9 +1,14 @@
 <template>
 	<view class="com-scan-login">
-		<view class="tips">
-			点击授权登录，即可登录网站
+		<view v-if="user.id>0">
+			登录中...
 		</view>
-		<button type="primary" :loading="loading" open-type="getUserInfo" @getuserinfo="login">授权登录</button>
+		<view v-else>
+			<view class="tips">
+				点击授权登录，即可登录网站
+			</view>
+			<button type="primary" :loading="loading" open-type="getUserInfo" @getuserinfo="login">授权登录</button>
+		</view>
 	</view>
 </template>
 
@@ -14,7 +19,8 @@
 		toastSuccess,
 	} from '@/utils/util.js'
 	import {
-		mapActions
+		mapActions,
+		mapGetters,
 	} from 'pinia'
 	import {
 		useUserStore
@@ -33,12 +39,14 @@
 			},
 			scene: {
 				type: String,
-				// default: ''
-				default: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDU1MTQ5MDgsImp0aSI6ImQwM2I1NWZiZmVmNWIxMjEifQ.nKlKMUb9XLWcdwxOdkdHH1KG3XEclJJtIaxFEMuR6rU'
+				default: ''
 			}
 		},
+		computed: {
+			...mapGetters(useUserStore, ['user']),
+		},
 		methods: {
-			...mapActions(useUserStore, ['loginWechatmpScan']),
+			...mapActions(useUserStore, ['loginByWechatMini']),
 			login(e) {
 				let _this = this
 				uni.login({
@@ -49,9 +57,8 @@
 							encrypted_data: e.detail.encryptedData,
 							scene: _this.scene,
 						}
-						console.log(res, e,payload)
 						_this.loading = true
-						const resp = await _this.loginWechatmpScan(payload)
+						const resp = await _this.loginByWechatMini(payload)
 						_this.loading = false
 						if (resp.statusCode === 200) {
 							if (resp.data.token) {

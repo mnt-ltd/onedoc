@@ -192,6 +192,13 @@
 				"enablePullDownRefresh": false
 			}
 
+		},
+		{
+			"path" : "pages/intro/intro",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
 		}
 		
 	],
