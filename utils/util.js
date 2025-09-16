@@ -410,6 +410,9 @@ export const joinImage = (url) => {
 
 	// 地址中带有 // ，即表示绝对的链接地址
 	if (url.indexOf('//') === 0) {
+		if (url.indexOf('localhost') > -1 || url.indexOf('127.0.0.1') > -1){
+			return 'http:' + url	
+		}
 		return 'https:' + url
 	}
 	if (url.indexOf('/') === 0) {

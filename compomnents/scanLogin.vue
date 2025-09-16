@@ -1,11 +1,18 @@
 <template>
 	<view class="com-scan-login">
-		<view v-if="user.id>0">
-			登录中...
+		<view class="info">
+			<view class="title">
+				欢迎来到 <text>{{system.sitename}}</text>
+			</view>
+			<view>
+				<image v-if="user.id>0" :src="user.avatar || '/static/images/avatar.png'" class="logo" mode="heightFix"></image>
+				<image v-else :src="mpLogo || logo" class="logo" mode="heightFix"></image>
+			</view>
+			<view>{{ user.nickname || system.sitename }}</view>
 		</view>
-		<view v-else>
+		<view>
 			<view class="tips">
-				点击授权登录，即可登录网站
+				使用当前账号登录 <text>{{ system.sitename }}</text> 网页版
 			</view>
 			<button type="primary" :loading="loading" open-type="getUserInfo" @getuserinfo="login">授权登录</button>
 		</view>
@@ -17,6 +24,7 @@
 		redirectTo,
 		toastError,
 		toastSuccess,
+		joinImage,
 	} from '@/utils/util.js'
 	import {
 		mapActions,
@@ -25,6 +33,9 @@
 	import {
 		useUserStore
 	} from '@/stores/user'
+	import {
+		useSettingStore
+	} from '@/stores/settings'
 	export default {
 		name: 'scanLogin',
 		data() {
@@ -44,6 +55,13 @@
 		},
 		computed: {
 			...mapGetters(useUserStore, ['user']),
+			...mapGetters(useSettingStore,['system']),
+			logo(){
+				return this.system.logo ? joinImage(this.system.logo) : '/static/images/logo-transparent.png'
+			},
+			mpLogo(){
+				return this.system.mp_logo ? joinImage(this.system.mp_logo) : ''
+			},
 		},
 		methods: {
 			...mapActions(useUserStore, ['loginByWechatMini']),
