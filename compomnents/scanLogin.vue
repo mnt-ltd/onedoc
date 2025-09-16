@@ -4,15 +4,15 @@
 			<view class="title">
 				欢迎来到 <text>{{system.sitename}}</text>
 			</view>
+			<view class="font-lv2">{{ system.description }}</view>
 			<view>
-				<image v-if="user.id>0" :src="user.avatar || '/static/images/avatar.png'" class="logo" mode="heightFix"></image>
-				<image v-else :src="mpLogo || logo" class="logo" mode="heightFix"></image>
+				<image :src="user.avatar || '/static/images/avatar.png'"></image>
 			</view>
-			<view>{{ user.nickname || system.sitename }}</view>
+			<view>{{ user.nickname || '游客' }}</view>
 		</view>
 		<view>
 			<view class="tips">
-				使用当前账号登录 <text>{{ system.sitename }}</text> 网页版
+				一键授权登录 <text>{{ system.sitename }}</text> 网页版
 			</view>
 			<button type="primary" :loading="loading" open-type="getUserInfo" @getuserinfo="login">授权登录</button>
 		</view>
@@ -104,9 +104,83 @@
 	.com-scan-login {
 		margin-top: 20px;
 		text-align: center;
-		padding:100px 50px;
-		.tips{
-			margin-bottom: 20px;
+		padding: 60px 40px 80px;
+		// min-height: calc(100vh - 40px);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		background-color: #f7f8f9;
+		
+		.info {
+			margin-bottom: 60px;
+			
+			.title {
+				font-size: 24px;
+				font-weight: 500;
+				margin-bottom: 10px;
+				line-height: 1.4;
+				color: #888888;
+				
+				text {
+					color: #191f25;
+					font-weight: 600;
+				}
+			}
+			
+			image {
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+				margin: 30px 0 0;
+				border: 1px solid #e7e7e7;
+			}
+			
+			> view:last-child {
+				font-size: 16px;
+				color: #576b95;
+				font-weight: 400;
+				margin-top: 15px;
+			}
+		}
+		
+		.tips {
+			margin-bottom: 30px;
+			font-size: 15px;
+			color: #888888;
+			line-height: 1.5;
+			
+			text {
+				color: #07c160;
+				font-weight: 500;
+			}
+		}
+		
+		button[type="primary"] {
+			background-color: #07c160;
+			border: none;
+			border-radius: 6px;
+			padding: 4px 50px;
+			font-size: 17px;
+			font-weight: 500;
+			color: #ffffff;
+			box-shadow: none;
+			transition: all 0.2s ease;
+			position: relative;
+			
+			&:active {
+				background-color: #06ad56;
+				transform: scale(0.98);
+			}
+			
+			&[loading] {
+				background-color: #c0c4cc;
+				color: #ffffff;
+			}
+			
+			&[disabled] {
+				background-color: #c0c4cc;
+				color: #ffffff;
+			}
 		}
 	}
 </style>
