@@ -229,14 +229,6 @@ export const setRewardedAdCreditAward = (data) => {
   });
 };
 
-export const loginWechatmpScan = (data) => {
-  return service({
-    url: "/api/v1/oauth/wechatmp/scan/login",
-    method: "post",
-    data,
-  });
-};
-
 export default {
   getUserCaptcha,
   login,
@@ -250,5 +242,4 @@ export default {
   bindOauth,
   getRewardedAdOpportunities,
   setRewardedAdCreditAward,
-  loginWechatmpScan,
 };
