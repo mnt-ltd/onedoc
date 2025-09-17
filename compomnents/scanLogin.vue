@@ -1,17 +1,20 @@
 <template>
 	<view class="com-scan-login">
 		<view class="info">
-			<view class="title">
+			<!-- <view class="title">
 				欢迎来到 <text>{{system.sitename}}</text>
 			</view>
-			<view class="font-lv2">{{ system.description }}</view>
+			<view class="font-lv2">{{ system.description }}</view> -->
 			<view>
 				<image :src="user.avatar || '/static/images/avatar.png'"></image>
 			</view>
-			<view>{{ user.nickname || '游客' }}</view>
+			<view>{{ user.nickname || user.username || '游客' }}</view>
 		</view>
 		<view>
-			<view class="tips">
+			<view class="tips" v-if="isBindScene">
+				一键授权绑定 <text>{{ system.sitename }}</text> 网页端已登录用户
+			</view>
+			<view class="tips" v-else>
 				一键授权登录 <text>{{ system.sitename }}</text> 网页版
 			</view>
 			<button type="primary" :loading="loading" open-type="getUserInfo" @getuserinfo="login">授权登录</button>
@@ -62,6 +65,10 @@
 			mpLogo(){
 				return this.system.mp_logo ? joinImage(this.system.mp_logo) : ''
 			},
+			isBindScene(){
+				// 判断是否是绑定登录场景
+				return this.scene && this.scene.endsWith('.1')
+			}
 		},
 		methods: {
 			...mapActions(useUserStore, ['loginByWechatMini']),
