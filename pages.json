@@ -200,12 +200,6 @@
 				"navigationBarTitleText": "已购文档",
 				"enablePullDownRefresh": false
 			}
-		},
-		{
-			"path": "pages/intro/intro",
-			"style": {
-				"navigationBarTitleText": ""
-			}
 		}
 	],
 	"globalStyle": {

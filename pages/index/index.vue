@@ -268,7 +268,23 @@
 					field: ['id', 'title', 'ext', 'description', 'created_at', 'size', 'is_vip']
 				})
 				if (res.statusCode === 200) {
-					this.documents = res.data.document || []
+					const cateDocuments = res.data.document || []
+					const allDocs = []
+					cateDocuments.forEach(item => {
+						if (item.document && item.document.length > 0) {
+							allDocs.push(...item.document)
+						}
+					})
+					allDocs.sort((a, b) => b.id - a.id)
+					const newDocs = [
+						{
+							category_id: 0,
+							category_name: '全部',
+							document: allDocs.splice(0, 10),
+						},
+						...cateDocuments,
+					]
+					this.documents = newDocs
 				}
 			},
 			changeCate(e) {
