@@ -32,6 +32,9 @@
 		<view class="doc-pages">
 			<!-- 预览控制工具栏 -->
 			<view class="preview-controls" v-if="pages.length > 0">
+				<view class="zoom-info">
+					<text>{{Math.round(scaleValue * 100)}}%</text>
+				</view>
 				<view class="control-btn" @click="zoomOut">
 					<text class="control-icon">－</text>
 					<text>缩小</text>
@@ -43,9 +46,6 @@
 				<view class="control-btn" @click="resetZoom">
 					<text class="control-icon">○</text>
 					<text>重置</text>
-				</view>
-				<view class="zoom-info">
-					<text>{{Math.round(scaleValue * 100)}}%</text>
 				</view>
 			</view>
 			
@@ -64,6 +64,7 @@
 							v-for="(page, index) in pages" 
 							:key="page" 
 							lazy-load
+							hover-class="none"
 							@click="previewImage(page)"
 							:style="`width: ${document.width}px;height: ${document.height}px; margin-bottom: 10px;`">
 						</image>
