@@ -58,6 +58,12 @@
 						class="doc-pages-content" 
 						ref="docPagesContent"
 						:style="`transform: scale(${scaleValue}); transform-origin: center top;`">
+						<!-- 水印层 -->
+						<view 
+							class="watermark-layer" 
+							v-if="watermark"
+							:style="`background-image: url('${watermark}'); background-repeat: repeat; background-size: 200px 200px; background-position: center; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; pointer-events: none;`">
+						</view>
 						<image 
 							class="doc-page" 
 							:src="page" 
@@ -269,7 +275,13 @@
 		},
 		computed: {
 			...mapGetters(useSettingStore, ['display', 'system']),
-			...mapGetters(useUserStore, ['user'])
+			...mapGetters(useUserStore, ['user']),
+			watermark(){
+				if (this.system.watermark){
+					return joinImage(this.system.watermark)
+				}
+				return ''
+			}
 		},
 		methods: {
 			formatBytes,
@@ -656,6 +668,7 @@
 					flex-direction: column;
 					align-items: center;
 					transition: transform 0.2s ease;
+					position: relative;
 				}
 			}
 		}
