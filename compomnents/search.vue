@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<form :class="isMiniSearch ? 'search mini-search' : 'search'" @click="focusSearch">
-			<input v-model='searchWd' :placeholder='placeholder' @input="change"
+			<input v-model='searchWd' :placeholder='placeholder' @input="change" :readonly='readonly' :disabled="readonly"
 				@confirm="search" confirm-type="search" name='wd' :auto-focus="autoFocus" />
 			<image @click.stop='clear' v-if='showClear' class='clear' src='/static/images/clear.png'></image>
 			<image @click.stop='search' src='/static/images/search.png'></image>
@@ -40,6 +40,10 @@
 				default: false
 			},
 			autoFocus:{
+				type: Boolean,
+				default: false,
+			},
+			readonly:{
 				type: Boolean,
 				default: false,
 			}

@@ -2,7 +2,7 @@
 	<view class="page page-index">
 		<view id="search" class="search" :style="background">
 			<image :src="mpLogo || logo" class="logo" mode="heightFix"></image>
-			<m-search @focus="go2search"></m-search>
+			<m-search @focus="go2search" :readonly="true"></m-search>
 			<view class="radius-block"></view>
 		</view>
 		<view class="category">
@@ -103,7 +103,7 @@
 			return {
 				searchHeight: 0,
 				fixedCategory: false,
-				title: 'Hello',
+				title: '',
 				autoplay: true,
 				indicatorDots: true,
 				indicatorDots: true,
