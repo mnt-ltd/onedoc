@@ -8,11 +8,11 @@
 			<view class="col-9">
 				<view class="doc-title font-lv3 font-w400 ellipsis-1row">
 					<image lazy-load :src="`/static/images/${getIcon(doc.ext)}_24.png`" class="icon-mini" />
-					<template v-if="isHtml">
-						<template v-html="doc.title">
-						</template>
-					</template>
-					<template v-else>{{doc.title}}</template>
+					<view v-if="isHtml">
+						<view v-html="doc.title">
+						</view>
+					</view>
+					<view v-else>{{doc.title}}</view>
 				</view>
 				<view class="doc-desc font-lv5 ellipsis-1row text-grey">
 					<!-- <text v-if="doc.pages>0">{{ doc.pages || '-' }}ҳ&nbsp;&nbsp; </text> -->
@@ -20,11 +20,11 @@
 					<text>{{ formatBytes(doc.size) }}</text>
 				</view>
 				<view class="doc-desc font-lv4 ellipsis-2row text-grey">
-					<template v-if="isHtml">
-						<template v-html="doc.description">
-						</template>
-					</template>
-					<template v-else>{{doc.description}}</template>
+					<view v-if="isHtml">
+						<view v-html="doc.description">
+						</view>
+					</view>
+					<view v-else>{{doc.description}}</view>
 				</view>
 			</view>
 		</navigator>
